@@ -1,17 +1,18 @@
-import { Box, Stack } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-import { getTotalBRRR, getTotalDailyBRRRewards, isClaiming } from "../../redux/accountSelectors";
+import { getAccountRewards, getTotalBRRR, isClaiming } from "../../redux/accountSelectors";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { TOKEN_FORMAT } from "../../store";
 import { fetchAccount, farmClaimAll } from "../../redux/accountSlice";
 import { trackClaimButton } from "../../telemetry";
 
 export default function TotalBRRR() {
-  const [total, unclaimed] = useAppSelector(getTotalBRRR);
-  const totalDailyBRRRewards = useAppSelector(getTotalDailyBRRRewards);
+  const [total] = useAppSelector(getTotalBRRR);
+  const rewards = useAppSelector(getAccountRewards);
   const isClaimingLoading = useAppSelector(isClaiming);
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   const handleClaimAll = async () => {
     trackClaimButton();
@@ -36,24 +37,20 @@ export default function TotalBRRR() {
       flexDirection={["column", "row"]}
       fontSize="0.87rem"
     >
-      <Stack spacing={1} mb={["1rem", 0]}>
-        <Box textAlign="center">
-          You&apos;ve earned: &nbsp;
-          <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
-          (unclaimed: &nbsp;
-          <span>{unclaimed.toLocaleString(undefined, TOKEN_FORMAT)}</span>)
+      <Box textAlign="center" mb={[2, 0]}>
+        You&apos;ve earned: &nbsp;
+        <b>{total.toLocaleString(undefined, TOKEN_FORMAT)} BRRR </b>
+        <Box display={["block", "inline"]} mt={[0.5, 0]} color={theme.palette.grey[800]}>
+          (unclaimed: {rewards.brrr.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)})
         </Box>
-        <Box>
-          Total daily rewards: <b>{totalDailyBRRRewards.toLocaleString(undefined, TOKEN_FORMAT)}</b>
-        </Box>
-      </Stack>
+      </Box>
       <LoadingButton
         size="small"
         color="secondary"
         variant="outlined"
         onClick={handleClaimAll}
         loading={isClaimingLoading}
-        disabled={!unclaimed}
+        disabled={!rewards.brrr.unclaimedAmount}
       >
         Claim all
       </LoadingButton>
