@@ -7,13 +7,13 @@ import { TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/accountSelectors";
 import { TotalBRRR, Input } from "../../components";
-import { NotConnected } from "../../components/Modal/components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
-import Slider from "../../components/Slider/staking";
+import MonthSlider from "../../components/Slider/staking";
+import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
-import { useAccountId, useRewards, useStaking } from "../../hooks";
-import TokenIcon from "../../components/TokenIcon";
+import { useAccountId, useStaking } from "../../hooks";
+import { BoostedRewards } from "./rewards";
 
 const Staking = () => {
   const accountId = useAccountId();
@@ -22,7 +22,7 @@ const Staking = () => {
   const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
-  const { xBRRR, xBooster, staking, config } = useStaking();
+  const { BRRR, xBRRR, staking, config } = useStaking();
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -34,6 +34,11 @@ const Staking = () => {
   };
 
   const handleSliderChange = (e) => {
+    const { value: percent } = e.target;
+    setAmount((Number(total) * percent) / 100);
+  };
+
+  const handleMonthSliderChange = (e) => {
     setMonths(e.target.value);
   };
 
@@ -69,13 +74,15 @@ const Staking = () => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const xBoosterMultiplier =
+  const xBRRRMultiplier =
     1 +
     ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
       (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
       (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
 
-  const extraXBoosterAmount = amount * xBoosterMultiplier;
+  const extraXBRRRAmount = amount * xBRRRMultiplier;
+
+  const sliderValue = Math.round((amount * 100) / total) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
@@ -103,17 +110,17 @@ const Staking = () => {
           >
             <Box>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                Staked xBRRR: <b>{xBRRR}</b>
+                Staked BRRR: <b>{BRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
-                xBooster: <b>{xBooster}</b>
+                xBRRR: <b>{xBRRR.toLocaleString(undefined, TOKEN_FORMAT)}</b>
               </Typography>
               <Typography component="div" fontSize="0.875rem" mt="0.5rem">
                 Unstake date:{" "}
                 <b>
                   {stakingTimestamp
-                    ? unstakeDate.toFormat("dd / LLL / yyyy @ HH:mm")
-                    : "-- / -- / ----"}
+                    ? unstakeDate.toFormat("yyyy-MM-dd @ HH:mm")
+                    : "___-__-__ @ --:--"}
                 </b>
               </Typography>
             </Box>
@@ -144,7 +151,6 @@ const Staking = () => {
         justifyContent="space-between"
         position="relative"
       >
-        {!accountId && <NotConnected />}
         <Stack spacing={1}>
           <Typography>Amount of BRRR to stake:</Typography>
           <Input
@@ -155,14 +161,17 @@ const Staking = () => {
             onChange={handleInputChange}
             onFocus={handleFocus}
           />
+          <Box px="0.5rem" my="1rem">
+            <Slider value={sliderValue} onChange={handleSliderChange} />
+          </Box>
           {invalidAmount && (
             <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
           )}
         </Stack>
         <Stack spacing={1}>
-          <Typography>Number of months:</Typography>
+          <Typography>Number of months to stake:</Typography>
           <Box px="0.5rem">
-            <Slider value={months} onChange={handleSliderChange} />
+            <MonthSlider value={months} onChange={handleMonthSliderChange} />
           </Box>
           {invalidMonths && (
             <Alert severity="error">
@@ -173,12 +182,16 @@ const Staking = () => {
         <Alert severity="info">
           <Stack spacing={0.75}>
             <Box>
-              xBooster multiplier: <b>{xBoosterMultiplier}x</b>
+              xBRRR multiplier: <b>{xBRRRMultiplier}x</b>
             </Box>
             <Box>
-              xBooster amount: <b>{extraXBoosterAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
+              xBRRR to receive: <b>{extraXBRRRAmount.toLocaleString(undefined, TOKEN_FORMAT)}</b>
             </Box>
-            <BoostedRewards amount={amount} />
+            <Box>
+              Total xBRRR after staking:{" "}
+              <b>{(xBRRR + extraXBRRRAmount).toLocaleString(undefined, TOKEN_FORMAT)}</b>
+            </Box>
+            <BoostedRewards amount={xBRRR + extraXBRRRAmount} />
           </Stack>
         </Alert>
         <Box display="flex" justifyContent="center" width="100%">
@@ -194,53 +207,6 @@ const Staking = () => {
         </Box>
       </Stack>
     </Box>
-  );
-};
-
-const BoostedRewards = ({ amount }) => {
-  const { extra } = useRewards();
-  return (
-    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" alignItems="center" gap={1} pt="1rem">
-      <Typography fontSize="0.85rem" textAlign="left" fontWeight="bold">
-        Extra rewards
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
-        Daily
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="center" fontWeight="bold">
-        Multiplier
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right" fontWeight="bold">
-        Boosted
-      </Typography>
-      {extra.map(([tokenId, r]) => (
-        <Reward key={tokenId} {...r} amount={amount} />
-      ))}
-    </Box>
-  );
-};
-
-const Reward = ({ icon, dailyAmount, symbol, amount, boosterLogBase }) => {
-  const multiplier = 1 + Math.log(amount || 1) / Math.log(boosterLogBase || 100);
-
-  return (
-    <>
-      <Stack direction="row" gap={1}>
-        <TokenIcon width={18} height={18} icon={icon} />
-        <Typography fontSize="0.85rem" textAlign="left">
-          {symbol}
-        </Typography>
-      </Stack>
-      <Typography fontSize="0.85rem" textAlign="right">
-        {dailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="center">
-        {multiplier.toFixed(2)}x
-      </Typography>
-      <Typography fontSize="0.85rem" textAlign="right">
-        {(dailyAmount * multiplier).toLocaleString(undefined, TOKEN_FORMAT)}
-      </Typography>
-    </>
   );
 };
 
