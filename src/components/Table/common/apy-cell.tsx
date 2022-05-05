@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
+import { hiddenAssets } from "../../../config";
 
 import { useConfig } from "../../../hooks";
 import HtmlTooltip from "../../common/html-tooltip";
@@ -8,20 +9,23 @@ import { APY_FORMAT } from "../../../store/constants";
 
 const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
 
-const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) =>
-  new Decimal(rewards.reward_per_day)
+const computeRewardAPY = (rewards, decimals, price, totalSupplyMoney) => {
+  return new Decimal(rewards.reward_per_day)
     .div(new Decimal(10).pow(decimals))
     .mul(365)
     .mul(price)
     .div(totalSupplyMoney)
     .mul(100)
     .toNumber();
+};
 
-const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
+const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page, tokenId }) => {
   const appConfig = useConfig();
   const extraRewards = list?.filter((r) => r?.metadata?.token_id !== appConfig.booster_token_id);
   const hasRewards = extraRewards?.length > 0;
   const isBorrow = page === "borrow";
+
+  if (hiddenAssets.includes(tokenId)) return <Box />;
 
   const extraAPY =
     extraRewards?.reduce(
@@ -46,16 +50,20 @@ const APYCell = ({ baseAPY, rewards: list, totalSupplyMoney, page }) => {
       totalSupplyMoney={totalSupplyMoney}
       isBorrow={isBorrow}
     >
-      <Stack direction="row" gap="3px" alignItems="center">
+      <Stack
+        position="relative"
+        direction="row"
+        gap="3px"
+        alignItems="center"
+        justifyContent="flex-end"
+      >
         <Typography fontSize="0.85rem" fontWeight="bold" textAlign="right" minWidth="50px">
           {toAPY(boostedAPY)}%
         </Typography>
-        {hasRewards ? (
-          <Box component="span" ml="3px">
+        {hasRewards && (
+          <Box component="span" position="absolute" right="-22px">
             {isLucky ? "🍀" : "🚀"}
           </Box>
-        ) : (
-          <Box width="14px" />
         )}
       </Stack>
     </ToolTip>
