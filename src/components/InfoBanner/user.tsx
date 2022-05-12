@@ -2,10 +2,12 @@ import millify from "millify";
 import { Box, Typography, useTheme } from "@mui/material";
 
 import { APY_FORMAT, USD_FORMAT } from "../../store";
-import { getTotalAccountBalance } from "../../redux/accountSelectors";
+import { getTotalAccountBalance } from "../../redux/selectors/getTotalAccountBalance";
 import { useAppSelector } from "../../redux/hooks";
 import { HealthFactor } from "./health";
-import { useFullDigits, useSlimStats, useUserHealth } from "../../hooks";
+import { useSlimStats } from "../../hooks/hooks";
+import { useFullDigits } from "../../hooks/useFullDigits";
+import { useUserHealth } from "../../hooks/useUserHealth";
 import { trackFullDigits } from "../../telemetry";
 
 export const m = (a) => millify(a, { precision: 2 });

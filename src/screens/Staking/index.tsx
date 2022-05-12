@@ -1,29 +1,44 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, Typography, Alert, Grid, useTheme, Paper, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Alert,
+  Grid,
+  useTheme,
+  Paper,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DateTime } from "luxon";
-import { NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 
+import { APY_FORMAT, NUMBER_FORMAT, TOKEN_FORMAT } from "../../store/constants";
 import { useAppSelector } from "../../redux/hooks";
-import { getTotalBRRR } from "../../redux/accountSelectors";
+import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
 import { TotalBRRR, Input } from "../../components";
 import { stake } from "../../store/actions/stake";
 import { unstake } from "../../store/actions/unstake";
 import MonthSlider from "../../components/Slider/staking";
 import Slider from "../../components/Slider";
 import { trackMaxStaking, trackStaking, trackUnstake } from "../../telemetry";
-import { useAccountId, useStaking } from "../../hooks";
+import { useAccountId } from "../../hooks/hooks";
+import { useStaking } from "../../hooks/useStaking";
+import { useUserHealth } from "../../hooks/useUserHealth";
 import { StakingRewards } from "./rewards";
 import { RewardsDetailed } from "./rewards-detailed";
 
 const Staking = () => {
   const accountId = useAccountId();
   const [total] = useAppSelector(getTotalBRRR);
-  const [amount, setAmount] = useState(0);
-  const [months, setMonths] = useState(1);
   const [loadingStake, setLoadingStake] = useState(false);
   const [loadingUnstake, setLoadingUnstake] = useState(false);
-  const { BRRR, xBRRR, staking, config } = useStaking();
+  const { BRRR, xBRRR, extraXBRRRAmount, stakingTimestamp, amount, months, setAmount, setMonths } =
+    useStaking();
+  const { netAPY } = useUserHealth();
   const theme = useTheme();
 
   const handleMaxClick = () => {
@@ -45,7 +60,7 @@ const Staking = () => {
   };
 
   const handleStake = () => {
-    trackStaking({ amount, months });
+    trackStaking({ amount, months, percent: (amount / total) * 100 });
     stake({ amount, months });
     setLoadingStake(true);
   };
@@ -60,15 +75,12 @@ const Staking = () => {
     e.target.select();
   };
 
-  const stakingTimestamp = Number(staking["unlock_timestamp"]);
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
-  const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : 1;
+  const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : months;
 
   const invalidAmount = amount > total;
   const invalidMonths = months < selectedMonths;
-
   const disabledStake = !amount || invalidAmount || invalidMonths;
-
   const disabledUnstake = DateTime.now() < unstakeDate;
 
   const inputAmount = `${amount}`
@@ -76,22 +88,14 @@ const Staking = () => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const xBRRRMultiplier =
-    1 +
-    ((months * config.minimum_staking_duration_sec - config.minimum_staking_duration_sec) /
-      (config.maximum_staking_duration_sec - config.minimum_staking_duration_sec)) *
-      (config.x_booster_multiplier_at_maximum_staking_duration / 10000 - 1);
-
-  const extraXBRRRAmount = amount * xBRRRMultiplier;
-
   const sliderValue = Math.round((amount * 100) / total) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
-  }, [staking]);
+  }, [stakingTimestamp]);
 
   return (
-    <Box mt="2rem" px={["0rem", "2rem"]} maxWidth={["auto", 700]} mx="auto">
+    <Box mt="2rem" sx={{ px: ["0rem", "2rem"], mx: "auto", maxWidth: ["auto", 700] }}>
       {accountId && (
         <>
           <TotalBRRR />
@@ -102,12 +106,11 @@ const Staking = () => {
             bgcolor="#d7f0e5"
             boxShadow="0px 1px 1px rgba(0, 7, 65, 0.1)"
             px="1rem"
-            py={["1.5rem", "0.75rem"]}
             borderRadius="0.3rem"
             justifyContent="space-between"
             display="flex"
-            flexDirection={["column", "row"]}
             alignItems="center"
+            sx={{ py: ["1.5rem", "0.75rem"], flexDirection: ["column", "row"] }}
           >
             <Box>
               <Typography component="span" mr="1rem" fontSize="0.875rem">
@@ -143,12 +146,12 @@ const Staking = () => {
         spacing={3}
         mx="auto"
         mb="2rem"
-        py={["1.5rem", "0.75rem"]}
+        sx={{ py: ["1.5rem", "0.75rem"] }}
         justifyContent="space-between"
         position="relative"
       >
-        <Stack gap={[2, 4]} direction={["column", "row"]} alignItems="flex-end">
-          <Stack spacing={1} px={[2, 0]} width={["100%", "40%"]} maxWidth={["100%", "50%"]}>
+        <Stack alignItems="flex-end" sx={{ gap: [2, 4], flexDirection: ["column", "row"] }}>
+          <Stack spacing={1} sx={{ px: [2, 0], width: ["100%", "40%"], maxWidth: ["100%", "50%"] }}>
             <Typography>Amount of BRRR to stake:</Typography>
             <Input
               value={inputAmount}
@@ -162,7 +165,7 @@ const Staking = () => {
               <Slider value={sliderValue} onChange={handleSliderChange} />
             </Box>
           </Stack>
-          <Stack spacing={1} px={[2, 0]} width="100%" maxWidth={["100%", "50%"]}>
+          <Stack spacing={1} sx={{ px: [2, 0], width: "100%", maxWidth: ["100%", "50%"] }}>
             <Typography>Number of months to stake:</Typography>
             <Box px="0.5rem">
               <MonthSlider value={months} onChange={handleMonthSliderChange} />
@@ -180,7 +183,7 @@ const Staking = () => {
 
         <Stack>
           <Alert severity="info">
-            <Stack direction={["column", "row"]} alignItems="center">
+            <Stack alignItems="center" sx={{ flexDirection: ["column", "row"] }}>
               <Typography fontSize="0.85rem">Not enough BRRR? Simulate a staking with:</Typography>
               <Stack direction="row">
                 {[100, 1000, 10000, 100000].map((a) => (
@@ -194,16 +197,8 @@ const Staking = () => {
         </Stack>
 
         <Paper sx={{ backgroundColor: "#e5f7fd" }}>
-          <Stack spacing={2} p="1rem">
-            <Grid container spacing={1} columns={2} px={[0, 1]}>
-              <Grid item xs={1}>
-                <Typography fontSize="0.75rem">xBRRR multiplier:</Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <Typography fontSize="0.75rem" textAlign="right">
-                  {xBRRRMultiplier}x
-                </Typography>
-              </Grid>
+          <Stack p="1rem">
+            <Grid container spacing={1} columns={2} sx={{ px: [1, 2] }}>
               <Grid item xs={1}>
                 <Typography fontSize="0.75rem">xBRRR to receive:</Typography>
               </Grid>
@@ -229,11 +224,38 @@ const Staking = () => {
                 borderStyle: "outset",
               }}
             />
-            <StakingRewards amount={xBRRR + extraXBRRRAmount} />
-            <Box>
-              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="supplied" />
-              <RewardsDetailed amount={xBRRR + extraXBRRRAmount} type="borrowed" />
+
+            <Box
+              display="grid"
+              gridTemplateColumns="1fr auto "
+              p={1.5}
+              bgcolor="white"
+              sx={{ px: [1, 2] }}
+            >
+              <Typography fontSize="0.85rem">Net APY</Typography>
+              <Typography fontSize="0.85rem">
+                {netAPY.toLocaleString(undefined, APY_FORMAT)}%
+              </Typography>
+              <Typography fontSize="0.85rem">Boosted Net APY 🚀</Typography>
+              <Typography fontSize="0.85rem" fontWeight="bold">
+                {netAPY.toLocaleString(undefined, APY_FORMAT)}%
+              </Typography>
             </Box>
+
+            <StakingRewards />
+            <Accordion sx={{ boxShadow: "none" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="reward-details"
+                id="reward-details"
+              >
+                <Typography fontSize="0.85rem">Staking Rewards Detailed</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <RewardsDetailed type="supplied" />
+                <RewardsDetailed type="borrowed" />
+              </AccordionDetails>
+            </Accordion>
           </Stack>
         </Paper>
         <Box display="flex" justifyContent="center" width="100%">
@@ -242,7 +264,7 @@ const Staking = () => {
             variant="contained"
             onClick={handleStake}
             loading={loadingStake}
-            sx={{ px: "4rem " }}
+            sx={{ px: "4rem" }}
           >
             Stake
           </LoadingButton>
