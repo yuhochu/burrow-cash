@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WEB3_STORAGE_TOKEN: ${{ secrets.WEB3_STORAGE_TOKEN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PID: ${{ secrets.SENTRY_PID }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
