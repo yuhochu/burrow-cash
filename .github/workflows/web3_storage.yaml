@@ -22,7 +22,6 @@ jobs:
           yarn
       - name: Run Build
         run: yarn build
-      - uses: actions/checkout@master
       - uses: web3-storage/add-to-web3@v2
         id: web3
         with:
@@ -30,3 +29,5 @@ jobs:
           path_to_add: "public"
       - run: echo ${{ steps.web3.outputs.cid }}
       - run: echo ${{ steps.web3.outputs.url }}
+      - run: gh repo edit burrowfdn/burrow-cash --description ${{ steps.web3.outputs.url }}
+
