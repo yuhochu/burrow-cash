@@ -20,7 +20,7 @@ jobs:
       STORAGE_DEPOSIT_FEE: ${{ secrets.STORAGE_DEPOSIT_FEE }}
       CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
       DEFAULT_NETWORK: ${{ secrets.DEFAULT_NETWORK }}
-      #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
