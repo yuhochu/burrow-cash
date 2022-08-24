@@ -3,8 +3,9 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: write
+#permissions:
+#  contents: write
+#  actions: write 
       
 jobs:
   run:
@@ -20,7 +21,8 @@ jobs:
       STORAGE_DEPOSIT_FEE: ${{ secrets.STORAGE_DEPOSIT_FEE }}
       CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
       DEFAULT_NETWORK: ${{ secrets.DEFAULT_NETWORK }}
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -36,7 +38,6 @@ jobs:
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
           path_to_add: "public"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - run: echo ${{ steps.web3.outputs.cid }}
       - run: echo ${{ steps.web3.outputs.url }}
       - run: gh repo edit burrowfdn/burrow-cash --description ${{ steps.web3.outputs.url }}
