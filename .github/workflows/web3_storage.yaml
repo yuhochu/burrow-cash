@@ -13,6 +13,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+      - name: Install dependencies
+        run: |
+          yarn
       - name: Run Build
         run: yarn build
       - uses: actions/checkout@master
