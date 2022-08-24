@@ -5,6 +5,8 @@ on:
     
 jobs:
   run:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     env:
       WEB3_STORAGE_TOKEN: ${{ secrets.WEB3_STORAGE_TOKEN }}
