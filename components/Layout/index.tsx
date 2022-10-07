@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 
 import { useViewAs } from "../../hooks/hooks";
 import { useTicker } from "../../hooks/useTicker";
@@ -9,32 +7,13 @@ import CheckNewAppVersion from "../CheckNewAppVersion";
 import Footer from "../Footer";
 import Header from "../Header";
 import Ticker from "../Ticker";
+import Blocked from "../Blocked";
+import { useBlocked } from "../../hooks/useBlocked";
 
 const Layout = ({ children }) => {
   const isViewingAs = useViewAs();
   const { hasTicker } = useTicker();
-  const [isBlocked, setBlocked] = useState(false);
-  const router = useRouter();
-
-  const checkBlocked = async () => {
-    const ip = await fetch("https://brrr.burrow.cash/api/is-blocked").then((r) => r.json());
-
-    if (ip.blocked) {
-      setBlocked(ip.blocked);
-    }
-  };
-
-  useEffect(() => {
-    checkBlocked();
-  }, []);
-
-  useEffect(() => {
-    if (isBlocked) {
-      router.push("/blocked");
-    }
-  }, [isBlocked]);
-
-  if (isBlocked) return children;
+  const isBlocked = useBlocked();
 
   return (
     <Box
@@ -46,6 +25,7 @@ const Layout = ({ children }) => {
         border: isViewingAs ? "10px solid #47C880" : "none",
         WebkitTapHighlightColor: "transparent",
         position: "relative",
+        filter: isBlocked ? "blur(10px)" : "none",
       }}
     >
       <AnimatePresence>
@@ -63,6 +43,7 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <Footer />
       <CheckNewAppVersion />
+      {isBlocked && <Blocked />}
     </Box>
   );
 };

@@ -12,6 +12,8 @@ export interface ITableSorting {
   order: IOrder;
 }
 export interface AppState {
+  isBlocked: boolean | undefined;
+  disclaimerAgreed: boolean;
   degenMode: {
     enabled: boolean;
     repayFromDeposits: boolean;
@@ -51,6 +53,8 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
+  isBlocked: undefined,
+  disclaimerAgreed: false,
   degenMode: {
     enabled: false,
     repayFromDeposits: false,
@@ -183,6 +187,12 @@ export const appSlice = createSlice({
         amount: 0,
       };
     },
+    setDisclaimerAggreed(state, action) {
+      state.disclaimerAgreed = action.payload;
+    },
+    setBlocked(state, action) {
+      state.isBlocked = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -208,6 +218,8 @@ export const {
   setRepayFrom,
   setProtocolStats,
   setShowInfo,
+  setDisclaimerAggreed,
+  setBlocked,
 } = appSlice.actions;
 
 export default appSlice.reducer;
