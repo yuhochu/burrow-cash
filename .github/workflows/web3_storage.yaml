@@ -31,13 +31,13 @@ jobs:
       - name: Install dependencies
         run: |
           yarn
-      - name: Run Build
-        run: yarn build
+      - name: Run Build & Export
+        run: yarn build && yarn export
       - uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: "public"
+          path_to_add: "out"
       - run: echo ${{ steps.web3.outputs.cid }}
       - run: echo ${{ steps.web3.outputs.url }}
       - run: gh repo edit burrowfdn/burrow-cash --description ${{ steps.web3.outputs.url }}
