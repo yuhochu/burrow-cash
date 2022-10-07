@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WEB3_STORAGE_TOKEN: ${{ secrets.WEB3_STORAGE_TOKEN }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-      SENTRY_PID: ${{ secrets.SENTRY_PID }}
-      POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
-      POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
-      STORAGE_DEPOSIT_FEE: ${{ secrets.STORAGE_DEPOSIT_FEE }}
-      CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
-      DEFAULT_NETWORK: ${{ secrets.DEFAULT_NETWORK }}
+      NEXT_PUBLIC_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      NEXT_PUBLIC_SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      NEXT_PUBLIC_SENTRY_PID: ${{ secrets.SENTRY_PID }}
+      NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+      NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+      NEXT_PUBLIC_STORAGE_DEPOSIT_FEE: ${{ secrets.STORAGE_DEPOSIT_FEE }}
+      NEXT_PUBLIC_CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
+      NEXT_PUBLIC_DEFAULT_NETWORK: ${{ secrets.DEFAULT_NETWORK }}
       #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
     steps:
