@@ -43,7 +43,7 @@ const Links = () => {
       sx={{ gap: ["0.5rem", "1rem"] }}
     >
       <Link
-        href="https://github.com/NearDeFi/"
+        href="https://github.com/burrowfdn/"
         title="GitHub"
         target="_blank"
         color={theme.custom.footerIcon}
