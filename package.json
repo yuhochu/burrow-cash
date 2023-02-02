@@ -37,6 +37,7 @@
     "@near-wallet-selector/nightly": "^7.3.0",
     "@near-wallet-selector/sender": "^7.3.0",
     "@near-wallet-selector/wallet-connect": "^7.3.0",
+    "@near-wallet-selector/xdefi": "^7.6.1",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.8.5",
     "@sentry/cli": "^2.5.2",
