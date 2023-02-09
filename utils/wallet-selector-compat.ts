@@ -88,6 +88,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
     ],
     network: defaultNetwork,
     debug: !!isTestnet,
+    optimizeWalletOrder: false,
   });
 
   const subscription = selector.store.observable

@@ -9,7 +9,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
   marginTop: "auto",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
-    gap: "1rem",
+    gap: "2rem",
     bottom: 0,
     left: 0,
     right: 0,
@@ -58,8 +58,6 @@ export const LinksWrapper = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     fontWeight: 500,
     justifyContent: "center",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
   },
   [theme.breakpoints.up("sm")]: {
     justifySelf: "end",

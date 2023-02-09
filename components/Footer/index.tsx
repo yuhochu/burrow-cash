@@ -1,4 +1,4 @@
-import { Link, Divider, Box, useTheme } from "@mui/material";
+import { Link, Divider, Box, useTheme, Typography } from "@mui/material";
 import NextLink from "next/link";
 
 import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
@@ -26,6 +26,7 @@ const Footer = () => {
         </LinksWrapper>
       </CopyWrapper>
       <LinksWrapper>
+        <BugBounty />
         <Links />
       </LinksWrapper>
     </Wrapper>
@@ -100,5 +101,20 @@ export const Declaration = () => {
     </>
   );
 };
+
+const BugBounty = () => (
+  <NextLink href="/declaration" passHref>
+    <Link
+      href="https://immunefi.com/bounty/burrow/"
+      title="Bug Bounty"
+      target="_blank"
+      underline="none"
+    >
+      <Typography fontSize="12px" lineHeight="12px">
+        Bug Bounty
+      </Typography>
+    </Link>
+  </NextLink>
+);
 
 export default Footer;
