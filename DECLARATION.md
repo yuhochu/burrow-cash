@@ -93,7 +93,7 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
     1.4. **Defined Terms**
 
-   * “**_Burrow Smart Contract Protocol_**” means the open source code used to compile contracts at [Burrow Contracts GitHub](https://github.com/NearDeFi/burrowland).
+   * “**_Burrow Smart Contract Protocol_**” means the open source code used to compile contracts at [Burrow Contracts GitHub](https://github.com/burrowfdn/burrowland).
    * “**_Burrow Smart Contract System_**” means the runtime bytecodes (aka “smart contracts”) deployed to the following Near network addresses:
 
      [contract.main.burrow.near, contract.beta.burrow.near]
@@ -135,7 +135,7 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
    3.1. **Site Code**
 
-   The HTML and other software code and text used in the Site is available at [https://github.com/NearDeFi/burrow-cash](https://github.com/NearDeFi/burrow-cash)
+   The HTML and other software code and text used in the Site is available at [https://github.com/burrowfdn/burrow-cash](https://github.com/burrowfdn/burrow-cash)
 
    3.2. **Marks, Logos and Branding**
 
@@ -143,7 +143,7 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
    3.3. **Burrow Smart Contract Protocol**
 
-   The Burrow Smart Contract Protocol is available at [https://github.com/NearDeFi/burrowland](https://github.com/NearDeFi/burrowland) and is freely licensed under [UNLICENSE](https://unlicense.org)
+   The Burrow Smart Contract Protocol is available at [https://github.com/burrowfdn/burrowland](https://github.com/burrowfdn/burrowland) and is freely licensed under [UNLICENSE](https://unlicense.org)
 
 4. **Permitted & Prohibited Uses**
 
