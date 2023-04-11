@@ -29,12 +29,19 @@ Exploring The Code
 Deploy
 ======
 
-Step 0: set contract name in code
+Step 0: set env variables name in .env file
 ---------------------------------
+NEXT_PUBLIC_DEFAULT_NETWORK=testnet
+NEXT_PUBLIC_CONTRACT_NAME=contract.1638481328.burrow.testnet
 
-Once the "backend" code - the smart contract - has been deployed into a [near account][NEAR accounts], you need to modify the line in [src/config.ts](src/config.ts) that sets the account name of the contract. Set it to the account id of the deployed contract.
+# use these for mainnet
+# NEXT_PUBLIC_DEFAULT_NETWORK=mainnet
+# NEXT_PUBLIC_CONTRACT_NAME=contract.main.burrow.near
 
-    const LOGIC_CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-dapp.YOUR-NAME.testnet'
+NEXT_PUBLIC_NEAR_STORAGE_DEPOSIT=0.25
+
+NEXT_PUBLIC_WALLET_CONNECT_ID=
+
 
 Step 1: deploy!
 ---------------
