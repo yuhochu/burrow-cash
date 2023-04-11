@@ -31,6 +31,8 @@ Deploy
 
 Step 0: set env variables name in .env file
 ---------------------------------
+
+```
 NEXT_PUBLIC_DEFAULT_NETWORK=testnet
 NEXT_PUBLIC_CONTRACT_NAME=contract.1638481328.burrow.testnet
 
@@ -40,8 +42,9 @@ NEXT_PUBLIC_CONTRACT_NAME=contract.1638481328.burrow.testnet
 
 NEXT_PUBLIC_NEAR_STORAGE_DEPOSIT=0.25
 
-NEXT_PUBLIC_WALLET_CONNECT_ID=
-
+# get the id from the walletconnect.com website (create a new project in dashboard)
+NEXT_PUBLIC_WALLET_CONNECT_ID=  
+```
 
 Step 1: deploy!
 ---------------
