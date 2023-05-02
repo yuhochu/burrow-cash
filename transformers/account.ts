@@ -1,5 +1,5 @@
 import { initialStaking } from "../redux/accountState";
-import { hasZeroSharesFarmRewards, listToMap } from "../redux/utils";
+import { hasOnlyBurrowFarmRewards, hasZeroSharesFarmRewards, listToMap } from "../redux/utils";
 import { transformAccountFarms } from "./farms";
 
 export const transformPortfolio = (account) => {
@@ -8,14 +8,19 @@ export const transformPortfolio = (account) => {
 
   const { booster_staking, supplied, borrowed, collateral, farms } = portfolio;
 
+  const onlyBurrowFarmed = hasOnlyBurrowFarmRewards(farms);
+
+  const hasNonFarmedAssets = onlyBurrowFarmed
+    ? false
+    : account.portfolio["has_non_farmed_assets"] || hasZeroSharesFarmRewards(farms);
+
   return {
     supplied: listToMap(supplied),
     borrowed: listToMap(borrowed),
     collateral: listToMap(collateral),
     farms: transformAccountFarms(farms),
     staking: booster_staking || initialStaking,
-    hasNonFarmedAssets:
-      account.portfolio["has_non_farmed_assets"] || hasZeroSharesFarmRewards(farms),
+    hasNonFarmedAssets,
   };
 };
 

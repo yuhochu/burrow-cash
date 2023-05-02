@@ -11,7 +11,10 @@ export const defaultNetwork = (process.env.NEXT_PUBLIC_DEFAULT_NETWORK ||
 
 const META_TOKEN = { testnet: undefined, mainnet: "meta-token.near" };
 const REF_TOKEN = { testnet: "ref.fakes.testnet", mainnet: "token.v2.ref-finance.near" };
-const BRRR_TOKEN = { testnet: "test_brrr.1638481328.burrow.testnet", mainnet: "token.burrow.near" };
+export const BRRR_TOKEN = {
+  testnet: "test_brrr.1638481328.burrow.testnet",
+  mainnet: "token.burrow.near",
+};
 
 export const WALLET_CONNECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string;
 

@@ -6,6 +6,7 @@ import type { Asset, Assets, AssetsState } from "./assetState";
 import type { AccountState } from "./accountState";
 import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";
+import { BRRR_TOKEN, defaultNetwork } from "../utils/config";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
 
@@ -38,6 +39,13 @@ export const emptyBorrowedAsset = (asset: { borrowed: number }): boolean =>
 
 export const hasZeroSharesFarmRewards = (farms): boolean => {
   return farms.some((farm) => farm["rewards"].some((reward) => reward["boosted_shares"] === "0"));
+};
+
+export const hasOnlyBurrowFarmRewards = (farms): boolean => {
+  const BRRR = BRRR_TOKEN[defaultNetwork];
+  return farms.every(
+    (farm) => farm["farm_id"]["Supplied"] === BRRR || farm["farm_id"]["Borrowed"] === BRRR,
+  );
 };
 
 export const transformAsset = (
