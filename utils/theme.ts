@@ -66,9 +66,8 @@ declare module "@mui/material/styles" {
 
 const custom = {
   light: {
-    headerBackground:
-      "linear-gradient(225deg, rgba(255, 219, 211, 1) 0%, rgba(79, 141, 199, 1) 100%)",
-    pageBackground: "linear-gradient(239.61deg, #FBFAFA 0%, #EDF4F9 101.74%)",
+    headerBackground: "#14162B",
+    pageBackground: "#14162B",
     footerText: "#7f83a0",
     footerIcon: "#000",
     text: "#000",
@@ -84,12 +83,12 @@ const custom = {
   },
   dark: {
     headerBackground: "linear-gradient(225deg, rgba(0, 36, 25, 1) 0%, rgba(0, 4, 36, 1) 100%)",
-    pageBackground: "linear-gradient(239.61deg, #1A3732 0%, #1A1E3A 101.74%)",
+    pageBackground: "#14162B",
     footerText: "#7f83a0",
     footerIcon: "#7f83a0",
     text: "#fff",
     textStaking: "#fff",
-    background: "#000424",
+    background: "#14162B",
     backgroundStaking: "#31344E",
     notConnectedBg: "rgba(0,0,0,0.85)",
     scrollbarBg: "rgba(0,0,0,0.5)",

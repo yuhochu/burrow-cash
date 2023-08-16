@@ -10,7 +10,7 @@ import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { useDarkMode, useViewAs } from "../../hooks/hooks";
-import { Stats } from "./stats";
+// import { Stats } from "./stats";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
   const router = useRouter();
@@ -87,6 +87,7 @@ const Header = () => {
               fontWeight: "bold",
             }}
           />
+          <MenuItem title="Dashboard" pathname="/dashboard" />
         </Menu>
         <Box display="flex" justifyContent="flex-end">
           <DarkSwitch />
@@ -101,7 +102,7 @@ const Header = () => {
           <Alert severity="info">Refreshing assets data...</Alert>
         </Snackbar>
       </Wrapper>
-      <Stats />
+      {/* <Stats /> */}
     </Box>
   );
 };
