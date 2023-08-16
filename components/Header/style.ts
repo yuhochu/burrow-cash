@@ -30,7 +30,7 @@ export const Menu = styled("div")(({ theme }) => ({
   display: "grid",
   gridArea: "menu",
   gap: "0.5rem",
-  gridTemplateColumns: "repeat(5, 1fr)",
+  gridTemplateColumns: "repeat(6, 1fr)",
   marginRight: "auto",
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",
