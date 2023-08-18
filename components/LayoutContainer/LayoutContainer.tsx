@@ -11,7 +11,7 @@ const LayoutContainer = ({ children, className = "" }: Props) => {
 };
 
 const StyledWrapper = styled.div`
-  max-width: 1200px;
+  max-width: 1240px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 20px;

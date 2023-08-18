@@ -27,6 +27,22 @@ export function useUserHealth() {
     setDigits({ dailyReturns: !fullDigits.dailyReturns });
   };
 
+  const amount =
+    healthFactor === -1 || healthFactor === null
+      ? "N/A"
+      : `${healthFactor?.toLocaleString(undefined, {
+          maximumFractionDigits: healthFactor <= 105 ? 2 : 0,
+        })}%`;
+
+  const label =
+    healthFactor === -1 || healthFactor === null
+      ? "n/a"
+      : healthFactor < 180
+      ? "Low"
+      : healthFactor < 200
+      ? "Medium"
+      : "Good";
+
   return {
     netAPY,
     netLiquidityAPY,
@@ -37,5 +53,9 @@ export function useUserHealth() {
     toggleDigits,
     showDailyReturns,
     toggleDailyReturns,
+    data: {
+      amount,
+      label,
+    },
   };
 }
