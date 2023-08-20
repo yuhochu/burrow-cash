@@ -29,5 +29,6 @@ export function useBlocked() {
     check();
   }, []);
 
-  return !!isBlocked;
+  // return !!isBlocked;
+  return false; // todo reset before deployment production
 }
