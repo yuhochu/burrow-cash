@@ -1,4 +1,4 @@
-import { Link, Divider, Box, useTheme, Typography } from "@mui/material";
+import { Link, Box, useTheme, Typography } from "@mui/material";
 import NextLink from "next/link";
 
 import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
@@ -6,21 +6,21 @@ import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
 import { FaMedium } from "@react-icons/all-files/fa/FaMedium";
 import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
 
-import Logo from "./logo.svg";
+// import Logo from "./logo.svg";
 import Gitbook from "../../public/GitBook.svg";
-import { Wrapper, CopyWrapper, LinksWrapper, LogoWrapper, Copyright } from "./style";
+import { Wrapper, CopyWrapper, LinksWrapper } from "./style";
 
 const Footer = () => {
-  const theme = useTheme();
+  // const theme = useTheme();
   return (
     <Wrapper>
       <CopyWrapper>
-        <LogoWrapper>
+        {/* <LogoWrapper>
           <Logo />
         </LogoWrapper>
         <Copyright variant="h6" color={theme.custom.footerText}>
           © 2022 All Rights Reserved.
-        </Copyright>
+        </Copyright> */}
         <LinksWrapper>
           <Declaration />
         </LinksWrapper>
@@ -92,7 +92,7 @@ export const Declaration = () => {
   const theme = useTheme();
   return (
     <>
-      <Divider orientation="vertical" flexItem color={theme.palette.background.paper} />
+      {/* <Divider orientation="vertical" flexItem color={theme.palette.background.paper} /> */}
       <NextLink href="/declaration" passHref>
         <Link href="/declaration" underline="none" color={theme.custom.footerText}>
           Declaration and Disclaimers
@@ -102,19 +102,20 @@ export const Declaration = () => {
   );
 };
 
-const BugBounty = () => (
-  <NextLink href="/declaration" passHref>
+const BugBounty = () => {
+  const theme = useTheme();
+  return (
     <Link
       href="https://immunefi.com/bounty/burrow/"
       title="Bug Bounty"
       target="_blank"
       underline="none"
     >
-      <Typography fontSize="12px" lineHeight="12px">
+      <Typography fontSize="12px" lineHeight="12px" style={{ color: theme.custom.footerText }}>
         Bug Bounty
       </Typography>
     </Link>
-  </NextLink>
-);
+  );
+};
 
 export default Footer;

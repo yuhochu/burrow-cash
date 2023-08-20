@@ -8,7 +8,7 @@ const palette = {
   light: {
     mode: "light",
     primary: {
-      main: "#47C880",
+      main: "#D2FF3A",
       light: "#D5EFE6",
     },
     secondary: {
@@ -26,7 +26,7 @@ const palette = {
   dark: {
     mode: "light",
     primary: {
-      main: "#47C880",
+      main: "#D2FF3A",
       light: "#000",
     },
     secondary: {
@@ -34,11 +34,11 @@ const palette = {
       light: "#3F4361",
     },
     info: {
-      main: "#c1c2ce",
+      main: "#C0C4E9",
     },
     background: {
       default: "#1A3632",
-      paper: "#1A1E3A",
+      paper: "#2E304B",
     },
   },
 };
@@ -68,7 +68,7 @@ const custom = {
   light: {
     headerBackground: "#14162B",
     pageBackground: "#14162B",
-    footerText: "#7f83a0",
+    footerText: "#C0C4E9",
     footerIcon: "#000",
     text: "#000",
     textStaking: "#232323",
@@ -82,9 +82,9 @@ const custom = {
     stakingCardBg: "#fff",
   },
   dark: {
-    headerBackground: "linear-gradient(225deg, rgba(0, 36, 25, 1) 0%, rgba(0, 4, 36, 1) 100%)",
+    headerBackground: "#14162B",
     pageBackground: "#14162B",
-    footerText: "#7f83a0",
+    footerText: "#C0C4E9",
     footerIcon: "#7f83a0",
     text: "#fff",
     textStaking: "#fff",

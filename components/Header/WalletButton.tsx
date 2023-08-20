@@ -132,6 +132,15 @@ const WalletButton = () => {
             justifySelf: "end",
             alignItems: "center",
             cursor: accountId ? "default" : "pointer",
+            color: "#000",
+            textTransform: "none",
+            fontSize: "16px",
+            padding: "0 20px",
+            height: "40px",
+            borderRadius: "6px",
+            ":hover": {
+              backgroundColor: "#D2FF3A",
+            },
           }}
           variant={accountId ? "outlined" : "contained"}
           onClick={onWalletButtonClick}

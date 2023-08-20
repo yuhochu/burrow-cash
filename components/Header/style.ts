@@ -27,10 +27,12 @@ export const Logo = styled("div")(() => ({
 }));
 
 export const Menu = styled("div")(({ theme }) => ({
-  display: "grid",
+  display: "flex",
+  alignItems: "center",
   gridArea: "menu",
-  gap: "0.5rem",
-  gridTemplateColumns: "repeat(6, 1fr)",
+  // gap: "0.5rem",
+  gap: "55px",
+  gridTemplateColumns: "repeat(4, 1fr)",
   marginRight: "auto",
   [theme.breakpoints.down("sm")]: {
     margin: "0 auto",
@@ -39,24 +41,26 @@ export const Menu = styled("div")(({ theme }) => ({
 }));
 
 export const LinkStyled = styled(Link)(({ theme }) => ({
-  borderWidth: 2,
-  borderStyle: "solid",
-  borderColor: "transparent",
+  // borderWidth: 2,
+  // borderStyle: "solid",
+  // borderColor: "transparent",
   color: "white",
-  opacity: 0.6,
+  // opacity: 0.6,
   textDecoration: "none",
   fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   textAlign: "center",
-  fontWeight: 500,
-  fontSize: "0.875rem",
+  // fontWeight: 500,
+  // fontSize: "0.875rem",
+  fontSize: "16px",
   lineHeight: 1.75,
   letterSpacing: "0.02857rem",
   paddingTop: 4,
   paddingBottom: 4,
   cursor: "pointer",
   ":hover": {
-    borderWidth: 2,
-    borderBottomColor: theme.palette.primary.main,
+    // borderWidth: 2,
+    // borderBottomColor: theme.palette.primary.main,
+    color: theme.palette.primary.main,
   },
 }));
 
