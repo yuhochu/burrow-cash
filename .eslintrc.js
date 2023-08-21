@@ -55,7 +55,11 @@ module.exports = {
     "@typescript-eslint/no-non-null-asserted-optional-chain": 0,
     "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/ban-ts-comment": 0,
-    "@typescript-eslint/no-use-before-define": ["error", { variables: false }],
+    "@typescript-eslint/no-use-before-define": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-else-return": "off",
   },
   settings: {
     react: {

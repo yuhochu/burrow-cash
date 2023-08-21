@@ -1,13 +1,6 @@
 import { Link, Box, useTheme, Typography } from "@mui/material";
 import NextLink from "next/link";
-
-import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
-import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
-import { FaMedium } from "@react-icons/all-files/fa/FaMedium";
-import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
-
-// import Logo from "./logo.svg";
-import Gitbook from "../../public/GitBook.svg";
+import { TwitterIcon, DiscordIcon, MediumIcon } from "./svg";
 import { Wrapper, CopyWrapper, LinksWrapper } from "./style";
 
 const Footer = () => {
@@ -26,6 +19,7 @@ const Footer = () => {
         </LinksWrapper>
       </CopyWrapper>
       <LinksWrapper>
+        <Github />
         <BugBounty />
         <Links />
       </LinksWrapper>
@@ -38,18 +32,18 @@ const Links = () => {
   return (
     <Box
       display="grid"
-      gridTemplateColumns="repeat(5, 1fr)"
+      gridTemplateColumns="repeat(3, 1fr)"
       alignItems="center"
       lineHeight="0"
-      sx={{ gap: ["0.5rem", "1rem"] }}
+      sx={{ gap: "26px" }}
     >
       <Link
-        href="https://github.com/burrowfdn/"
-        title="GitHub"
+        href="https://twitter.com/burrowcash"
+        title="Twitter"
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaGithub />
+        <TwitterIcon />
       </Link>
       <Link
         href="https://discord.gg/gUWBKy9Vur"
@@ -57,15 +51,7 @@ const Links = () => {
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaDiscord />
-      </Link>
-      <Link
-        href="https://twitter.com/burrowcash"
-        title="Twitter"
-        target="_blank"
-        color={theme.custom.footerIcon}
-      >
-        <FaTwitter />
+        <DiscordIcon />
       </Link>
       <Link
         href="https://burrowcash.medium.com/"
@@ -73,16 +59,7 @@ const Links = () => {
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaMedium />
-      </Link>
-      <Link
-        href="https://docs.burrow.cash/"
-        title="Docs"
-        target="_blank"
-        color={theme.custom.footerIcon}
-        width="16px"
-      >
-        <Gitbook fill={theme.custom.footerIcon} />
+        <MediumIcon />
       </Link>
     </Box>
   );
@@ -113,6 +90,17 @@ const BugBounty = () => {
     >
       <Typography fontSize="12px" lineHeight="12px" style={{ color: theme.custom.footerText }}>
         Bug Bounty
+      </Typography>
+    </Link>
+  );
+};
+
+const Github = () => {
+  const theme = useTheme();
+  return (
+    <Link href="https://github.com/burrowHQ/" title="Github" target="_blank" underline="none">
+      <Typography fontSize="12px" lineHeight="12px" style={{ color: theme.custom.footerText }}>
+        Github
       </Typography>
     </Link>
   );

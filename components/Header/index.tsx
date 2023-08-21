@@ -6,6 +6,7 @@ import Link from "next/link";
 import LogoIcon from "../../public/logo.svg";
 import WalletButton from "./WalletButton";
 import DarkSwitch from "../DarkSwitch";
+import Bridge from "./Bridge";
 import { Wrapper, Logo, Menu, LinkStyled } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
@@ -28,7 +29,12 @@ const MenuItem = ({ title, pathname, sx = {} }) => {
 
 const HelpMenuItem = () => {
   return (
-    <div className="flex items-center cursor-pointer text-white hover:text-primary">
+    <div
+      className="flex items-center cursor-pointer text-white hover:text-primary"
+      onClick={() => {
+        window.open("https://docs.burrow.cash/");
+      }}
+    >
       <span className="mr-1.5 text-base">Help</span>
       <svg
         width="10"
@@ -111,8 +117,9 @@ const Header = () => {
             }}
           /> */}
         </Menu>
-        <Box display="flex" justifyContent="flex-end">
-          <DarkSwitch />
+        <Box display="flex" justifyContent="flex-end" alignItems="stretch">
+          {/* <DarkSwitch /> */}
+          <Bridge />
           <WalletButton />
         </Box>
         <Snackbar

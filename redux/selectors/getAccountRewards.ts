@@ -32,6 +32,9 @@ export interface IAccountRewards {
   net: {
     [tokenId: string]: IPortfolioReward;
   };
+  sumRewards: {
+    [tokenId: string]: IPortfolioReward;
+  };
 }
 
 export const getGains = (
@@ -253,6 +256,7 @@ export const getAccountRewards = createSelector(
         (rewards, asset) => ({ ...rewards, [asset.tokenId]: asset }),
         {},
       ),
+      sumRewards,
     } as IAccountRewards;
   },
 );

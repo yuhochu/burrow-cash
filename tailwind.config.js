@@ -34,12 +34,23 @@ module.exports = {
       },
       colors: {
         primary: "#D2FF3A",
+        hoverBoxBorderColor: "#4F5178",
+        hoverBoxBackgroundColor: "#2E304B",
+        dark: {
+          50: "#31344D",
+          100: "#23253A",
+          200: "#14162B",
+        },
+        red: {
+          50: "#FF6BA9",
+        },
         gray: {
           50: "#fafafa",
           100: "#f5f5f5",
           200: "#eeeeee",
           300: "#C0C4E9",
           400: "#626486",
+          500: "#565874",
           700: "#494D69",
           800: "#23253A",
           900: "#0f101c",

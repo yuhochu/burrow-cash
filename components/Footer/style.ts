@@ -53,7 +53,7 @@ export const Copyright = styled(Typography)(({ theme }) => ({
 export const LinksWrapper = styled("div")(({ theme }) => ({
   fontSize: "12px",
   display: "flex",
-  gap: "1rem",
+  gap: "26px",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     fontWeight: 500,

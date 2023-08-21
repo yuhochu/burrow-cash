@@ -19,7 +19,6 @@ function ClaimAllRewards({ Button, location, onDone, disabled = false }: Props) 
     handleClaimAll();
     if (onDone) onDone();
   };
-
   return <Button onClick={handleClick} loading={loading} disabled={disabled} />;
 }
 
