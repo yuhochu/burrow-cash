@@ -85,9 +85,15 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           <div className="h6 text-gray-300">Health Factor</div>
         </div>
 
-        <div>
-          <CustomButton onClick={() => handleModalOpen("liquidation")}>Liquidation</CustomButton>
-          <CustomButton>Records</CustomButton>
+        <div className="flex flex-col">
+          <CustomButton
+            onClick={() => handleModalOpen("liquidation")}
+            className="mb-2"
+            color="secondary"
+          >
+            Liquidation
+          </CustomButton>
+          <CustomButton color="secondary">Records</CustomButton>
         </div>
       </div>
 
