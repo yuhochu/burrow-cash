@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
@@ -15,6 +16,7 @@ import {
 } from "../../helpers/helpers";
 import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 const Index = () => {
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
@@ -44,9 +46,63 @@ const StyledSupplyBorrow = styled.div`
   }
 `;
 
+const yourSuppliedColumns = [
+  {
+    header: "Assets",
+    cell: ({ originalData }) => {
+      return (
+        <div className="flex">
+          <img src={originalData?.icon} width={26} height={26} alt="token" />
+        </div>
+      );
+    },
+  },
+  {
+    header: "APY",
+    cell: ({ originalData }) => {
+      return (
+        <DashboardApy
+          baseAPY={originalData?.apy}
+          rewardList={originalData?.rewards}
+          tokenId={originalData?.tokenId}
+        />
+      );
+    },
+  },
+  {
+    header: "Rewards",
+    cell: ({ originalData }) => {
+      return <DashboardReward rewardList={originalData?.rewards} price={originalData?.price} />;
+    },
+  },
+  {
+    header: "Collateral",
+    cell: ({ originalData }) => {
+      return (
+        <>
+          <div>{formatTokenValue(originalData?.collateral)}</div>
+          <div className="h6 text-gray-300">
+            {formatUSDValue(originalData.collateral * originalData.price)}
+          </div>
+        </>
+      );
+    },
+  },
+  {
+    header: "Supplied",
+    cell: ({ originalData }) => {
+      return (
+        <>
+          <div>{formatTokenValue(originalData.supplied)}</div>
+          <div className="h6 text-gray-300">
+            {formatUSDValue(originalData.supplied * originalData.price)}
+          </div>
+        </>
+      );
+    },
+  },
+];
 const YourSupplied = ({ suppliedRows }) => {
-  const HEADERS = ["Assets", "APY", "Rewards", "Collateral", "Supplied"];
-
   return (
     <ContentBox>
       <div className="flex items-center mb-4">
@@ -56,59 +112,70 @@ const YourSupplied = ({ suppliedRows }) => {
         <SupplyTokenSvg className="mr-10" />
         <div className="h3">You Supplied</div>
       </div>
-      <CustomTable>
-        <thead>
-          <tr>
-            {HEADERS.map((d) => (
-              <th key={d} className="text-gray-400">
-                {d}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {suppliedRows?.length ? (
-            suppliedRows?.map((d, i) => {
-              return (
-                <tr key={d.tokenId + i}>
-                  <td>
-                    <div className="flex">
-                      <img src={d.icon} width={26} height={26} alt="token" />
-                    </div>
-                  </td>
-                  <td>
-                    <DashboardApy baseAPY={d.apy} rewardList={d.rewards} tokenId={d.tokenId} />
-                  </td>
-                  <td>
-                    <DashboardReward rewardList={d.rewards} price={d.price} />
-                  </td>
-                  <td>
-                    <div>{formatTokenValue(d.collateral)}</div>
-                    <div className="h6 text-gray-300">{formatUSDValue(d.collateral * d.price)}</div>
-                  </td>
-                  <td>
-                    <div>{formatTokenValue(d.supplied)}</div>
-                    <div className="h6 text-gray-300">{formatUSDValue(d.supplied * d.price)}</div>
-                  </td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              {HEADERS.map((d) => (
-                <td key={d} />
-              ))}
-            </tr>
-          )}
-        </tbody>
-      </CustomTable>
+      <CustomTable
+        data={suppliedRows}
+        columns={yourSuppliedColumns}
+        actionRow={
+          <div className="flex gap-2">
+            <CustomButton color="primaryBorder">Withdraw</CustomButton>
+            <CustomButton>Adjust</CustomButton>
+          </div>
+        }
+      />
     </ContentBox>
   );
 };
 
+const yourBorrowedColumns = [
+  {
+    header: "Assets",
+    cell: ({ originalData }) => {
+      return (
+        <div className="flex">
+          <img src={originalData?.icon} width={26} height={26} alt="token" />
+        </div>
+      );
+    },
+  },
+  {
+    header: "APY",
+    cell: ({ originalData }) => {
+      return (
+        <DashboardApy
+          baseAPY={originalData?.borrowApy}
+          rewardList={originalData?.borrowRewards}
+          tokenId={originalData?.tokenId}
+          isBorrow
+        />
+      );
+    },
+  },
+  {
+    header: "Rewards",
+    cell: ({ originalData }) => {
+      return (
+        <>
+          <DashboardReward rewardList={originalData.borrowRewards} />
+          <div className="h6 text-gray-300">{originalData.price}</div>
+        </>
+      );
+    },
+  },
+  {
+    header: "Borrowed",
+    cell: ({ originalData }) => {
+      return (
+        <>
+          <div>{formatTokenValue(originalData?.borrowed)}</div>
+          <div className="h6 text-gray-300">
+            ${millifyNumber(originalData.borrowed * originalData.price)}
+          </div>
+        </>
+      );
+    },
+  },
+];
 const YourBorrowed = ({ borrowedRows }) => {
-  const HEADERS = ["Assets", "APY", "Rewards", "Borrowed"];
-
   return (
     <ContentBox>
       <div className="flex items-center mb-4">
@@ -118,54 +185,7 @@ const YourBorrowed = ({ borrowedRows }) => {
         <SupplyTokenSvg className="mr-10" />
         <div className="h3">You Borrowed</div>
       </div>
-      <CustomTable>
-        <thead>
-          <tr>
-            {HEADERS.map((d) => (
-              <th key={d} className="text-gray-400">
-                {d}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {borrowedRows?.length ? (
-            borrowedRows?.map((d, i) => {
-              return (
-                <tr key={d.tokenId + i}>
-                  <td>
-                    <div className="flex">
-                      <img src={d.icon} width={26} height={26} alt="token" />
-                    </div>
-                  </td>
-                  <td>
-                    <DashboardApy
-                      baseAPY={d.borrowApy}
-                      rewardList={d.borrowRewards}
-                      tokenId={d.tokenId}
-                      isBorrow
-                    />
-                  </td>
-                  <td>
-                    <DashboardReward rewardList={d.borrowRewards} />
-                    <div className="h6 text-gray-300">{d.price}</div>
-                  </td>
-                  <td>
-                    <div>{formatTokenValue(d.borrowed)}</div>
-                    <div className="h6 text-gray-300">${millifyNumber(d.borrowed * d.price)}</div>
-                  </td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              {HEADERS.map((d) => (
-                <td key={d} />
-              ))}
-            </tr>
-          )}
-        </tbody>
-      </CustomTable>
+      <CustomTable data={borrowedRows} columns={yourBorrowedColumns} />
     </ContentBox>
   );
 };
