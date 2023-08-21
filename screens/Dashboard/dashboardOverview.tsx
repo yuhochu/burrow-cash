@@ -11,6 +11,7 @@ import CustomModal from "../../components/CustomModal/CustomModal";
 import { useNonFarmedAssets } from "../../hooks/hooks";
 import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
+import ModalRecords from "./modalRecords";
 
 type modalProps = {
   name: string;
@@ -64,6 +65,13 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
     setModal({ name: modalName, data: modalData });
   };
 
+  const handleModalClose = () => {
+    setModal({
+      name: "",
+      data: null,
+    });
+  };
+
   return (
     <div className="flex md:justify-between lg:justify-between">
       <div>
@@ -93,21 +101,17 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           >
             Liquidation
           </CustomButton>
-          <CustomButton color="secondary">Records</CustomButton>
+          <CustomButton color="secondary" onClick={() => handleModalOpen("records")}>
+            Records
+          </CustomButton>
         </div>
       </div>
 
-      <CustomModal
-        isOpen={modal?.name === "liquidation"}
-        onClose={() =>
-          setModal({
-            name: "",
-            data: null,
-          })
-        }
-      >
+      <CustomModal isOpen={modal?.name === "liquidation"} onClose={handleModalClose}>
         haha
       </CustomModal>
+
+      <ModalRecords isOpen={modal?.name === "records"} onClose={handleModalClose} />
     </div>
   );
 };

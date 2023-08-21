@@ -17,9 +17,22 @@ import {
 import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import DataSource from "../../data/datasource";
 
 const Index = () => {
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
+
+  useEffect(() => {
+    fetchData().then();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await DataSource.shared.getOverview();
+    } catch (e) {
+      // console.log("fetchData err",e)
+    }
+  };
 
   return (
     <div>

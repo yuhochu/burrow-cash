@@ -25,3 +25,13 @@ export const millifyNumber = (v: string | number, ignoreBelow?: number, isDispla
 
   return millify(number);
 };
+
+export const removeUndefinedInObj = (obj, removeNull) => {
+  Object.keys(obj).forEach((key) => {
+    if (removeNull) {
+      [undefined, null].includes(obj[key]) && delete obj[key];
+    } else {
+      obj[key] === undefined && delete obj[key];
+    }
+  });
+};

@@ -6,6 +6,7 @@ type columnType = {
   header: string;
   accessorKey?: string;
   cell?: any;
+  size?: number;
 };
 
 interface Props {
@@ -15,15 +16,21 @@ interface Props {
 }
 
 const CustomTable = ({ columns, data, actionRow }: Props) => {
-  const headers = columns?.map((d) => d.header);
+  const headers = columns?.map((d) => ({ text: d.header, size: d.size }));
   const headerNode = (
     <div className="custom-table-thead">
       <div className="custom-table-tr">
-        {headers?.map((d) => (
-          <div key={d} className="custom-table-th text-gray-400">
-            {d}
-          </div>
-        ))}
+        {headers?.map((d) => {
+          const styles: { flex?: string } = {};
+          if (d.size) {
+            styles.flex = `0 0 ${d.size}px`;
+          }
+          return (
+            <div key={d.text} className="custom-table-th text-gray-400" style={styles}>
+              {d.text}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -70,6 +77,7 @@ const StyledTable = styled.div`
   .custom-table-th,
   .custom-table-td {
     flex: 1;
+    word-break: break-word;
   }
 
   .custom-table-thead {
@@ -103,5 +111,5 @@ const StyledTable = styled.div`
     }
   }
 `;
-
+CustomTable.displayName = "CustomTable";
 export default CustomTable;
