@@ -65,7 +65,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   };
 
   return (
-    <div className="flex md:justify-between">
+    <div className="flex md:justify-between lg:justify-between">
       <div>
         <div className="flex gap-10 md:gap-20">
           <SummaryItem title="Net APY" value={APYAmount} />

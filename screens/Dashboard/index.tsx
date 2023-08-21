@@ -29,7 +29,7 @@ const Index = () => {
           <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />
         </ContentBox>
 
-        <StyledSupplyBorrow className="gap-6 md:flex mb-10">
+        <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
           <YourSupplied suppliedRows={suppliedRows} />
           <YourBorrowed borrowedRows={borrowedRows} />
         </StyledSupplyBorrow>
