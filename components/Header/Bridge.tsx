@@ -37,7 +37,7 @@ const Bridge = () => {
       <span className="flex items-center justify-center h-full text-base text-primary cursor-pointer">
         Bridge
       </span>
-      <div className={`absolute top-10 pt-3 ${show_bridge_box ? "" : "hidden"}`}>
+      <div className={`absolute top-10 pt-3 z-50 ${show_bridge_box ? "" : "hidden"}`}>
         <div
           className={`border border-hoverBoxBorderColor bg-hoverBoxBackgroundColor rounded-md p-2.5 pb-1.5 `}
         >

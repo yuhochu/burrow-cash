@@ -2,15 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 @import "../node_modules/@near-wallet-selector/modal-ui/styles.css";
+@font-face {
+  font-family: "work-sans";
+  src: url("./work-sans//WorkSans-Regular.otf");
+}
 
 body {
-    font-family: "Roboto", sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    pointer-events: all !important;
-    background: #14162b;
-    color: #fff;
+  font-family: "work-sans";
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  pointer-events: all !important;
+  background: #14162b;
+  color: #fff;
 }
 
 html {

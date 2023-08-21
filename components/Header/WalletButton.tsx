@@ -180,7 +180,7 @@ const WalletButton = () => {
                 <ArrowDownIcon />
               </span>
             </div>
-            <div className={`absolute top-12 pt-4 ${show_account_detail ? "" : "hidden"}`}>
+            <div className={`absolute z-50 top-12 pt-4 ${show_account_detail ? "" : "hidden"}`}>
               <div
                 className={`flex flex-col border border-hoverBoxBorderColor bg-hoverBoxBackgroundColor rounded-md p-4 `}
               >
