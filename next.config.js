@@ -25,7 +25,7 @@ module.exports = {
     return [
       {
         source: "/",
-        destination: "/deposit",
+        destination: "/markets",
         permanent: true,
       },
     ];
