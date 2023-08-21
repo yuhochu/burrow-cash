@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: ["./pages/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./screens/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     screens: {
       xs: { min: "300px", max: "600px" },
@@ -17,8 +21,23 @@ module.exports = {
       backgroundImage: () => ({}),
       gridTemplateColumns: {},
       gridTemplateRows: {},
+      fontSize: {
+        h1: "90px",
+        h2: "26px",
+        h3: "18px",
+      },
       colors: {
         primary: "#D2FF3A",
+        gray: {
+          50: "#fafafa",
+          100: "#f5f5f5",
+          200: "#eeeeee",
+          300: "#C0C4E9",
+          400: "#626486",
+          700: "#494D69",
+          800: "#23253A",
+          900: "#0f101c",
+        },
       },
     },
     plugins: [],

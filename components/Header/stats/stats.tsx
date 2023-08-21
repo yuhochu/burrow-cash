@@ -7,7 +7,7 @@ import { useAccountId } from "../../../hooks/hooks";
 import { UserDailyRewards, ProtocolDailyRewards } from "./rewards";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
 
-const UserStats = () => (
+export const UserStats = () => (
   <>
     <UserLiquidity />
     <APY />
