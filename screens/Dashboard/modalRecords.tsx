@@ -9,10 +9,8 @@ const ModalRecords = ({ isOpen, onClose }) => {
   const [docs, setDocs] = useState([]);
 
   useEffect(() => {
-    if (isOpen) {
-      fetchData().then();
-    }
-  }, [isOpen]);
+    fetchData().then();
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -22,7 +20,7 @@ const ModalRecords = ({ isOpen, onClose }) => {
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose}>
+    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose}>
       <CustomTable data={docs} columns={columns} />
     </CustomModal>
   );

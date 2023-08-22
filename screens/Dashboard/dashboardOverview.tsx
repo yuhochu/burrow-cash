@@ -107,7 +107,11 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         </div>
       </div>
 
-      <CustomModal isOpen={modal?.name === "liquidation"} onClose={handleModalClose}>
+      <CustomModal
+        isOpen={modal?.name === "liquidation"}
+        onClose={handleModalClose}
+        onOutsideClick={handleModalClose}
+      >
         haha
       </CustomModal>
 
