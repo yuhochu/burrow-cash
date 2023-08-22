@@ -44,10 +44,12 @@ const Index = () => {
           <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />
         </ContentBox>
 
-        <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-          <YourSupplied suppliedRows={suppliedRows} />
-          <YourBorrowed borrowedRows={borrowedRows} />
-        </StyledSupplyBorrow>
+        <div style={{ minHeight: 600 }}>
+          <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
+            <YourSupplied suppliedRows={suppliedRows} />
+            <YourBorrowed borrowedRows={borrowedRows} />
+          </StyledSupplyBorrow>
+        </div>
       </LayoutContainer>
     </div>
   );
@@ -125,19 +127,33 @@ const YourSupplied = ({ suppliedRows }) => {
         <SupplyTokenSvg className="mr-10" />
         <div className="h3">You Supplied</div>
       </div>
-      <CustomTable
+      <StyledCustomTable
         data={suppliedRows}
         columns={yourSuppliedColumns}
         actionRow={
-          <div className="flex gap-2">
-            <CustomButton color="primary">Withdraw</CustomButton>
-            <CustomButton>Adjust</CustomButton>
+          <div className="flex gap-2 pb-6">
+            <div className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1">
+              Withdraw
+            </div>
+            <CustomButton className="flex-1">Adjust</CustomButton>
           </div>
         }
       />
     </ContentBox>
   );
 };
+
+const StyledCustomTable = styled(CustomTable)`
+  .custom-table-tbody {
+    margin: 0 -30px;
+
+    .custom-table-row {
+      padding-left: 30px;
+      padding-right: 30px;
+      cursor: pointer;
+    }
+  }
+`;
 
 const yourBorrowedColumns = [
   {
@@ -198,7 +214,7 @@ const YourBorrowed = ({ borrowedRows }) => {
         <SupplyTokenSvg className="mr-10" />
         <div className="h3">You Borrowed</div>
       </div>
-      <CustomTable data={borrowedRows} columns={yourBorrowedColumns} />
+      <StyledCustomTable data={borrowedRows} columns={yourBorrowedColumns} />
     </ContentBox>
   );
 };

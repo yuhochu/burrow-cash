@@ -4,11 +4,12 @@ import { BaseProps } from "../../interfaces/common";
 
 export interface BoxProps extends BaseProps {
   style?: object;
+  padding?: string;
 }
 
-export const ContentBox = ({ children, style, className }: BoxProps) => {
+export const ContentBox = ({ children, style, className, padding }: BoxProps) => {
   return (
-    <StyledBox style={style} className={className}>
+    <StyledBox style={style} className={className} padding={padding}>
       <div>{children}</div>
     </StyledBox>
   );

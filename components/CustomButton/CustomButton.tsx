@@ -86,7 +86,7 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
 });
 
 const btnColor = {
-  primary: "border-primary-500 bg-primary-500 hover:bg-primary-600 text-black",
+  primary: "border-primary bg-primary hover:bg-primary text-black",
   secondary: "border border-gray-300 hover:border-gray-200 text-gray-300",
   third: "rounded-full border border-1 border-black text-black font-bold",
 };
@@ -105,5 +105,5 @@ const getBtnSizeClassName = (size = "md") => {
   return btnSize[size as keyof typeof btnSize] || size;
 };
 
-CustomButton.displayName = "Button";
+CustomButton.displayName = "CustomButton";
 export default CustomButton;

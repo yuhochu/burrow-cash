@@ -28,7 +28,7 @@ const CustomModal = ({
 
   React.useEffect(() => {
     setTimeout(() => {
-      setShow(!!isOpen);
+      setShow(isOpen);
     }, 100);
   }, [isOpen]);
 

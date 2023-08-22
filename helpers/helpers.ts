@@ -37,11 +37,15 @@ export const removeUndefinedInObj = (obj, removeNull) => {
 };
 
 export const maskMiddleString = (
-  value: string,
+  str: string,
   hideSymbolLength = 6,
   skipLength = 0,
   hideSymbol = "*",
 ) => {
+  if (!str) {
+    return str;
+  }
+  const value = String(str);
   if (skipLength >= value?.length) {
     skipLength = skipLength - value.length - hideSymbolLength;
   }

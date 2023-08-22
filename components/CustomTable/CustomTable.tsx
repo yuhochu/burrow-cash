@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect } from "react";
+import { twMerge } from "tailwind-merge";
+import CustomPagination from "./CustomPagination";
 
 type columnType = {
   id?: string;
@@ -13,9 +15,65 @@ interface Props {
   columns: Array<columnType>;
   data: Array<any>;
   actionRow?: React.ReactNode;
+  className?: string;
+  fetchData?: () => any;
+  pagination?: {
+    totalItems?: number;
+    totalPages?: number;
+    page?: number;
+    onNextClick?: () => any;
+    onPrevClick?: () => any;
+  };
+  setPagination?: any;
+  isLoading?: boolean;
 }
 
-const CustomTable = ({ columns, data, actionRow }: Props) => {
+const CustomTable = ({
+  columns,
+  data,
+  actionRow,
+  className,
+  fetchData,
+  pagination,
+  setPagination,
+  isLoading,
+}: Props) => {
+  const handleFirstClick = () => {
+    if (setPagination) {
+      setPagination((d) => ({
+        ...d,
+        page: 1,
+      }));
+    }
+  };
+
+  const handleLastClick = () => {
+    if (setPagination && pagination?.totalPages) {
+      setPagination((d) => ({
+        ...d,
+        page: pagination.totalPages,
+      }));
+    }
+  };
+
+  const handlePrevClick = () => {
+    if (setPagination) {
+      setPagination((d) => ({
+        ...d,
+        page: d?.page <= 1 ? 1 : d.page - 1,
+      }));
+    }
+  };
+
+  const handleNextClick = () => {
+    if (setPagination) {
+      setPagination((d) => ({
+        ...d,
+        page: pagination?.page ? pagination.page + 1 : 1,
+      }));
+    }
+  };
+
   const headers = columns?.map((d) => ({ text: d.header, size: d.size }));
   const headerNode = (
     <div className="custom-table-thead">
@@ -64,12 +122,43 @@ const CustomTable = ({ columns, data, actionRow }: Props) => {
   });
 
   return (
-    <StyledTable className="custom-table">
+    <StyledTable className={twMerge("custom-table", className)}>
+      <StyledLoading active={isLoading}>Loading</StyledLoading>
       <div className="custom-table-thead">{headerNode}</div>
       <div className="custom-table-tbody">{bodyNodes}</div>
+      {pagination?.totalPages && pagination?.page && (
+        <div className="custom-table-pagination flex justify-end mt-2">
+          <CustomPagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            prevClick={handlePrevClick}
+            nextClick={handleNextClick}
+            firstClick={handleFirstClick}
+            lastClick={handleLastClick}
+          />
+        </div>
+      )}
     </StyledTable>
   );
 };
+
+const StyledLoading = styled.div<{ active: boolean | undefined }>`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: ${(p) => (p.active ? 22 : -1)};
+  opacity: ${(p) => (p.active ? 1 : 0)};
+  pointer-events: ${(p) => (p.active ? "all" : "none")};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const StyledTable = styled.div`
   width: 100%;
@@ -111,6 +200,8 @@ const StyledTable = styled.div`
 
   .custom-table-row {
     &:hover {
+      background: #33344c;
+
       .custom-table-action {
         display: block;
         height: auto;

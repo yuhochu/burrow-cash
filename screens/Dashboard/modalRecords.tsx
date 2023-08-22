@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BeatLoader } from "react-spinners";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import Datasource from "../../data/datasource";
@@ -11,30 +12,57 @@ import { maskMiddleString } from "../../helpers/helpers";
 const ModalRecords = ({ isOpen, onClose }) => {
   const accountId = useAccountId();
   const assets = useAppSelector(getAssets);
+  const [isLoading, setIsLoading] = useState(false);
   const [docs, setDocs] = useState([]);
+  const [pagination, setPagination] = useState<{
+    page?: number;
+    totalPages?: number;
+    totalItems?: number;
+    onNextClick?: () => any;
+  }>({
+    page: 1,
+  });
 
   useEffect(() => {
     if (isOpen) {
-      fetchData().then();
+      fetchData({
+        page: pagination?.page,
+      }).then();
     }
-  }, [isOpen]);
+  }, [isOpen, pagination?.page]);
 
-  const fetchData = async () => {
+  const fetchData = async ({ page }) => {
     try {
-      const response = await Datasource.shared.getRecords(accountId, 1, 10);
+      setIsLoading(true);
+      const response = await Datasource.shared.getRecords(accountId, page, 10);
       const list = response?.record_list?.map((d) => {
         d.data = assets?.data[d.token_id];
         return d;
       });
       setDocs(list);
+      setPagination((d) => {
+        return {
+          ...d,
+          totalPages: response?.total_page,
+          totalItems: response?.total_size,
+        };
+      });
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose}>
-      <CustomTable data={docs} columns={columns} />
+      <CustomTable
+        data={docs}
+        columns={columns}
+        pagination={pagination}
+        setPagination={setPagination}
+        isLoading={isLoading}
+      />
     </CustomModal>
   );
 };
