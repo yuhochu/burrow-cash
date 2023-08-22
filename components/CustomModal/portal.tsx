@@ -16,7 +16,7 @@ const Portal = ({ children }: Props) => {
         document.body.removeChild(node);
       }
       node = null;
-      rootBody && rootBody.classList.remove("modal-open");
+      rootBody?.classList.remove("modal-open");
     };
   }, []);
 
@@ -25,7 +25,7 @@ const Portal = ({ children }: Props) => {
   }
 
   if (!node) {
-    rootBody && rootBody.classList.add("modal-open");
+    rootBody?.classList.add("modal-open");
     node = document.createElement("div");
     document.body.appendChild(node);
   }

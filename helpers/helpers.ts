@@ -35,3 +35,20 @@ export const removeUndefinedInObj = (obj, removeNull) => {
     }
   });
 };
+
+export const maskMiddleString = (
+  value: string,
+  hideSymbolLength = 6,
+  skipLength = 0,
+  hideSymbol = "*",
+) => {
+  if (skipLength >= value?.length) {
+    skipLength = skipLength - value.length - hideSymbolLength;
+  }
+  const skip = Math.ceil(skipLength / 2);
+  const firstLength = Math.ceil(value.length / 2);
+  const first = value.slice(0, firstLength - skip);
+  const last = value.slice(firstLength + skip, value.length);
+  const masked = hideSymbol.repeat(hideSymbolLength);
+  return first + masked + last;
+};

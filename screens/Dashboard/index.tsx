@@ -130,7 +130,7 @@ const YourSupplied = ({ suppliedRows }) => {
         columns={yourSuppliedColumns}
         actionRow={
           <div className="flex gap-2">
-            <CustomButton color="primaryBorder">Withdraw</CustomButton>
+            <CustomButton color="primary">Withdraw</CustomButton>
             <CustomButton>Adjust</CustomButton>
           </div>
         }

@@ -57,7 +57,8 @@ const CustomModal = ({
 };
 
 const StyledWrapper = styled.div`
-  .custom-table-th {
+  .custom-table {
+    font-size: 14px;
   }
 `;
 

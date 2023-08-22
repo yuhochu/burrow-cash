@@ -82,6 +82,9 @@ const StyledTable = styled.div`
   .custom-table-td {
     flex: 1;
     word-break: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .custom-table-thead {
@@ -100,17 +103,17 @@ const StyledTable = styled.div`
   }
 
   .custom-table-action {
-    //display: none;
-    //height: 0;
-    //overflow: hidden;
-    //transition: all ease-in-out 0.3ms;
+    display: none;
+    height: 0;
+    overflow: hidden;
+    transition: all ease-in-out 0.3ms;
   }
 
   .custom-table-row {
     &:hover {
       .custom-table-action {
         display: block;
-        //height: auto;
+        height: auto;
       }
     }
   }
