@@ -11,52 +11,104 @@ import { useDepositAPY } from "../../hooks/useDepositAPY";
 function MarketsTable({ rows, onRowClick, sorting }: TableProps) {
   return (
     <div className="w-full">
-      <TableHead />
+      <TableHead sorting={sorting} />
       <TableBody rows={rows} onRowClick={onRowClick} sorting={sorting} />
     </div>
   );
 }
 
-function TableHead() {
+function TableHead({ sorting }) {
+  const { property, order, setSorting } = sorting;
+  function getCurColumnSort(p: string) {
+    if (property === p) return order;
+    return "";
+  }
+  function dispatch_sort_action(p: string) {
+    setSorting("market", p, order === "desc" ? "asc" : "desc");
+  }
   return (
     <div className="grid grid-cols-6 h-12">
       <div className="col-span-1 border border-dark-50 bg-gray-800 rounded-t-2xl flex items-center pl-5 text-sm text-gray-300">
         Market
       </div>
       <div className="grid grid-cols-2 col-span-2 bg-primary rounded-t-2xl items-center text-sm text-black">
-        <div className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap">
+        <div
+          className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+          onClick={() => {
+            dispatch_sort_action("totalSupply");
+          }}
+        >
           Total Supply
-          <SortButton />
+          <SortButton sort={getCurColumnSort("totalSupply")} />
         </div>
-        <div className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap">
-          Supply APY <SortButton />
+        <div
+          className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+          onClick={() => {
+            dispatch_sort_action("depositApy");
+          }}
+        >
+          Supply APY <SortButton sort={getCurColumnSort("depositApy")} />
         </div>
       </div>
       <div className="grid grid-cols-2 col-span-2 bg-red-50 rounded-t-2xl items-center text-sm text-black">
-        <div className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap">
-          Total Borrowed <SortButton />
+        <div
+          className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+          onClick={() => {
+            dispatch_sort_action("totalBorrowed");
+          }}
+        >
+          Total Borrowed <SortButton sort={getCurColumnSort("totalBorrowed")} />
         </div>
-        <div className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap">
-          Borrow APY <SortButton />
+        <div
+          className="col-span-1 flex items-center cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+          onClick={() => {
+            dispatch_sort_action("borrowApy");
+          }}
+        >
+          Borrow APY <SortButton sort={getCurColumnSort("borrowApy")} />
         </div>
       </div>
-      <div className="col-span-1 bg-gray-300 rounded-t-2xl flex items-center text-sm text-black cursor-pointer pl-6 xl:pl-14 whitespace-nowrap">
+      <div
+        className="col-span-1 bg-gray-300 rounded-t-2xl flex items-center text-sm text-black cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+        onClick={() => {
+          dispatch_sort_action("availableLiquidity");
+        }}
+      >
         Liquidity
-        <SortButton />
+        <SortButton sort={getCurColumnSort("availableLiquidity")} />
       </div>
     </div>
   );
 }
 function TableBody({ rows, onRowClick, sorting }: TableProps) {
+  const { property, order } = sorting;
+  function comparator(b: UIAsset, a: UIAsset) {
+    let a_comparator_value = a[property];
+    let b_comparator_value = b[property];
+    if (["borrowApy", "totalBorrowed"].includes(property)) {
+      if (!b.can_borrow) {
+        b_comparator_value = 0;
+      }
+      if (!a.can_borrow) {
+        a_comparator_value = 0;
+      }
+    }
+    if (order === "desc") {
+      return a_comparator_value - b_comparator_value;
+    } else {
+      return b_comparator_value - a_comparator_value;
+    }
+  }
   return (
     <>
-      {rows.map((row: UIAsset, index: number) => {
+      {rows.sort(comparator).map((row: UIAsset, index: number) => {
         const { supplyApy, depositRewards, tokenId } = row;
         const depositAPY = useDepositAPY({
           baseAPY: supplyApy,
           rewardList: depositRewards,
           tokenId,
         });
+        row.depositApy = depositAPY;
         if (row.symbol === "wNEAR") {
           row.symbol = nearMetadata.symbol;
           row.icon = nearMetadata.icon;

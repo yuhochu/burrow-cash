@@ -32,7 +32,7 @@ const Borrow = () => {
         rows={rows}
         columns={columns}
         onRowClick={handleOnRowClick}
-        sorting={{ name: "borrow", ...sorting.borrow, setSorting }}
+        sorting={{ name: "borrow", ...sorting.market, setSorting }}
       />
     </Box>
   );

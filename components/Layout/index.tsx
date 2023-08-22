@@ -33,7 +33,7 @@ const PageGrid = ({ children }) => {
         position: "relative",
         filter: isBlocked ? "blur(10px)" : "none",
         background: theme.custom.pageBackground,
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 100px)",
       }}
     >
       {children}
@@ -61,10 +61,10 @@ const Layout = ({ children }) => {
         </AnimatePresence>
         <Header />
         <main className="px-10">{children}</main>
-        <Footer />
-        <CheckNewAppVersion />
+        {/* <CheckNewAppVersion /> */}
         {isBlocked && <Blocked />}
       </PageGrid>
+      <Footer />
     </Theme>
   );
 };
