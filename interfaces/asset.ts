@@ -157,8 +157,12 @@ export interface UIAsset {
   totalSupply$: string;
   totalSupplyMoney: number;
   borrowApy: number;
+  totalBorrowed: number;
+  totalBorrowed$: string;
+  totalBorrowedMoney: number;
   availableLiquidity: number;
   availableLiquidity$: string;
+  availableLiquidityMoney: number;
   collateralFactor: string;
   canUseAsCollateral: boolean;
   supplied: number;
@@ -172,4 +176,6 @@ export interface UIAsset {
   brrrSupply: number;
   depositRewards: IReward[];
   borrowRewards: IReward[];
+  can_borrow: boolean;
+  can_deposit: boolean;
 }

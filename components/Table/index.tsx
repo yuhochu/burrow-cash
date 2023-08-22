@@ -28,7 +28,7 @@ const getComparator = (order: "asc" | "desc", orderBy: string) =>
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 
-interface TableProps {
+export interface TableProps {
   sorting: {
     name: string;
     property: string;
@@ -36,7 +36,7 @@ interface TableProps {
     setSorting: (name: string, property: string, order: IOrder) => void;
   };
   rows: any;
-  columns: any;
+  columns?: any;
   onRowClick?: (rowData: any) => void;
   sx?: any;
 }

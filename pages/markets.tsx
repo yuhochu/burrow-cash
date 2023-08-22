@@ -1,3 +1,3 @@
-import DepositPage from "../screens/Deposit";
+import MarketPage from "../screens/Market";
 
-export default DepositPage;
+export default MarketPage;

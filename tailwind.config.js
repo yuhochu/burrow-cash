@@ -34,12 +34,11 @@ module.exports = {
       },
       colors: {
         primary: "#D2FF3A",
-        hoverBoxBorderColor: "#4F5178",
-        hoverBoxBackgroundColor: "#2E304B",
         dark: {
           50: "#31344D",
-          100: "#23253A",
+          100: "#2E304B",
           200: "#14162B",
+          300: "#4F5178",
         },
         red: {
           50: "#FF6BA9",
@@ -55,6 +54,20 @@ module.exports = {
           800: "#23253A",
           900: "#0f101c",
         },
+      },
+      minWidth: {
+        "800px": "800px",
+      },
+      maxWidth: {
+        "1000px": "1000px",
+        "1200px": "1200px",
+      },
+      height: {
+        "60px": "60px",
+        "26px": "26px",
+      },
+      width: {
+        "26px": "26px",
       },
     },
     plugins: [],

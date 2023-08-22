@@ -27,6 +27,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     : hasNetTvlFarms
     ? userNetTvlAPY
     : totalNetTvlApy;
+  const marketsNetLiquidityAPY = hasNegativeNetLiquidity ? 0 : totalNetTvlApy;
 
   const asset = assets.data[assetId];
 
@@ -115,5 +116,6 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
     computeStakingRewardAPY,
     netLiquidityAPY,
     netTvlMultiplier,
+    marketsNetLiquidityAPY,
   };
 }

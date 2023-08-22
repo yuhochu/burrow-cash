@@ -22,7 +22,7 @@ import { useDisclaimer } from "../../hooks/useDisclaimer";
 import { NearSolidIcon, ArrowDownIcon } from "./svg";
 import NearIcon from "../../public/near-icon.svg";
 import ClaimAllRewards from "../ClaimAllRewards";
-import { formatWithCommas_usd } from "../../utils/number";
+import { formatWithCommas_usd } from "../../utils/uiNumber";
 
 const WalletButton = () => {
   const theme = useTheme();
@@ -153,7 +153,7 @@ const WalletButton = () => {
         // </Box>
         <div className="flex items-center gap-4">
           {/* near balance */}
-          <div className="flex items-center gap-2 border border-dark-50 bg-dark-100 px-2.5 py-2 rounded-md">
+          <div className="flex items-center gap-2 border border-dark-50 bg-gray-800 px-2.5 py-2 rounded-md">
             <NearSolidIcon />
             <span className="text-base text-white font-bold">
               {balance === "..." ? "..." : Number.parseFloat(balance).toFixed(2)}
@@ -181,9 +181,7 @@ const WalletButton = () => {
               </span>
             </div>
             <div className={`absolute z-50 top-12 pt-4 ${show_account_detail ? "" : "hidden"}`}>
-              <div
-                className={`flex flex-col border border-hoverBoxBorderColor bg-hoverBoxBackgroundColor rounded-md p-4 `}
-              >
+              <div className={`flex flex-col border border-dark-300 bg-dark-100 rounded-md p-4 `}>
                 <span className=" text-white text-lg">{accountTrim(accountId)}</span>
                 <div className="flex items-center text-xs text-gray-300 -ml-1">
                   <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />

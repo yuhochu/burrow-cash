@@ -56,8 +56,9 @@ export const Cell = ({
     usd: (v) => (isCompact ? `$${millify(Number(v))}` : v.toLocaleString(undefined, USD_FORMAT)),
   };
 
-  if (isAPY)
+  if (isAPY) {
     return <APYCell rewards={rewards} baseAPY={value} page={page} tokenId={rowData.tokenId} />;
+  }
   if (isReward)
     return (
       <Rewards rewards={rewards} layout={rewardLayout} page={page} tokenId={rowData.tokenId} />

@@ -1,18 +1,5 @@
 import Decimal from "decimal.js";
 
-export const formatWithCommas_usd = (v: string | number) => {
-  const decimal = new Decimal(v);
-  if (decimal.eq(0)) {
-    return "$0";
-  } else if (decimal.lt(0.01)) {
-    return "<$0.01";
-  } else if (decimal.lt(10000)) {
-    return `$${formatWithCommas(decimal.toFixed(2, 1))}`;
-  } else {
-    return `$${formatWithCommas(decimal.toFixed(0, 1))}`;
-  }
-};
-
 export function formatWithCommas(value: string): string {
   const pattern = /(-?\d+)(\d{3})/;
   while (pattern.test(value)) {
@@ -20,3 +7,14 @@ export function formatWithCommas(value: string): string {
   }
   return value;
 }
+
+export const toInternationalCurrencySystem = (labelValue: string, percent?: number) => {
+  const hasPercent = !(percent === undefined || percent == null);
+  return Math.abs(Number(labelValue)) >= 1.0e9
+    ? `${(Math.abs(Number(labelValue)) / 1.0e9).toFixed(percent || 2)}B`
+    : Math.abs(Number(labelValue)) >= 1.0e6
+    ? `${(Math.abs(Number(labelValue)) / 1.0e6).toFixed(percent || 2)}M`
+    : Math.abs(Number(labelValue)) >= 1.0e3
+    ? `${(Math.abs(Number(labelValue)) / 1.0e3).toFixed(percent || 2)}K`
+    : Math.abs(Number(labelValue)).toFixed(hasPercent ? percent : 2);
+};

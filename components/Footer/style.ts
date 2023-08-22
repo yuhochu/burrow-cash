@@ -6,7 +6,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
   display: "grid",
   alignItems: "center",
   color: theme.palette.secondary.main,
-  marginTop: "auto",
+  marginTop: "20px",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
     gap: "2rem",

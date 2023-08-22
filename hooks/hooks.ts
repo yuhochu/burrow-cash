@@ -44,7 +44,7 @@ export function useNonFarmedAssets() {
   return { hasNonFarmedAssets, weightedNetLiquidity, hasNegativeNetLiquidity, assets };
 }
 
-export function useAvailableAssets(type: "supply" | "borrow") {
+export function useAvailableAssets(type?: "supply" | "borrow" | "") {
   return useAppSelector(getAvailableAssets(type));
 }
 

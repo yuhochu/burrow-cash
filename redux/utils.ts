@@ -59,9 +59,12 @@ export const transformAsset = (
   const totalSupplyD = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
     .toFixed();
-
+  const totalBorrowedD = new Decimal(asset.borrowed.balance).toFixed();
   const totalSupply = Number(
     shrinkToken(totalSupplyD, asset.metadata.decimals + asset.config.extra_decimals),
+  );
+  const totalBorrowed = Number(
+    shrinkToken(totalBorrowedD, asset.metadata.decimals + asset.config.extra_decimals),
   );
 
   // TODO: refactor: remove temp vars using ramda
@@ -73,6 +76,7 @@ export const transformAsset = (
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
+  const availableLiquidityMoney = toUsd(temp2, asset);
 
   let accountAttrs = {
     supplied: 0,
@@ -108,7 +112,6 @@ export const transformAsset = (
       extraDecimals: asset.config.extra_decimals,
     };
   }
-
   return {
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
@@ -117,9 +120,13 @@ export const transformAsset = (
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
     totalSupplyMoney: toUsd(totalSupplyD, asset),
+    totalBorrowed,
+    totalBorrowed$: toUsd(totalBorrowedD, asset).toLocaleString(undefined, USD_FORMAT),
+    totalBorrowedMoney: toUsd(totalBorrowedD, asset),
     borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,
+    availableLiquidityMoney,
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
@@ -137,6 +144,8 @@ export const transformAsset = (
     ),
     depositRewards: getRewards("supplied", asset, assets),
     borrowRewards: getRewards("borrowed", asset, assets),
+    can_borrow: asset.config.can_borrow,
+    can_deposit: asset.config.can_deposit,
   };
 };
 
