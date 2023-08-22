@@ -45,8 +45,12 @@ const CustomTable = ({ columns, data, actionRow }: Props) => {
       } else if (col.accessorKey) {
         content = d[col.accessorKey];
       }
+      const styles: { flex?: string } = {};
+      if (col.size) {
+        styles.flex = `0 0 ${col.size}px`;
+      }
       return (
-        <div className="custom-table-td" key={col.id || col.header}>
+        <div className="custom-table-td" key={col.id || col.header} style={styles}>
           {content}
         </div>
       );
