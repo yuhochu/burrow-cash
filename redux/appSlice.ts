@@ -50,8 +50,7 @@ export interface AppState {
     months: number;
   };
   tableSorting: {
-    deposit: ITableSorting;
-    borrow: ITableSorting;
+    market: ITableSorting;
     portfolioDeposited: ITableSorting;
     portfolioBorrowed: ITableSorting;
   };
@@ -92,12 +91,8 @@ export const initialState: AppState = {
     months: 1,
   },
   tableSorting: {
-    deposit: {
-      property: "totalSupplyMoney",
-      order: "desc" as IOrder,
-    },
-    borrow: {
-      property: "borrowed",
+    market: {
+      property: "totalSupply",
       order: "desc" as IOrder,
     },
     portfolioDeposited: {

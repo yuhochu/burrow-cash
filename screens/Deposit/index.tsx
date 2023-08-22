@@ -31,7 +31,7 @@ const Deposit = () => {
         rows={rows}
         columns={columns}
         onRowClick={handleOnRowClick}
-        sorting={{ name: "deposit", ...sorting.deposit, setSorting }}
+        sorting={{ name: "deposit", ...sorting.market, setSorting }}
       />
     </Box>
   );
