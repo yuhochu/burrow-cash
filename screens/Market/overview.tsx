@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { toInternationalCurrencySystem_usd } from "../../utils/uiNumber";
+import { toInternationalCurrencySystem_usd, formatWithCommas_usd } from "../../utils/uiNumber";
 import { useProtocolNetLiquidity } from "../../hooks/useNetLiquidity";
 import { useRewards } from "../../hooks/useRewards";
 
@@ -32,7 +32,7 @@ function MarketsOverview() {
         </div>
         <div className="flex flex-col items-center col-span-1">
           <span className="text-sm text-gray-300">Daily Rewards</span>
-          <span className="text-white font-bold text-26px">${amount}</span>
+          <span className="text-white font-bold text-26px">{formatWithCommas_usd(amount)}</span>
         </div>
       </div>
     </div>
