@@ -78,8 +78,9 @@ body,
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1055;
-  display: none;
+  /*z-index: 1055;*/
+  /*display: none;*/
+  z-index:-99;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -87,8 +88,8 @@ body,
   outline: 0;
 }
 
-.modal.show {
-  display: block;
+.modal.show{
+  z-index: 1055;
 }
 
 .modal-dialog {
@@ -133,6 +134,7 @@ body,
 
 .modal.show .modal-dialog {
   transform: none;
+
 }
 
 .modal.modal-static .modal-dialog {
@@ -259,7 +261,7 @@ body,
 @media (min-width: 992px) {
   .modal-lg,
   .modal-xl {
-    max-width: 800px;
+    max-width: 850px;
   }
 }
 

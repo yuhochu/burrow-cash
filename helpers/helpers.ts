@@ -56,3 +56,40 @@ export const maskMiddleString = (
   const masked = hideSymbol.repeat(hideSymbolLength);
   return first + masked + last;
 };
+
+export const getDateString = (date) => {
+  const today = new Date(date);
+  const secNum = today.getSeconds();
+  const minNum = today.getMinutes();
+  const hourNum = today.getHours();
+  const ddNum = today.getDate();
+  const mmNum = today.getMonth() + 1; // January is 0!
+  const yyyy = today.getFullYear();
+
+  let dd = String(ddNum);
+  let mm = String(ddNum);
+  let hh = String(hourNum);
+  let min = String(minNum);
+  let sec = String(secNum);
+  if (ddNum < 10) {
+    dd = `0${dd}`;
+  }
+
+  if (mmNum < 10) {
+    mm = `0${mm}`;
+  }
+
+  if (hourNum < 10) {
+    hh = `0${hh}`;
+  }
+
+  if (minNum < 10) {
+    min = `0${min}`;
+  }
+
+  if (secNum < 10) {
+    sec = `0${sec}`;
+  }
+
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec}`;
+};

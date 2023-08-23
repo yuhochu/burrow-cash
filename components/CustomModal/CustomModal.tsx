@@ -29,7 +29,7 @@ const CustomModal = ({
   React.useEffect(() => {
     setTimeout(() => {
       setShow(isOpen);
-    }, 100);
+    }, 300);
   }, [isOpen]);
 
   if (!isOpen) {
@@ -42,7 +42,10 @@ const CustomModal = ({
   }
   return (
     <Portal>
-      <StyledWrapper className={twMerge("modal fade", show && "show")}>
+      <StyledWrapper
+        className={twMerge("modal fade", show && "show")}
+        style={show ? { display: "block" } : {}}
+      >
         <div className="overlay" onClick={onOutsideClick} />
         <div className={twMerge("modal-dialog background-paper", size && `modal-${size}`)}>
           <div className="modal-content" style={styles}>
@@ -59,6 +62,12 @@ const CustomModal = ({
 const StyledWrapper = styled.div`
   .custom-table {
     font-size: 14px;
+
+    .custom-table-thead {
+      .custom-table-th {
+        color: #c0c4e9;
+      }
+    }
   }
 `;
 

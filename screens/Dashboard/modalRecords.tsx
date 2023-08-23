@@ -7,7 +7,7 @@ import { useAccountId } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
-import { maskMiddleString } from "../../helpers/helpers";
+import { getDateString, maskMiddleString } from "../../helpers/helpers";
 
 const ModalRecords = ({ isOpen, onClose }) => {
   const accountId = useAccountId();
@@ -34,6 +34,7 @@ const ModalRecords = ({ isOpen, onClose }) => {
   const fetchData = async ({ page }) => {
     try {
       setIsLoading(true);
+      // return setDocs([]);
       const response = await Datasource.shared.getRecords(accountId, page, 10);
       const list = response?.record_list?.map((d) => {
         d.data = assets?.data[d.token_id];
@@ -55,7 +56,7 @@ const ModalRecords = ({ isOpen, onClose }) => {
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose}>
+    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose} size="lg">
       <CustomTable
         data={docs}
         columns={columns}
@@ -72,10 +73,21 @@ const columns = [
     header: "Assets",
     cell: ({ originalData }) => {
       const { data } = originalData || {};
+
       return (
         <div className="flex truncate">
-          <img src={data?.metadata?.icon} width={26} height={26} alt="token" className="mr-2" />
-          {data?.metadata?.name}
+          <div style={{ flex: "0 0 26px" }} className="mr-2">
+            {data?.metadata?.icon && (
+              <img
+                src={data?.metadata?.icon}
+                width={26}
+                height={26}
+                alt="token"
+                className="rounded-full"
+              />
+            )}
+          </div>
+          <div className="truncate">{data?.metadata?.name}</div>
         </div>
       );
     },
@@ -99,18 +111,16 @@ const columns = [
     header: "Time",
     cell: ({ originalData }) => {
       const { timestamp } = originalData || {};
-      return (
-        <div className="text-gray-300 truncate">{new Date(timestamp / 1000000).toString()}</div>
-      );
+      return <div className="text-gray-300 truncate">{getDateString(timestamp / 1000000)}</div>;
     },
   },
   {
-    header: "View in NEAR explorer",
+    header: () => <div className="text-right">View in NEAR explorer</div>,
     cell: ({ originalData }) => {
       const { tx_id } = originalData || {};
-      return <div className="text-gray-300">{maskMiddleString(tx_id, 4, 34)}</div>;
+      return <div className="text-gray-300 text-right">{maskMiddleString(tx_id, 4, 34)}</div>;
     },
-    size: 200,
+    size: 180,
   },
 ];
 

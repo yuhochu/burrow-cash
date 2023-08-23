@@ -4,7 +4,7 @@ import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import SupplyTokenSvg from "../../public/svg/Group 24791.svg";
-import { usePortfolioAssets } from "../../hooks/hooks";
+import { useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
@@ -21,6 +21,7 @@ import DataSource from "../../data/datasource";
 
 const Index = () => {
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
+  // const rows = useAvailableAssets();
 
   useEffect(() => {
     fetchData().then();
@@ -67,7 +68,13 @@ const yourSuppliedColumns = [
     cell: ({ originalData }) => {
       return (
         <div className="flex">
-          <img src={originalData?.icon} width={26} height={26} alt="token" />
+          <img
+            src={originalData?.icon}
+            width={26}
+            height={26}
+            alt="token"
+            className="rounded-full"
+          />
         </div>
       );
     },
@@ -119,7 +126,7 @@ const yourSuppliedColumns = [
 ];
 const YourSupplied = ({ suppliedRows }) => {
   return (
-    <ContentBox>
+    <ContentBox style={{ paddingBottom: 0 }}>
       <div className="flex items-center mb-4">
         <div className="absolute" style={{ left: 0, top: 0 }}>
           {assets.svg.suppliedBg}
@@ -145,12 +152,16 @@ const YourSupplied = ({ suppliedRows }) => {
 
 const StyledCustomTable = styled(CustomTable)`
   .custom-table-tbody {
-    margin: 0 -30px;
+    margin: -2px -30px 0;
 
     .custom-table-row {
       padding-left: 30px;
       padding-right: 30px;
       cursor: pointer;
+
+      &:last-child {
+        padding-bottom: 10px;
+      }
     }
   }
 `;
@@ -161,7 +172,13 @@ const yourBorrowedColumns = [
     cell: ({ originalData }) => {
       return (
         <div className="flex">
-          <img src={originalData?.icon} width={26} height={26} alt="token" />
+          <img
+            src={originalData?.icon}
+            width={26}
+            height={26}
+            alt="token"
+            className="rounded-full"
+          />
         </div>
       );
     },

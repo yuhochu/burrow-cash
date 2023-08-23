@@ -5,7 +5,7 @@ import CustomPagination from "./CustomPagination";
 
 type columnType = {
   id?: string;
-  header: string;
+  header: any;
   accessorKey?: string;
   cell?: any;
   size?: number;
@@ -74,7 +74,15 @@ const CustomTable = ({
     }
   };
 
-  const headers = columns?.map((d) => ({ text: d.header, size: d.size }));
+  const headers = columns?.map((d) => {
+    let text;
+    if (typeof d.header === "function") {
+      text = d.header();
+    } else {
+      text = d.header;
+    }
+    return { text, size: d.size };
+  });
   const headerNode = (
     <div className="custom-table-thead">
       <div className="custom-table-tr">
@@ -162,6 +170,8 @@ const StyledLoading = styled.div<{ active: boolean | undefined }>`
 
 const StyledTable = styled.div`
   width: 100%;
+  font-size: 14px;
+  font-weight: 400;
 
   .custom-table-tr {
     display: flex;
@@ -186,6 +196,8 @@ const StyledTable = styled.div`
   }
 
   .custom-table-tbody {
+    min-height: 80px;
+
     .custom-table-td {
       padding: 15px 5px;
     }
