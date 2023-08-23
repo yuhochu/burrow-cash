@@ -8,6 +8,7 @@ import {
   toInternationalCurrencySystem_usd,
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
+import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
 
 const TokenDetail = () => {
   const router = useRouter();
@@ -38,8 +39,29 @@ const TokenDetail = () => {
             </>
           )}
         </div>
-        <div className="">
-          <UserBox className="mb-7">hello</UserBox>
+        <div>
+          <UserBox className="mb-7">
+            <span className="text-lg text-white font-bold">Your Info</span>
+            <div className="flex items-center justify-between my-[25px]">
+              <span className="text-sm text-gray-300">Available to Supply</span>
+              <div className="flex items-center]">
+                <span className="text-sm text-white mr-2.5">123.23</span>
+                <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-300">Available to Borrow</span>
+              <div className="flex items-center]">
+                <span className="text-sm text-white mr-2.5">123.23</span>
+                <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+              </div>
+            </div>
+            <div className="flex items-center gap-2 mt-[35px]">
+              <YellowSolidButton className="w-1 flex-grow">Supply</YellowSolidButton>
+              <RedSolidButton className="w-1 flex-grow">Borrow</RedSolidButton>
+              {/* <RedLineButton className="w-1 flex-grow">Borrow</RedLineButton> */}
+            </div>
+          </UserBox>
           <UserBox className="mb-2.5">hello</UserBox>
           <UserBox>hello</UserBox>
         </div>
