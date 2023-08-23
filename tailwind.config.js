@@ -6,6 +6,9 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontSize: {
+      "26px": "26px",
+    },
     screens: {
       xs: { min: "400px", max: "639px" },
       sm: { min: "640px", max: "767px" },
@@ -65,6 +68,7 @@ module.exports = {
       height: {
         "60px": "60px",
         "26px": "26px",
+        "100px": "100px",
       },
       width: {
         "26px": "26px",
