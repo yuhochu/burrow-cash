@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
 import { useAccountId, useAvailableAssets } from "../../hooks/hooks";
 import { useTableSorting } from "../../hooks/useTableSorting";
+import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 
 const Market = () => {
   const dispatch = useAppDispatch();
@@ -13,14 +14,14 @@ const Market = () => {
     dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
   };
   return (
-    <div className="flex flex-col items-center justify-center mx-auto min-w-800px xl:max-w-1200px">
+    <LayoutBox className="flex flex-col items-center justify-center">
       <MarketsOverview />
       <MarketsTable
         rows={rows}
         onRowClick={handleOnRowClick}
         sorting={{ name: "market", ...sorting.market, setSorting }}
       />
-    </div>
+    </LayoutBox>
   );
 };
 

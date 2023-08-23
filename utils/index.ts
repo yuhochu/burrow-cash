@@ -3,6 +3,7 @@ import BN from "bn.js";
 import Decimal from "decimal.js";
 
 import { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+import { nearMetadata, wooMetadata } from "../components/Assets";
 
 import {
   ChangeMethodsLogic,
@@ -14,6 +15,7 @@ import { IBurrow, IConfig } from "../interfaces/burrow";
 import { getContract } from "../store";
 
 import { getWalletSelector, getAccount, functionCall } from "./wallet-selector-compat";
+import { UIAsset } from "../interfaces";
 
 export const getViewAs = () => {
   const url = new URL(window.location.href.replace("/#", ""));
@@ -211,4 +213,14 @@ export function decimalMin(a: string | number | Decimal, b: string | number | De
   a = new Decimal(a);
   b = new Decimal(b);
   return a.lt(b) ? a : b;
+}
+export function standardizeAsset(asset: UIAsset) {
+  if (asset.symbol === "wNEAR") {
+    asset.symbol = nearMetadata.symbol;
+    asset.icon = nearMetadata.icon;
+  }
+  if (asset.symbol === "WOO") {
+    asset.icon = wooMetadata.icon;
+  }
+  return asset;
 }

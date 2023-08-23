@@ -6,6 +6,8 @@ import { getConfig, getSlimStats, getDegenMode, getTheme } from "../redux/appSel
 import { setRepayFrom, toggleDegenMode, setTheme } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
+import { UIAsset } from "../interfaces";
+import { useDepositAPY } from "./useDepositAPY";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -45,7 +47,17 @@ export function useNonFarmedAssets() {
 }
 
 export function useAvailableAssets(type?: "supply" | "borrow" | "") {
-  return useAppSelector(getAvailableAssets(type));
+  const rows = useAppSelector(getAvailableAssets(type));
+  rows.map((row: UIAsset) => {
+    const depositAPY = useDepositAPY({
+      baseAPY: row.supplyApy,
+      rewardList: row.depositRewards,
+      tokenId: row.tokenId,
+    });
+    row.depositApy = depositAPY;
+    return row;
+  });
+  return rows;
 }
 
 export function usePortfolioAssets() {

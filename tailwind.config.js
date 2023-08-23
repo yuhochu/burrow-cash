@@ -6,9 +6,6 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    fontSize: {
-      "26px": "26px",
-    },
     screens: {
       xs: { min: "400px", max: "639px" },
       sm: { min: "640px", max: "767px" },
@@ -28,7 +25,9 @@ module.exports = {
     boxShadow: {},
     extend: {
       backgroundImage: () => ({}),
-      gridTemplateColumns: {},
+      gridTemplateColumns: {
+        "3/5": "65% 35%",
+      },
       gridTemplateRows: {},
       fontSize: {
         h1: "90px",
@@ -57,21 +56,6 @@ module.exports = {
           800: "#23253A",
           900: "#0f101c",
         },
-      },
-      minWidth: {
-        "800px": "800px",
-      },
-      maxWidth: {
-        "1000px": "1000px",
-        "1200px": "1200px",
-      },
-      height: {
-        "60px": "60px",
-        "26px": "26px",
-        "100px": "100px",
-      },
-      width: {
-        "26px": "26px",
       },
     },
     plugins: [],

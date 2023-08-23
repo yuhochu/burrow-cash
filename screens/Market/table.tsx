@@ -1,12 +1,12 @@
+import Link from "next/link";
 import { TableProps } from "../../components/Table";
-import { ArrowDownIcon, ArrowUpIcon, nearMetadata, wooMetadata } from "./svg";
+import { ArrowDownIcon, ArrowUpIcon } from "./svg";
 import type { UIAsset } from "../../interfaces";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
   format_apy,
 } from "../../utils/uiNumber";
-import { useDepositAPY } from "../../hooks/useDepositAPY";
 
 function MarketsTable({ rows, onRowClick, sorting }: TableProps) {
   return (
@@ -102,81 +102,68 @@ function TableBody({ rows, onRowClick, sorting }: TableProps) {
   return (
     <>
       {rows.sort(comparator).map((row: UIAsset, index: number) => {
-        const { supplyApy, depositRewards, tokenId } = row;
-        const depositAPY = useDepositAPY({
-          baseAPY: supplyApy,
-          rewardList: depositRewards,
-          tokenId,
-        });
-        row.depositApy = depositAPY;
-        if (row.symbol === "wNEAR") {
-          row.symbol = nearMetadata.symbol;
-          row.icon = nearMetadata.icon;
-        }
-        if (row.symbol === "WOO") {
-          row.icon = wooMetadata.icon;
-        }
         return (
-          <div
-            key={row.tokenId}
-            className={`grid grid-cols-6 bg-gray-800 hover:bg-dark-100 cursor-pointer mt-0.5 h-60px ${
-              index === rows.length - 1 ? "rounded-b-md" : ""
-            }`}
-          >
-            <div className="col-span-1 flex items-center justify-self-start pl-5">
-              <img src={row.icon} alt="" className="h-26px w-26px rounded-full" />
-              <div className="flex flex-col items-start ml-3">
-                <span className="text-sm text-white">{row.symbol}</span>
-                <span className="text-xs text-gray-300">${row.price}</span>
+          <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
+            <div
+              className={`grid grid-cols-6 bg-gray-800 hover:bg-dark-100 cursor-pointer mt-0.5 h-[60px] ${
+                index === rows.length - 1 ? "rounded-b-md" : ""
+              }`}
+            >
+              <div className="col-span-1 flex items-center justify-self-start pl-5">
+                <img src={row.icon} alt="" className="h-[26px] h-[26px] rounded-full" />
+                <div className="flex flex-col items-start ml-3">
+                  <span className="text-sm text-white">{row.symbol}</span>
+                  <span className="text-xs text-gray-300">${row.price}</span>
+                </div>
+              </div>
+              <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+                {row.can_deposit ? (
+                  <>
+                    <span className="text-sm text-white">
+                      {toInternationalCurrencySystem_number(row.totalSupply)}
+                    </span>
+                    <span className="text-xs text-gray-300">
+                      {toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
+                    </span>
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </div>
+              <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+                <span className="text-sm text-white">
+                  {row.can_deposit ? format_apy(row.depositApy || "") : "-"}
+                </span>
+              </div>
+              <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+                {row.can_borrow ? (
+                  <>
+                    <span className="text-sm text-white">
+                      {toInternationalCurrencySystem_number(row.totalBorrowed)}
+                    </span>
+                    <span className="text-xs text-gray-300">
+                      {toInternationalCurrencySystem_usd(row.totalBorrowedMoney)}
+                    </span>
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </div>
+              <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+                <span className="text-sm text-white">
+                  {row.can_borrow ? format_apy(row.borrowApy) : "-"}
+                </span>
+              </div>
+              <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+                <span className="text-sm text-white">
+                  {toInternationalCurrencySystem_number(row.availableLiquidity)}
+                </span>
+                <span className="text-xs text-gray-300">
+                  {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
+                </span>
               </div>
             </div>
-            <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-              {row.can_deposit ? (
-                <>
-                  <span className="text-sm text-white">
-                    {toInternationalCurrencySystem_number(row.totalSupply)}
-                  </span>
-                  <span className="text-xs text-gray-300">
-                    {toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
-                  </span>
-                </>
-              ) : (
-                <>-</>
-              )}
-            </div>
-            <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-              <span className="text-sm text-white">
-                {row.can_deposit ? format_apy(depositAPY) : "-"}
-              </span>
-            </div>
-            <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-              {row.can_borrow ? (
-                <>
-                  <span className="text-sm text-white">
-                    {toInternationalCurrencySystem_number(row.totalBorrowed)}
-                  </span>
-                  <span className="text-xs text-gray-300">
-                    {toInternationalCurrencySystem_usd(row.totalBorrowedMoney)}
-                  </span>
-                </>
-              ) : (
-                <>-</>
-              )}
-            </div>
-            <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-              <span className="text-sm text-white">
-                {row.can_borrow ? format_apy(row.borrowApy) : "-"}
-              </span>
-            </div>
-            <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-              <span className="text-sm text-white">
-                {toInternationalCurrencySystem_number(row.availableLiquidity)}
-              </span>
-              <span className="text-xs text-gray-300">
-                {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
-              </span>
-            </div>
-          </div>
+          </Link>
         );
       })}
     </>

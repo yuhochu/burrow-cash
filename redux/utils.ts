@@ -7,6 +7,7 @@ import type { AccountState } from "./accountState";
 import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";
 import { BRRR_TOKEN, defaultNetwork } from "../utils/config";
+import { standardizeAsset } from "../utils";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
 
@@ -112,7 +113,7 @@ export const transformAsset = (
       extraDecimals: asset.config.extra_decimals,
     };
   }
-  return {
+  return standardizeAsset({
     tokenId,
     ...pick(["icon", "symbol", "name"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
@@ -146,7 +147,7 @@ export const transformAsset = (
     borrowRewards: getRewards("borrowed", asset, assets),
     can_borrow: asset.config.can_borrow,
     can_deposit: asset.config.can_deposit,
-  };
+  });
 };
 
 export const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {
