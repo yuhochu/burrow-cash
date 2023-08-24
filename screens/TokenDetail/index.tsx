@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 import { ArrowLeft } from "./svg";
 import { useAccountId, useAvailableAssets } from "../../hooks/hooks";
+import { useDepositAPY } from "../../hooks/useDepositAPY";
 import {
   toInternationalCurrencySystem_number,
   format_apy,
@@ -17,6 +18,13 @@ const TokenDetail = () => {
   const tokenRow = rows.find((row: UIAsset) => {
     return row.tokenId === id;
   });
+  if (!tokenRow) return null;
+  const depositAPY = useDepositAPY({
+    baseAPY: tokenRow?.supplyApy,
+    rewardList: tokenRow?.depositRewards,
+    tokenId: tokenRow?.tokenId,
+  });
+  tokenRow.depositApy = depositAPY;
   return (
     <LayoutBox>
       <div

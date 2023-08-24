@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TableProps } from "../../components/Table";
 import { ArrowDownIcon, ArrowUpIcon } from "./svg";
 import type { UIAsset } from "../../interfaces";
+import { useDepositAPY } from "../../hooks/useDepositAPY";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
@@ -81,6 +82,7 @@ function TableHead({ sorting }) {
   );
 }
 function TableBody({ rows, onRowClick, sorting }: TableProps) {
+  if (!rows?.length) return null;
   const { property, order } = sorting;
   function comparator(b: UIAsset, a: UIAsset) {
     let a_comparator_value = a[property];
@@ -102,6 +104,12 @@ function TableBody({ rows, onRowClick, sorting }: TableProps) {
   return (
     <>
       {rows.sort(comparator).map((row: UIAsset, index: number) => {
+        const depositAPY = useDepositAPY({
+          baseAPY: row.supplyApy,
+          rewardList: row.depositRewards,
+          tokenId: row.tokenId,
+        });
+        row.depositApy = depositAPY;
         return (
           <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
             <div
