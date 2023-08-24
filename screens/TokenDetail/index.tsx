@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 import { ArrowLeft } from "./svg";
 import { useAccountId, useAvailableAssets } from "../../hooks/hooks";
-import { useDepositAPY } from "../../hooks/useDepositAPY";
 import {
   toInternationalCurrencySystem_number,
   format_apy,
@@ -10,6 +9,7 @@ import {
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
+import { useDepositAPY } from "../../hooks/useDepositAPY";
 
 const TokenDetail = () => {
   const router = useRouter();
@@ -19,12 +19,15 @@ const TokenDetail = () => {
     return row.tokenId === id;
   });
   if (!tokenRow) return null;
+  return <TokenDetailView tokenRow={tokenRow} />;
+};
+function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
+  const router = useRouter();
   const depositAPY = useDepositAPY({
-    baseAPY: tokenRow?.supplyApy,
-    rewardList: tokenRow?.depositRewards,
-    tokenId: tokenRow?.tokenId,
+    baseAPY: tokenRow.supplyApy,
+    rewardList: tokenRow.depositRewards,
+    tokenId: tokenRow.tokenId,
   });
-  tokenRow.depositApy = depositAPY;
   return (
     <LayoutBox>
       <div
@@ -38,9 +41,9 @@ const TokenDetail = () => {
       </div>
       <div className="grid grid-cols-3/5 gap-x-6">
         <div>
-          <TokenOverview tokenRow={tokenRow} />
-          <TokenSupplyChart tokenRow={tokenRow} />
-          {tokenRow?.can_borrow && (
+          <TokenOverview tokenRow={tokenRow} depositAPY={depositAPY} />
+          <TokenSupplyChart tokenRow={tokenRow} depositAPY={depositAPY} />
+          {tokenRow.can_borrow && (
             <>
               <TokenBorrowChart tokenRow={tokenRow} />
               <TokenRateModeChart tokenRow={tokenRow} />
@@ -76,8 +79,8 @@ const TokenDetail = () => {
       </div>
     </LayoutBox>
   );
-};
-function TokenOverview({ tokenRow }: { tokenRow: UIAsset | undefined }) {
+}
+function TokenOverview({ tokenRow, depositAPY }: { tokenRow: UIAsset; depositAPY: any }) {
   return (
     <Box className="mb-7 pr-20">
       <div className="flex items-center">
@@ -92,7 +95,7 @@ function TokenOverview({ tokenRow }: { tokenRow: UIAsset | undefined }) {
               {format_number(tokenRow?.totalSupply)}
             </span>
             <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apy(tokenRow?.depositApy)}
+              /{format_apy(depositAPY)}
             </span>
           </div>
         </div>
@@ -141,7 +144,7 @@ function TokenOverview({ tokenRow }: { tokenRow: UIAsset | undefined }) {
     </Box>
   );
 }
-function TokenSupplyChart({ tokenRow }: { tokenRow: UIAsset | undefined }) {
+function TokenSupplyChart({ tokenRow, depositAPY }: { tokenRow: UIAsset; depositAPY: any }) {
   return (
     <Box className="mb-1.5">
       <div className="font-bold text-lg text-white mb-5">Supply Info</div>
@@ -159,7 +162,7 @@ function TokenSupplyChart({ tokenRow }: { tokenRow: UIAsset | undefined }) {
         </div>
         <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{format_apy(tokenRow?.depositApy)}</span>
+          <span className="font-bold text-lg text-white">{format_apy(depositAPY)}</span>
         </div>
       </div>
       <div className="flex items-center justify-center h-[300px]">

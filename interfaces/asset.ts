@@ -178,5 +178,4 @@ export interface UIAsset {
   borrowRewards: IReward[];
   can_borrow: boolean;
   can_deposit: boolean;
-  depositApy?: number;
 }
