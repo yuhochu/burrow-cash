@@ -84,7 +84,7 @@ function TokenOverview({ tokenRow }: { tokenRow: UIAsset | undefined }) {
               {format_number(tokenRow?.totalSupply)}
             </span>
             <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apr(tokenRow?.depositApy)}
+              /{format_apy(tokenRow?.depositApy)}
             </span>
           </div>
         </div>
@@ -95,7 +95,7 @@ function TokenOverview({ tokenRow }: { tokenRow: UIAsset | undefined }) {
               {format_number(!tokenRow?.can_borrow ? "" : tokenRow?.totalBorrowed)}
             </span>
             <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apr(!tokenRow?.can_borrow ? "" : tokenRow?.borrowApy)}
+              /{format_apy(!tokenRow?.can_borrow ? "" : tokenRow?.borrowApy)}
             </span>
           </div>
         </div>
@@ -151,7 +151,7 @@ function TokenSupplyChart({ tokenRow }: { tokenRow: UIAsset | undefined }) {
         </div>
         <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{format_apr(tokenRow?.depositApy)}</span>
+          <span className="font-bold text-lg text-white">{format_apy(tokenRow?.depositApy)}</span>
         </div>
       </div>
       <div className="flex items-center justify-center h-[300px]">
@@ -178,7 +178,7 @@ function TokenBorrowChart({ tokenRow }: { tokenRow: UIAsset | undefined }) {
         </div>
         <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{format_apr(tokenRow?.borrowApy)}</span>
+          <span className="font-bold text-lg text-white">{format_apy(tokenRow?.borrowApy)}</span>
         </div>
       </div>
       <div className="flex items-center justify-center h-[300px]">
@@ -228,11 +228,5 @@ function format_usd(p) {
     return toInternationalCurrencySystem_usd(p);
   }
   return "$-";
-}
-function format_apr(apy) {
-  if (apy) {
-    return format_apy(apy);
-  }
-  return "-%";
 }
 export default TokenDetail;

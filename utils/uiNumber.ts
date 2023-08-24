@@ -1,7 +1,8 @@
 import Decimal from "decimal.js";
 import { formatWithCommas, toInternationalCurrencySystem } from "./number";
 
-export const formatWithCommas_usd = (v: string | number) => {
+export const formatWithCommas_usd = (v) => {
+  if (isInvalid(v)) return "$-";
   const decimal = new Decimal(v);
   if (decimal.eq(0)) {
     return "$0";
@@ -14,7 +15,8 @@ export const formatWithCommas_usd = (v: string | number) => {
   }
 };
 
-export const toInternationalCurrencySystem_number = (v: string | number) => {
+export const toInternationalCurrencySystem_number = (v) => {
+  if (isInvalid(v)) return "-";
   const decimal = new Decimal(v);
   if (decimal.eq(0)) {
     return "0";
@@ -24,7 +26,8 @@ export const toInternationalCurrencySystem_number = (v: string | number) => {
     return toInternationalCurrencySystem(decimal.toFixed());
   }
 };
-export const toInternationalCurrencySystem_usd = (v: string | number) => {
+export const toInternationalCurrencySystem_usd = (v) => {
+  if (isInvalid(v)) return "$-";
   const decimal = new Decimal(v);
   if (decimal.eq(0)) {
     return "$0";
@@ -35,7 +38,8 @@ export const toInternationalCurrencySystem_usd = (v: string | number) => {
   }
 };
 
-export const format_apy = (v: string | number) => {
+export const format_apy = (v) => {
+  if (isInvalid(v)) return "-%";
   const decimal = new Decimal(v);
   if (decimal.eq(0)) {
     return "0%";
@@ -44,4 +48,9 @@ export const format_apy = (v: string | number) => {
   } else {
     return `${decimal.toFixed(2, Decimal.ROUND_HALF_UP)}%`;
   }
+};
+
+export const isInvalid = function (v) {
+  if (v === "" || v === undefined || v == null) return true;
+  return false;
 };
