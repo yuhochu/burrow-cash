@@ -97,3 +97,17 @@ export const getAssetData = createSelector(
     };
   },
 );
+
+export const getAssetDataByTokenId = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.app,
+    (state: RootState) => state.assets.data,
+    (state: RootState) => state.account,
+    (app, assets, account) => {
+      const asset = assets[tokenId];
+      return {
+        tokenId: asset?.token_id,
+        ...(asset ? transformAsset(asset, account, assets, app) : {}),
+      };
+    },
+  );

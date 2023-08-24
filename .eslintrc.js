@@ -61,6 +61,7 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": "off",
     "no-else-return": "off",
     "no-empty": "off",
+    "react/jsx-no-bind": "off",
   },
   settings: {
     react: {

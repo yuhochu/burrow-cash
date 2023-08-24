@@ -64,7 +64,7 @@ export const getModalData = (asset): UIAsset & Props => {
 
   const getAvailableWithdrawOrAdjust = Number((supplied + collateral).toFixed(PERCENT_DIGITS));
 
-  const isWrappedNear = symbol === "wNEAR";
+  const isWrappedNear = symbol === "NEAR";
 
   switch (action) {
     case "Supply":

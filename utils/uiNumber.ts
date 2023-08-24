@@ -14,6 +14,17 @@ export const formatWithCommas_usd = (v) => {
     return `$${formatWithCommas(decimal.toFixed(0, Decimal.ROUND_HALF_UP))}`;
   }
 };
+export const formatWithCommas_number = (v) => {
+  if (isInvalid(v)) return "-";
+  const decimal = new Decimal(v);
+  if (decimal.eq(0)) {
+    return "0";
+  } else if (decimal.lt(0.01)) {
+    return "<0.01";
+  } else {
+    return `${formatWithCommas(decimal.toFixed(2, Decimal.ROUND_HALF_UP))}`;
+  }
+};
 
 export const toInternationalCurrencySystem_number = (v) => {
   if (isInvalid(v)) return "-";

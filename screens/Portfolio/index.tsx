@@ -11,7 +11,6 @@ const Portfolio = () => {
   const { sorting, setSorting } = useTableSorting();
   const accountId = useAccountId();
   const theme = useTheme();
-
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
       {!accountId && <OnboardingBRRR />}
