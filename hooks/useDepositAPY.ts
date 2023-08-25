@@ -30,14 +30,16 @@ export function useDepositAPY({
   const boostedAPY = baseAPY + marketsNetLiquidityAPY * netTvlMultiplier + sign * apy;
   return boostedAPY;
 }
-export function useUserDepositAPY({
+export function useUserPortfolioAPY({
   baseAPY,
   tokenId,
   rewardList,
+  page,
 }: {
   baseAPY: number;
   tokenId: string;
   rewardList?: IReward[];
+  page?: string;
 }) {
   const { computeRewardAPY, netLiquidityAPY, netTvlMultiplier } = useExtraAPY({
     tokenId,
@@ -53,9 +55,9 @@ export function useUserDepositAPY({
 
     return acc + apy;
   }, 0);
-
-  const sign = 1;
+  const isBorrow = page === "borrow";
+  const sign = isBorrow ? -1 : 1;
   const apy = extraAPY || 0;
-  const boostedAPY = baseAPY + netLiquidityAPY * netTvlMultiplier + sign * apy;
+  const boostedAPY = baseAPY + (isBorrow ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
   return boostedAPY;
 }

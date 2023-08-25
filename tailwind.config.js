@@ -24,7 +24,10 @@ module.exports = {
     },
     boxShadow: {},
     extend: {
-      backgroundImage: () => ({}),
+      backgroundImage: () => ({
+        linear_gradient_yellow:
+          "linear-gradient(123.3deg, #D2FF3A 45.55%, rgba(210, 255, 58, 0) 81.79%)",
+      }),
       gridTemplateColumns: {
         "3/5": "65% 35%",
       },

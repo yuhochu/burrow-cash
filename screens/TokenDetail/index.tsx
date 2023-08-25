@@ -1,7 +1,15 @@
 import { useRouter } from "next/router";
 import Decimal from "decimal.js";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
-import { ArrowLeft } from "./svg";
+import {
+  ArrowLeft,
+  SuppliedEmptyIcon,
+  BorrowedEmptyIcon,
+  REFIcon,
+  CucoinIcon,
+  BinanceIcon,
+  RainbowIcon,
+} from "./svg";
 import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import {
   toInternationalCurrencySystem_number,
@@ -12,13 +20,12 @@ import {
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
-import { useDepositAPY, useUserDepositAPY } from "../../hooks/useDepositAPY";
-import { getAssetDataByTokenId } from "../../redux/appSelectors";
+import { useDepositAPY, useUserPortfolioAPY } from "../../hooks/useDepositAPY";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { useUserBalance } from "../../hooks/useUserBalance";
-import { NEAR_STORAGE_DEPOSIT } from "../../store";
 import { showModal } from "../../redux/appSlice";
 import { shrinkToken } from "../../store/helper";
+import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
 
 const TokenDetail = () => {
   const router = useRouter();
@@ -69,7 +76,8 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         <div>
           <TokenUserInfo tokenRow={tokenRow} />
           <YouSupplied tokenRow={tokenRow} supplied={supplied} />
-          <UserBox>hello</UserBox>
+          {tokenRow.can_borrow && <YouBorrowed tokenRow={tokenRow} borrowed={borrowed} />}
+          <OuterLink />
         </div>
       </div>
     </LayoutBox>
@@ -271,7 +279,10 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
   );
 }
 function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any }) {
-  const userDepositAPY = useUserDepositAPY({
+  const { tokenId } = tokenRow;
+  const dispatch = useAppDispatch();
+  const amount = useAppSelector(getCollateralAmount(tokenId));
+  const userDepositAPY = useUserPortfolioAPY({
     baseAPY: tokenRow.supplyApy,
     rewardList: tokenRow.depositRewards,
     tokenId: tokenRow.tokenId,
@@ -300,44 +311,182 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
   ) : (
     "-"
   );
-  // console.log('999999999-supplied', supplied);
+  function handleWithdrawClick() {
+    dispatch(showModal({ action: "Withdraw", tokenId, amount: 0 }));
+  }
+  function handleAdjustClick() {
+    dispatch(showModal({ action: "Adjust", tokenId, amount }));
+  }
+  const withdraw_disabled = !supplied || !supplied?.canWithdraw;
+  const adjust_disabled = !supplied?.canUseAsCollateral;
+  const is_empty = !supplied;
   return (
-    <UserBox className="mb-2.5">
-      <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
-        <span className="text-lg text-white font-bold">You Supplied</span>
-        <div className="flex flex-col items-end">
-          <span className="text-lg text-white font-bold">
-            {formatWithCommas_number(supplied?.supplied)}
-          </span>
-          <span className="text-xs text-gray-300">
-            {supplied
-              ? formatWithCommas_usd(
-                  new Decimal(supplied?.supplied || 0).mul(supplied?.price || 0).toFixed(),
-                )
-              : "-"}
-          </span>
-        </div>
-      </div>
-      <Label title="APY" content={format_apy(userDepositAPY)} />
-      <Label title="Rewards" content={RewardsReactNode} />
-      <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />
-      <div className="flex items-center justify-between gap-2 mt-[35px]">
-        <YellowLineButton
-          // disabled={!+supplyBalance}
-          className="w-1 flex-grow"
-          // onClick={handleSupplyClick}
-        >
-          Withdraw
-        </YellowLineButton>
-        <YellowSolidButton
-          // disabled={!+borrowBalance}
-          className="w-1 flex-grow"
-          // onClick={handleBorrowClick}
-        >
-          Adjust
-        </YellowSolidButton>
-      </div>
-    </UserBox>
+    <div>
+      {is_empty ? (
+        // bg-linear_gradient_yellow
+        <UserBox className="mb-2.5">
+          <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
+            <span className="text-lg text-white font-bold">You Supplied</span>
+          </div>
+          <div className="flex items-center justify-center py-5">
+            <SuppliedEmptyIcon />
+          </div>
+          <div className="flex items-center justify-center text-base text-gray-300 mb-4">
+            Your suppling will appear here
+          </div>
+        </UserBox>
+      ) : (
+        <UserBox className="mb-2.5">
+          <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
+            <span className="text-lg text-white font-bold">You Supplied</span>
+            <div className="flex flex-col items-end">
+              <span className="text-lg text-white font-bold">
+                {formatWithCommas_number(supplied?.supplied)}
+              </span>
+              <span className="text-xs text-gray-300">
+                {supplied
+                  ? formatWithCommas_usd(
+                      new Decimal(supplied?.supplied || 0).mul(supplied?.price || 0).toFixed(),
+                    )
+                  : "$-"}
+              </span>
+            </div>
+          </div>
+          <Label title="APY" content={format_apy(userDepositAPY)} />
+          <Label title="Rewards" content={RewardsReactNode} />
+          <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />
+          <div className="flex items-center justify-between gap-2 mt-[35px]">
+            <YellowLineButton
+              disabled={withdraw_disabled}
+              className="w-1 flex-grow"
+              onClick={handleWithdrawClick}
+            >
+              Withdraw
+            </YellowLineButton>
+            <YellowSolidButton
+              disabled={adjust_disabled}
+              className="w-1 flex-grow"
+              onClick={handleAdjustClick}
+            >
+              Adjust
+            </YellowSolidButton>
+          </div>
+        </UserBox>
+      )}
+    </div>
+  );
+}
+function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any }) {
+  const { tokenId } = tokenRow;
+  const dispatch = useAppDispatch();
+  const userDepositAPY = useUserPortfolioAPY({
+    baseAPY: tokenRow.borrowApy,
+    rewardList: tokenRow.borrowRewards,
+    tokenId: tokenRow.tokenId,
+    page: "borrow",
+  });
+  const [icons, totalDailyRewardsMoney] = borrowed?.rewards?.reduce(
+    (acc, cur) => {
+      const { rewards, metadata, config } = cur;
+      const { icon, decimals } = metadata;
+      const dailyRewards = Number(
+        shrinkToken(rewards.reward_per_day || 0, decimals + config.extra_decimals),
+      );
+      const price = borrowed.price || 0;
+      acc[1] = new Decimal(acc[1]).plus(dailyRewards * price).toNumber();
+      acc[0].push(icon);
+      return acc;
+    },
+    [[], 0],
+  ) || [[], 0];
+  const RewardsReactNode = borrowed?.rewards?.length ? (
+    <div className="flex items-center">
+      {icons.map((icon, index) => {
+        return <img key={index} src={icon} className="w-4 h-4 rounded-full -ml-0.5" alt="" />;
+      })}
+      <span className="ml-2">{formatWithCommas_usd(totalDailyRewardsMoney)}</span>
+    </div>
+  ) : (
+    "-"
+  );
+  function handleRepayClick() {
+    dispatch(showModal({ action: "Repay", tokenId, amount: 0 }));
+  }
+  const is_empty = !borrowed;
+  return (
+    <div>
+      {is_empty ? (
+        // bg-linear_gradient_yellow
+        <UserBox className="mb-2.5">
+          <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
+            <span className="text-lg text-white font-bold">You Borrowed</span>
+          </div>
+          <div className="flex items-center justify-center py-5">
+            <BorrowedEmptyIcon />
+          </div>
+          <div className="flex items-center justify-center text-base text-gray-300 mb-4">
+            Your borrowing will appear here
+          </div>
+        </UserBox>
+      ) : (
+        <UserBox className="mb-2.5">
+          <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
+            <span className="text-lg text-white font-bold">You Borrowed</span>
+            <div className="flex flex-col items-end">
+              <span className="text-lg text-white font-bold">
+                {formatWithCommas_number(borrowed?.borrowed)}
+              </span>
+              <span className="text-xs text-gray-300">
+                {borrowed
+                  ? formatWithCommas_usd(
+                      new Decimal(borrowed?.borrowed || 0).mul(borrowed?.price || 0).toFixed(),
+                    )
+                  : "-"}
+              </span>
+            </div>
+          </div>
+          <Label title="APY" content={format_apy(userDepositAPY)} />
+          <Label title="Rewards" content={RewardsReactNode} />
+          <div className="flex items-center justify-between gap-2 mt-[35px]">
+            <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
+              Repay
+            </RedLineButton>
+          </div>
+        </UserBox>
+      )}
+    </div>
+  );
+}
+function OuterLink() {
+  return (
+    <div className="mt-7">
+      <LabelOuterLink
+        title="Acquire token from"
+        content={
+          <REFIcon
+            className="opacity-60 hover:opacity-100"
+            onClick={() => {
+              window.open("https://app.ref.finance/");
+            }}
+          />
+        }
+      />
+      <LabelOuterLink
+        title="Deposit from"
+        content={<REFIcon className="opacity-60 hover:opacity-100" />}
+      />
+      <LabelOuterLink
+        title="Bridge in"
+        content={
+          <RainbowIcon
+            className="opacity-60 hover:opacity-100"
+            onClick={() => {
+              window.open("https://rainbowbridge.app/");
+            }}
+          />
+        }
+      />
+    </div>
   );
 }
 function Box({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -365,6 +514,18 @@ function Label({ title, content }: { title: string; content: string | React.Reac
     <div className="flex items-center justify-between mt-4">
       <span className="text-sm text-gray-300">{title}</span>
       <div className="flex items-center text-sm text-white">{content}</div>
+    </div>
+  );
+}
+function LabelOuterLink({ title, content }: { title: string; content: string | React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between mb-5">
+      <span className="text-sm text-gray-300">{title}</span>
+      <div className="flex items-center gap-2.5">
+        <span className="flex items-center h-[22px] px-2.5 rounded-md bg-gray-300 bg-opacity-20 hover:bg-opacity-30 cursor-pointer">
+          {content}
+        </span>
+      </div>
     </div>
   );
 }
