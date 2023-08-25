@@ -36,6 +36,8 @@ let fetchDataCached;
 let hideModalCached;
 let signOutCached;
 
+export const nearNativeTokens = ["wrap.near", "wrap.testnet"];
+
 const nearTokenIds = {
   mainnet: "wrap.near",
   testnet: "wrap.testnet",

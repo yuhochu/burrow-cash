@@ -86,13 +86,14 @@ const CustomTable = ({
   const headerNode = (
     <div className="custom-table-thead">
       <div className="custom-table-tr">
-        {headers?.map((d) => {
+        {headers?.map((d, i) => {
           const styles: { flex?: string } = {};
           if (d.size) {
             styles.flex = `0 0 ${d.size}px`;
           }
+          const keyId = typeof d.text === "string" ? d.text : i;
           return (
-            <div key={d.text} className="custom-table-th text-gray-400" style={styles}>
+            <div key={keyId} className="custom-table-th text-gray-400" style={styles}>
               {d.text}
             </div>
           );

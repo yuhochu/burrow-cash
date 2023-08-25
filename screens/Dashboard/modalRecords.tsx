@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BeatLoader } from "react-spinners";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import Datasource from "../../data/datasource";
@@ -8,6 +7,7 @@ import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
+import { nearNativeTokens, nearTokenId } from "../../utils";
 
 const ModalRecords = ({ isOpen, onClose }) => {
   const accountId = useAccountId();
@@ -37,7 +37,11 @@ const ModalRecords = ({ isOpen, onClose }) => {
       // return setDocs([]);
       const response = await Datasource.shared.getRecords(accountId, page, 10);
       const list = response?.record_list?.map((d) => {
-        d.data = assets?.data[d.token_id];
+        let tokenId = d.token_id;
+        if (nearNativeTokens.includes(tokenId)) {
+          tokenId = nearTokenId;
+        }
+        d.data = assets?.data[tokenId];
         return d;
       });
       setDocs(list);

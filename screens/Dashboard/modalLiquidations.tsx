@@ -7,6 +7,7 @@ import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
+import { nearNativeTokens, nearTokenId } from "../../utils";
 
 const ModalLiquidations = ({ isOpen, onClose }) => {
   const accountId = useAccountId();
@@ -35,14 +36,13 @@ const ModalLiquidations = ({ isOpen, onClose }) => {
       setIsLoading(true);
       // return setDocs([]);
       const response = await Datasource.shared.getLiquidations(accountId, page, 10);
-      const testnetToken = ["wrap.near", "meta-pool.near"];
+      const nearTokens = [...nearNativeTokens, "meta-pool.near"];
       const list = response?.record_list?.map((d) => {
         d.RepaidAssets?.forEach((a) => {
           const tokenId = a.token_id;
           let asset = assets?.data?.[tokenId];
-          if (!asset && testnetToken.includes(tokenId)) {
-            const tempName = "wrap.testnet";
-            asset = assets?.data?.[tempName];
+          if (!asset && nearTokens.includes(tokenId)) {
+            asset = assets?.data?.[nearTokenId];
           }
           a.data = asset;
         });
@@ -50,9 +50,8 @@ const ModalLiquidations = ({ isOpen, onClose }) => {
         d.LiquidatedAssets?.forEach((a) => {
           const tokenId = a.token_id;
           let asset = assets?.data?.[tokenId];
-          if (!asset && testnetToken.includes(tokenId)) {
-            const tempName = "wrap.testnet";
-            asset = assets?.data?.[tempName];
+          if (!asset && nearTokens.includes(tokenId)) {
+            asset = assets?.data?.[nearTokenId];
           }
           a.data = asset;
         });
