@@ -10,7 +10,7 @@ export interface BoxProps extends BaseProps {
 export const ContentBox = ({ children, style, className, padding }: BoxProps) => {
   return (
     <StyledBox style={style} className={className} padding={padding}>
-      <div>{children}</div>
+      {children}
     </StyledBox>
   );
 };

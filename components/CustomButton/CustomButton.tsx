@@ -1,5 +1,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import styled from "styled-components";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 type onClickHandler = (event: React.MouseEvent<HTMLElement>) => any;
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
   style?: object;
   disabled?: boolean;
   className?: string;
+  isLoading?: boolean;
 };
 
 const CustomButton = forwardRef((props: Props, ref: any) => {
@@ -25,8 +28,9 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
     style,
     disabled,
     className,
+    isLoading,
   } = props;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAsyncLoading, setIsAsyncLoading] = useState(false);
   const isMounted = useRef(true);
   useEffect(() => {
     isMounted.current = true;
@@ -40,14 +44,14 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
     if (!isMounted.current) {
       return;
     }
-    setIsLoading(true);
+    setIsAsyncLoading(true);
     try {
       typeof onClick === "function" && (await onClick(e));
     } catch (err) {
       throw e;
     } finally {
       if (isMounted.current) {
-        setIsLoading(false);
+        setIsAsyncLoading(false);
       }
     }
   };
@@ -59,31 +63,47 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
   const handleMouseLeave = (e: any) => {
     typeof onMouseLeave === "function" && onMouseLeave(e);
   };
-
+  const isDisabled = disabled || isAsyncLoading;
+  const isLoading2 = isLoading !== undefined ? isLoading : isAsyncLoading;
   return (
-    <button
+    <StyledButton
       className={twMerge(
         "border-transparent border rounded-md px-4 transition duration-500 ease select-none",
         getBtnSizeClassName(size),
-        disabled
-          ? "bg-gray-300 hover:bg-gray-300 text-gray-600 border-transparent"
+        isDisabled
+          ? "bg-gray-500 hover:bg-gray-500 text-gray-400 border-transparent"
           : getBtnColorClassName(color),
-        isLoading && "_loading",
+        isLoading2 && "_loading",
         className,
       )}
       type="button"
       style={style}
       ref={ref}
       color={color}
-      disabled={disabled || isLoading}
+      disabled={isDisabled}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
     >
-      {children}
-    </button>
+      {isLoading2 ? <LoadingSpinner /> : children}
+    </StyledButton>
   );
 });
+
+const StyledButton = styled.button`
+  .loading-spinner {
+    .ldsring {
+      border-color: #6d708d;
+      height: 25px;
+      width: 25px;
+
+      ._spinner {
+        height: 20px;
+        width: 20px;
+      }
+    }
+  }
+`;
 
 const btnColor = {
   primary: "border-primary bg-primary hover:bg-primary text-black",
