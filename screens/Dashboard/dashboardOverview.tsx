@@ -12,6 +12,7 @@ import { useNonFarmedAssets } from "../../hooks/hooks";
 import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
 import ModalRecords from "./modalRecords";
+import ModalLiquidations from "./modalLiquidations";
 
 type modalProps = {
   name: string;
@@ -98,7 +99,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
         <div className="flex flex-col">
           <CustomButton
-            onClick={() => handleModalOpen("liquidation")}
+            onClick={() => handleModalOpen("liquidations")}
             className="mb-2"
             color="secondary"
           >
@@ -110,14 +111,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         </div>
       </div>
 
-      <CustomModal
-        isOpen={modal?.name === "liquidation"}
-        onClose={handleModalClose}
-        onOutsideClick={handleModalClose}
-      >
-        haha
-      </CustomModal>
-
+      <ModalLiquidations isOpen={modal?.name === "liquidations"} onClose={handleModalClose} />
       <ModalRecords isOpen={modal?.name === "records"} onClose={handleModalClose} />
     </div>
   );

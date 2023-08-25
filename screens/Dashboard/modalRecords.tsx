@@ -100,9 +100,10 @@ const columns = [
     header: "Amount",
     cell: ({ originalData }) => {
       const { amount, data } = originalData || {};
-      const { metadata } = data || {};
+      const { metadata, config } = data || {};
+      const { extra_decimals } = config || {};
       const tokenAmount = Number(
-        shrinkToken(amount, (metadata?.decimals || 0) + data.config.extra_decimals),
+        shrinkToken(amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
       );
       return <div>{tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)}</div>;
     },

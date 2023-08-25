@@ -37,11 +37,15 @@ class DataSource {
     }
   }
 
-  getLiquidations(account) {
+  getLiquidations(account, pageNumber = 1, pageSize = 10) {
+    const qryObj = {
+      page_number: pageNumber,
+      page_size: pageSize,
+    };
     return this.callAPI(
       `/burrow/get_liquidation_info/${account}`,
       "GET",
-      null,
+      qryObj,
       null,
       process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST,
     );

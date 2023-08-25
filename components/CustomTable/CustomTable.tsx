@@ -101,40 +101,49 @@ const CustomTable = ({
     </div>
   );
 
-  const bodyNodes = data?.map((d, i) => {
-    const tdNode = columns?.map((col) => {
-      let content = null;
-      if (typeof col.cell === "function") {
-        content = col.cell({
-          originalData: d,
-        });
-      } else if (col.accessorKey) {
-        content = d[col.accessorKey];
-      }
-      const styles: { flex?: string } = {};
-      if (col.size) {
-        styles.flex = `0 0 ${col.size}px`;
-      }
+  let bodyNodes;
+  if (data?.length) {
+    bodyNodes = data?.map((d, i) => {
+      const tdNode = columns?.map((col) => {
+        let content = null;
+        if (typeof col.cell === "function") {
+          content = col.cell({
+            originalData: d,
+          });
+        } else if (col.accessorKey) {
+          content = d[col.accessorKey];
+        }
+        const styles: { flex?: string } = {};
+        if (col.size) {
+          styles.flex = `0 0 ${col.size}px`;
+        }
+        return (
+          <div className="custom-table-td" key={col.id || col.header} style={styles}>
+            {content}
+          </div>
+        );
+      });
       return (
-        <div className="custom-table-td" key={col.id || col.header} style={styles}>
-          {content}
+        <div className="custom-table-row" key={i}>
+          <div className="custom-table-tr">{tdNode}</div>
+          {actionRow && <div className="custom-table-action">{actionRow}</div>}
         </div>
       );
     });
-    return (
-      <div className="custom-table-row" key={i}>
-        <div className="custom-table-tr">{tdNode}</div>
-        {actionRow && <div className="custom-table-action">{actionRow}</div>}
+  } else if (!isLoading) {
+    bodyNodes = (
+      <div className="flex justify-center items-center" style={{ height: 300 }}>
+        No Data
       </div>
     );
-  });
+  }
 
   return (
     <StyledTable className={twMerge("custom-table", className)}>
       <StyledLoading active={isLoading}>Loading</StyledLoading>
       <div className="custom-table-thead">{headerNode}</div>
       <div className="custom-table-tbody">{bodyNodes}</div>
-      {pagination?.totalPages && pagination?.page && (
+      {pagination?.totalPages && pagination?.page ? (
         <div className="custom-table-pagination flex justify-end mt-2">
           <CustomPagination
             page={pagination.page}
@@ -145,7 +154,7 @@ const CustomTable = ({
             lastClick={handleLastClick}
           />
         </div>
-      )}
+      ) : null}
     </StyledTable>
   );
 };
