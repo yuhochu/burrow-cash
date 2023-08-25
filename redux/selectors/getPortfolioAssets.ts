@@ -6,6 +6,7 @@ import { emptySuppliedAsset, emptyBorrowedAsset, hasAssets, getRewards, toUsd } 
 import { shrinkToken, expandToken } from "../../store";
 import { Asset, Assets } from "../assetState";
 import { Farm } from "../accountState";
+import { standardizeAsset } from "../../utils";
 
 export const getPortfolioRewards = (
   type: "supplied" | "borrowed",
@@ -63,7 +64,7 @@ export const getPortfolioAssets = createSelector(
           .plus(new Decimal(asset.reserved))
           .toFixed();
 
-        return {
+        return standardizeAsset({
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
@@ -85,7 +86,7 @@ export const getPortfolioAssets = createSelector(
           ),
           depositRewards: getRewards("supplied", asset, assets.data),
           totalSupplyMoney: toUsd(totalSupplyD, asset),
-        };
+        });
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
 
@@ -100,7 +101,7 @@ export const getPortfolioAssets = createSelector(
           .plus(new Decimal(asset.reserved))
           .toFixed();
 
-        return {
+        return standardizeAsset({
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
@@ -121,7 +122,7 @@ export const getPortfolioAssets = createSelector(
           ),
           borrowRewards: getRewards("borrowed", asset, assets.data),
           totalSupplyMoney: toUsd(totalSupplyD, asset),
-        };
+        });
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
 

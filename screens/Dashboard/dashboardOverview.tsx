@@ -1,18 +1,13 @@
 import { useState } from "react";
+import { BeatLoader } from "react-spinners";
 import { useUserHealth } from "../../hooks/useUserHealth";
 import { formatUSDValue } from "../../helpers/helpers";
-import { useStaking } from "../../hooks/useStaking";
-// import { getGains } from "../../redux/selectors/getAccountRewards";
-// import { RootState } from "../../redux/store";
-// import { getExtraDailyTotals } from "../../redux/selectors/getExtraDailyTotals";
-// import { hasAssets } from "../../redux/utils";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import CustomModal from "../../components/CustomModal/CustomModal";
-import { useNonFarmedAssets } from "../../hooks/hooks";
 import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
 import ModalRecords from "./modalRecords";
 import ModalLiquidations from "./modalLiquidations";
+import ClaimAllRewards from "../../components/ClaimAllRewards";
 
 type modalProps = {
   name: string;
@@ -26,30 +21,8 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   });
   const { data, netAPY, netLiquidityAPY } = useUserHealth();
   const rewardsObj = useRewards();
-  const { brrr, extra, net } = rewardsObj || {};
-  const assetRewards = [
-    ...(Object.entries(brrr).length > 0 ? [brrr] : []),
-    ...extra.flatMap((f) => f[1]),
-  ];
-
-  const { stakingNetAPY, stakingNetTvlAPY } = useStaking();
-  const { weightedNetLiquidity, hasNegativeNetLiquidity, assets } = useNonFarmedAssets();
-
-  const globalValue = `${netAPY.toLocaleString(undefined, APY_FORMAT)}%`;
-  const netLiquidityValue = `${netLiquidityAPY.toLocaleString(undefined, APY_FORMAT)}%`;
   const APYAmount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
 
-  // console.log("suppliedRowssuppliedRows", suppliedRows);
-  // const totalDailyRewards = new Decimal(rewardsPerDay)
-  //   .div(new Decimal(10).pow(decimals))
-  //   .toNumber();
-
-  // const getNetAPYWithReward = ()=>{
-  //   const borrowReward = suppliedRows?.
-  //   return new Decimal(netAPY).plus()
-  // }
-
-  // console.log("netAPY", netAPY, netLiquidityAPY, stakingNetAPY, stakingNetTvlAPY);
   let totalSuppliedUSD = 0;
   suppliedRows?.forEach((d) => {
     const usd = Number(d.supplied) * Number(d.price);
@@ -76,17 +49,18 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   return (
     <div className="flex md:justify-between lg:justify-between">
       <div>
-        <div className="flex gap-10 md:gap-20">
-          <SummaryItem title="Net APY" value={APYAmount} />
-          <SummaryItem title="Supplied" value={formatUSDValue(totalSuppliedUSD)} />
-          <SummaryItem title="Borrowed" value={formatUSDValue(totalBorrowedUSD)} />
+        <div className="flex gap-10 md:gap-20 mb-8">
+          <OverviewItem title="Net APY" value={APYAmount} />
+          <OverviewItem title="Supplied" value={formatUSDValue(totalSuppliedUSD)} />
+          <OverviewItem title="Borrowed" value={formatUSDValue(totalBorrowedUSD)} />
         </div>
 
-        <div>
-          <SummaryItem
+        <div className="flex gap-4 items-end">
+          <OverviewItem
             title="Unclaimed Rewards"
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
+          <ClaimAllRewards Button={ClaimButton} location="dashboard" />
         </div>
       </div>
       <div className="flex">
@@ -117,7 +91,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   );
 };
 
-const SummaryItem = ({ title, value }) => {
+const OverviewItem = ({ title, value }) => {
   return (
     <div>
       <div className="h6 text-gray-300">{title}</div>
@@ -125,6 +99,19 @@ const SummaryItem = ({ title, value }) => {
     </div>
   );
 };
+
+const ClaimButton = (props) => {
+  const { loading, disabled } = props;
+  return (
+    <div
+      {...props}
+      className="flex items-center justify-center bg-primary rounded-md cursor-pointer text-sm font-bold text-dark-200 hover:opacity-80 w-20 h-8"
+    >
+      {loading ? <BeatLoader size={5} color="#14162B" /> : <>Claim</>}
+    </div>
+  );
+};
+
 //
 // const getNetAPY() {
 //   const extraDaily = getExtraDaily();

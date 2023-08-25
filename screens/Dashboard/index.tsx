@@ -68,7 +68,7 @@ const yourSuppliedColumns = [
     header: "Assets",
     cell: ({ originalData }) => {
       return (
-        <div className="flex">
+        <div className="flex gap-2 items-center">
           <img
             src={originalData?.icon}
             width={26}
@@ -76,6 +76,7 @@ const yourSuppliedColumns = [
             alt="token"
             className="rounded-full"
           />
+          <div className="truncate">{originalData?.symbol}</div>
         </div>
       );
     },
@@ -127,7 +128,7 @@ const yourSuppliedColumns = [
 ];
 const YourSupplied = ({ suppliedRows }) => {
   return (
-    <ContentBox style={{ paddingBottom: 0 }}>
+    <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
       <div className="flex items-center mb-4">
         <div className="absolute" style={{ left: 0, top: 0 }}>
           {assets.svg.suppliedBg}
@@ -172,7 +173,7 @@ const yourBorrowedColumns = [
     header: "Assets",
     cell: ({ originalData }) => {
       return (
-        <div className="flex">
+        <div className="flex gap-2 items-center">
           <img
             src={originalData?.icon}
             width={26}
@@ -180,6 +181,7 @@ const yourBorrowedColumns = [
             alt="token"
             className="rounded-full"
           />
+          <div className="truncate">{originalData?.symbol}</div>
         </div>
       );
     },

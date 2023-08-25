@@ -216,7 +216,7 @@ export function decimalMin(a: string | number | Decimal, b: string | number | De
   b = new Decimal(b);
   return a.lt(b) ? a : b;
 }
-export function standardizeAsset(asset: UIAsset) {
+export function standardizeAsset(asset) {
   if (asset.symbol === "wNEAR") {
     asset.symbol = nearMetadata.symbol;
     asset.icon = nearMetadata.icon;
