@@ -9,13 +9,13 @@ export function useRewards() {
   const assetRewards = useAppSelector(getAccountRewards);
   const protocol = useAppSelector(getProtocolRewards);
 
-  const { brrr } = assetRewards;
+  const { brrr } = assetRewards || {};
   const extra = Object.entries(assetRewards.extra);
   const net = Object.entries(assetRewards.net);
 
   let totalUnClaimUSD = 0;
   let totalUnClaimUSDDisplay;
-  if (brrr?.unclaimedAmount) {
+  if (brrr?.unclaimedAmount !== undefined) {
     totalUnClaimUSD += brrr.unclaimedAmount * brrr.price;
     const IGNORE_AMOUNT = 0.01;
     if (totalUnClaimUSD < IGNORE_AMOUNT) {

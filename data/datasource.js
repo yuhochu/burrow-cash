@@ -37,8 +37,14 @@ class DataSource {
     }
   }
 
-  getOverview() {
-    return this.callAPI("/burrow/get_overview", "GET");
+  getLiquidations(account) {
+    return this.callAPI(
+      `/burrow/get_liquidation_info/${account}`,
+      "GET",
+      null,
+      null,
+      process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST,
+    );
   }
 
   getRecords(accountId, pageNumber = 1, pageSize = 10) {
@@ -52,7 +58,7 @@ class DataSource {
       "GET",
       qryObj,
       null,
-      "https://mainnet-indexer.ref-finance.com",
+      process.env.NEXT_PUBLIC_RECORDS_API_HOST,
     );
   }
 }

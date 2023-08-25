@@ -82,7 +82,10 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         </div>
 
         <div>
-          <SummaryItem title="Unclaimed Rewards" value={rewardsObj?.data?.totalUnClaimUSDDisplay} />
+          <SummaryItem
+            title="Unclaimed Rewards"
+            value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
+          />
         </div>
       </div>
       <div className="flex">

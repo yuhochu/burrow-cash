@@ -4,7 +4,7 @@ import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import SupplyTokenSvg from "../../public/svg/Group 24791.svg";
-import { useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
+import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
@@ -20,6 +20,7 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import DataSource from "../../data/datasource";
 
 const Index = () => {
+  const accountId = useAccountId();
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
   // const rows = useAvailableAssets();
 
@@ -29,7 +30,7 @@ const Index = () => {
 
   const fetchData = async () => {
     try {
-      const response = await DataSource.shared.getOverview();
+      const response = await DataSource.shared.getLiquidations(accountId);
     } catch (e) {
       // console.log("fetchData err",e)
     }
