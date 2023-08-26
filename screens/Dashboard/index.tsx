@@ -18,6 +18,11 @@ import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import DataSource from "../../data/datasource";
+import {
+  useWithdrawTrigger,
+  useAdjustTrigger,
+  useRepayTrigger,
+} from "../../components/ModalAction";
 
 const Index = () => {
   const accountId = useAccountId();

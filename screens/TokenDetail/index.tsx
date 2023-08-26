@@ -21,11 +21,15 @@ import {
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
 import { useDepositAPY, useUserPortfolioAPY } from "../../hooks/useDepositAPY";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { useUserBalance } from "../../hooks/useUserBalance";
-import { showModal } from "../../redux/appSlice";
 import { shrinkToken } from "../../store/helper";
-import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
+import {
+  useWithdrawTrigger,
+  useAdjustTrigger,
+  useSupplyTrigger,
+  useBorrowTrigger,
+  useRepayTrigger,
+} from "../../components/ModalAction";
 
 const TokenDetail = () => {
   const router = useRouter();
@@ -214,17 +218,12 @@ function TokenRateModeChart({ tokenRow }: { tokenRow: UIAsset }) {
   );
 }
 function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
-  const dispatch = useAppDispatch();
   const { tokenId } = tokenRow;
   const accountId = useAccountId();
   const isWrappedNear = tokenRow.symbol === "NEAR";
   const { supplyBalance, borrowBalance } = useUserBalance(tokenId, isWrappedNear);
-  function handleSupplyClick() {
-    dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
-  }
-  function handleBorrowClick() {
-    dispatch(showModal({ action: "Borrow", tokenId, amount: 0 }));
-  }
+  const handleSupplyClick = useSupplyTrigger(tokenId);
+  const handleBorrowClick = useBorrowTrigger(tokenId);
   return (
     <UserBox className="mb-7">
       <span className="text-lg text-white font-bold">Your Info</span>
@@ -280,8 +279,6 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
 }
 function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any }) {
   const { tokenId } = tokenRow;
-  const dispatch = useAppDispatch();
-  const amount = useAppSelector(getCollateralAmount(tokenId));
   const userDepositAPY = useUserPortfolioAPY({
     baseAPY: tokenRow.supplyApy,
     rewardList: tokenRow.depositRewards,
@@ -311,12 +308,8 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
   ) : (
     "-"
   );
-  function handleWithdrawClick() {
-    dispatch(showModal({ action: "Withdraw", tokenId, amount: 0 }));
-  }
-  function handleAdjustClick() {
-    dispatch(showModal({ action: "Adjust", tokenId, amount }));
-  }
+  const handleWithdrawClick = useWithdrawTrigger(tokenId);
+  const handleAdjustClick = useAdjustTrigger(tokenId);
   const withdraw_disabled = !supplied || !supplied?.canWithdraw;
   const adjust_disabled = !supplied?.canUseAsCollateral;
   const is_empty = !supplied;
@@ -378,7 +371,6 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
 }
 function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any }) {
   const { tokenId } = tokenRow;
-  const dispatch = useAppDispatch();
   const userDepositAPY = useUserPortfolioAPY({
     baseAPY: tokenRow.borrowApy,
     rewardList: tokenRow.borrowRewards,
@@ -409,9 +401,7 @@ function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any 
   ) : (
     "-"
   );
-  function handleRepayClick() {
-    dispatch(showModal({ action: "Repay", tokenId, amount: 0 }));
-  }
+  const handleRepayClick = useRepayTrigger(tokenId);
   const is_empty = !borrowed;
   return (
     <div>
