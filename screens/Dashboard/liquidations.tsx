@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import CustomModal from "../../components/CustomModal/CustomModal";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import Datasource from "../../data/datasource";
 import { useAccountId } from "../../hooks/hooks";
@@ -9,7 +8,7 @@ import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
 
-const ModalLiquidations = ({ isOpen, onClose }) => {
+const Liquidations = ({ isShow }) => {
   const accountId = useAccountId();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,12 +23,12 @@ const ModalLiquidations = ({ isOpen, onClose }) => {
   });
 
   useEffect(() => {
-    if (isOpen) {
+    if (isShow) {
       fetchData({
         page: pagination?.page,
       }).then();
     }
-  }, [isOpen, pagination?.page]);
+  }, [isShow, pagination?.page]);
 
   const fetchData = async ({ page }) => {
     try {
@@ -73,7 +72,7 @@ const ModalLiquidations = ({ isOpen, onClose }) => {
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose} size="lg">
+    <div>
       <CustomTable
         data={docs}
         columns={columns}
@@ -81,7 +80,7 @@ const ModalLiquidations = ({ isOpen, onClose }) => {
         setPagination={setPagination}
         isLoading={isLoading}
       />
-    </CustomModal>
+    </div>
   );
 };
 
@@ -149,4 +148,4 @@ const columns = [
   },
 ];
 
-export default ModalLiquidations;
+export default Liquidations;

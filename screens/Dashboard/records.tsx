@@ -9,7 +9,7 @@ import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
 
-const ModalRecords = ({ isOpen, onClose }) => {
+const Records = ({ isShow }) => {
   const accountId = useAccountId();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,12 +24,12 @@ const ModalRecords = ({ isOpen, onClose }) => {
   });
 
   useEffect(() => {
-    if (isOpen) {
+    if (isShow) {
       fetchData({
         page: pagination?.page,
       }).then();
     }
-  }, [isOpen, pagination?.page]);
+  }, [isShow, pagination?.page]);
 
   const fetchData = async ({ page }) => {
     try {
@@ -60,15 +60,13 @@ const ModalRecords = ({ isOpen, onClose }) => {
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose} size="lg">
-      <CustomTable
-        data={docs}
-        columns={columns}
-        pagination={pagination}
-        setPagination={setPagination}
-        isLoading={isLoading}
-      />
-    </CustomModal>
+    <CustomTable
+      data={docs}
+      columns={columns}
+      pagination={pagination}
+      setPagination={setPagination}
+      isLoading={isLoading}
+    />
   );
 };
 
@@ -129,4 +127,4 @@ const columns = [
   },
 ];
 
-export default ModalRecords;
+export default Records;

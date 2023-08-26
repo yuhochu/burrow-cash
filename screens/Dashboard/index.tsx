@@ -225,6 +225,9 @@ const yourBorrowedColumns = [
   },
 ];
 const YourBorrowed = ({ borrowedRows }) => {
+  const handleRepayClick = () => {
+    console.info("todo");
+  };
   return (
     <ContentBox>
       <div className="flex items-center mb-4">
@@ -234,7 +237,19 @@ const YourBorrowed = ({ borrowedRows }) => {
         <SupplyTokenSvg className="mr-10" />
         <div className="h3">You Borrowed</div>
       </div>
-      <StyledCustomTable data={borrowedRows} columns={yourBorrowedColumns} />
+      <StyledCustomTable
+        data={borrowedRows}
+        columns={yourBorrowedColumns}
+        actionRow={
+          <div
+            role="button"
+            onClick={handleRepayClick}
+            className="flex items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-1"
+          >
+            Repay
+          </div>
+        }
+      />
     </ContentBox>
   );
 };

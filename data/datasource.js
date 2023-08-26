@@ -17,6 +17,7 @@ class DataSource {
     const request = {
       headers,
       method,
+      cache: "no-store",
     };
     if (method !== "GET" && requestBody) {
       request.body = JSON.stringify(requestBody);

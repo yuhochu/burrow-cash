@@ -5,13 +5,15 @@ import { formatUSDValue } from "../../helpers/helpers";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
-import ModalRecords from "./modalRecords";
-import ModalLiquidations from "./modalLiquidations";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
+import ModalHistoryInfo from "./modalHistoryInfo";
 
+type modalData = {
+  [key: string]: any;
+};
 type modalProps = {
   name: string;
-  data?: object | null;
+  data?: modalData | null;
 };
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
@@ -55,12 +57,40 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           <OverviewItem title="Borrowed" value={formatUSDValue(totalBorrowedUSD)} />
         </div>
 
-        <div className="flex gap-4 items-end">
+        <div className="flex gap-1 items-end">
           <OverviewItem
             title="Unclaimed Rewards"
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
-          <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+          <div className="flex" style={{ marginBottom: 9, marginRight: 20 }}>
+            <img
+              src={rewardsObj?.brrr?.icon}
+              width={26}
+              height={26}
+              alt="token"
+              className="rounded-full"
+              style={{ margin: -3 }}
+            />
+            {rewardsObj?.extra?.length
+              ? rewardsObj.extra.map((d, i) => {
+                  const extraData = d?.[1];
+                  return (
+                    <img
+                      src={extraData?.icon}
+                      width={26}
+                      key={(extraData?.tokenId || "0") + i}
+                      height={26}
+                      alt="token"
+                      className="rounded-full"
+                      style={{ margin: -3 }}
+                    />
+                  );
+                })
+              : null}
+          </div>
+          <div style={{ marginBottom: 4 }}>
+            <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+          </div>
         </div>
       </div>
       <div className="flex">
@@ -73,20 +103,26 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
         <div className="flex flex-col">
           <CustomButton
-            onClick={() => handleModalOpen("liquidations")}
+            onClick={() => handleModalOpen("history", { tabIndex: 1 })}
             className="mb-2"
             color="secondary"
           >
             Liquidation
           </CustomButton>
-          <CustomButton color="secondary" onClick={() => handleModalOpen("records")}>
+          <CustomButton
+            color="secondary"
+            onClick={() => handleModalOpen("history", { tabIndex: 0 })}
+          >
             Records
           </CustomButton>
         </div>
       </div>
 
-      <ModalLiquidations isOpen={modal?.name === "liquidations"} onClose={handleModalClose} />
-      <ModalRecords isOpen={modal?.name === "records"} onClose={handleModalClose} />
+      <ModalHistoryInfo
+        isOpen={modal?.name === "history"}
+        onClose={handleModalClose}
+        tab={modal?.data?.tabIndex}
+      />
     </div>
   );
 };
@@ -111,47 +147,5 @@ const ClaimButton = (props) => {
     </div>
   );
 };
-
-//
-// const getNetAPY() {
-//   const extraDaily = getExtraDaily();
-//   const [gainCollateral, totalCollateral] = getGains(
-//     account,
-//     assets,
-//     'collateral'
-//   );
-//   const [gainSupplied, totalSupplied] = getGains(account, assets, 'supplied');
-//   const [gainBorrowed] = getGains(account, assets, 'borrowed');
-//   const gainExtra = Number(extraDaily) * 365;
-//   const netGains = gainCollateral + gainSupplied + gainExtra - gainBorrowed;
-//   const netTotals = totalCollateral + totalSupplied;
-//   const netAPY = (netGains / netTotals) * 100;
-//   const apyRewardTvl = rewards[0].apyRewardTvl || 0;
-//   return Big(netAPY || 0)
-//     .plus(apyRewardTvl)
-//     .toNumber();
-// }
-//
-// export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
-//   createSelector(
-//     (state: RootState) => state.assets,
-//     (state: RootState) => state.account,
-//     getExtraDailyTotals({ isStaking }),
-//     (assets, account, extraDaily) => {
-//       if (!hasAssets(assets)) return 0;
-//
-//       const [gainCollateral, totalCollateral] = getGains(account.portfolio, assets, "collateral");
-//       const [gainSupplied, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-//       const [gainBorrowed] = getGains(account.portfolio, assets, "borrowed");
-//
-//       const gainExtra = extraDaily * 365;
-//
-//       const netGains = gainCollateral + gainSupplied + gainExtra - gainBorrowed;
-//       const netTotals = totalCollateral + totalSupplied;
-//       const netAPY = (netGains / netTotals) * 100;
-//
-//       return netAPY || 0;
-//     },
-//   );
 
 export default DashboardOverview;
