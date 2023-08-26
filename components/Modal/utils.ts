@@ -1,5 +1,7 @@
+import Decimal from "decimal.js";
 import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, NEAR_STORAGE_DEPOSIT } from "../../store";
 import type { UIAsset } from "../../interfaces";
+import { formatWithCommas_number } from "../../utils/uiNumber";
 
 interface Alert {
   [key: string]: {
@@ -9,7 +11,7 @@ interface Alert {
 }
 
 interface Props {
-  rates: Array<{ label: string; value: string }>;
+  rates: Array<{ label: string; value: string; value$?: string }>;
   apy: number;
   available$: string;
   action: string;
@@ -86,10 +88,10 @@ export const getModalData = (asset): UIAsset & Props => {
       );
       data.rates = [
         { label: "Collateral Factor", value: collateralFactor },
-        {
-          label: "Pool Liquidity",
-          value: availableLiquidity.toLocaleString(undefined, TOKEN_FORMAT),
-        },
+        // {
+        //   label: "Pool Liquidity",
+        //   value: availableLiquidity.toLocaleString(undefined, TOKEN_FORMAT),
+        // },
       ];
 
       if (
@@ -113,10 +115,10 @@ export const getModalData = (asset): UIAsset & Props => {
       data.rates = [
         {
           label: "Remaining Collateral",
-          value: Math.abs(Math.min(collateral, collateral + supplied - amount)).toLocaleString(
-            undefined,
-            TOKEN_FORMAT,
+          value: formatWithCommas_number(
+            Math.abs(Math.min(collateral, collateral + supplied - amount)),
           ),
+          value$: Math.abs(Math.min(collateral, collateral + supplied - amount)) * price,
         },
       ];
       break;
@@ -124,6 +126,7 @@ export const getModalData = (asset): UIAsset & Props => {
       data.totalTitle = `Amount designated as collateral`;
       data.apy = supplyApy;
       data.available = getAvailableWithdrawOrAdjust;
+      data.rates = [];
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount`;
@@ -138,8 +141,9 @@ export const getModalData = (asset): UIAsset & Props => {
       data.alerts = {};
       data.rates = [
         {
-          label: "Remaining Borrow Amount",
+          label: "Remaining Borrow",
           value: (borrowed - amount).toFixed(PERCENT_DIGITS),
+          value$: new Decimal(borrowed - amount).mul(price).toFixed(),
         },
       ];
       if (isRepayFromDeposits) {

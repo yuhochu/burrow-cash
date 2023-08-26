@@ -24,9 +24,13 @@ module.exports = {
     },
     boxShadow: {},
     extend: {
+      boxShadow: {
+        100: "0px 0px 2px 0px #00000080",
+      },
       backgroundImage: () => ({
         linear_gradient_yellow:
           "linear-gradient(123.3deg, #D2FF3A 45.55%, rgba(210, 255, 58, 0) 81.79%)",
+        linear_gradient_dark: "linear-gradient(180deg, #525365 0%, #2E3043 100%)",
       }),
       gridTemplateColumns: {
         "3/5": "65% 35%",
@@ -45,9 +49,13 @@ module.exports = {
           200: "#14162B",
           300: "#4F5178",
           400: "#6D708D",
+          500: "#40435A",
+          600: "#282A42",
+          700: "#393C58",
         },
         red: {
           50: "#FF6BA9",
+          100: "#FF68A7",
         },
         gray: {
           50: "#fafafa",

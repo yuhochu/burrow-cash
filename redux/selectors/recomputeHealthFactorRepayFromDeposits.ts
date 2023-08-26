@@ -37,7 +37,16 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
       clonedAccount.portfolio.borrowed[tokenId].balance = newBorrowedBalance.toFixed();
 
       if (config.can_use_as_collateral) {
-        clonedAccount.portfolio.collateral[tokenId].balance = newWithdrawBalance.toFixed();
+        if (clonedAccount.portfolio.collateral[tokenId]) {
+          clonedAccount.portfolio.collateral[tokenId].balance = newWithdrawBalance.toFixed();
+        } else {
+          const updatedToken = {
+            balance: newWithdrawBalance.toFixed(),
+            shares: newWithdrawBalance.toFixed(),
+            apr: "0",
+          };
+          clonedAccount.portfolio.collateral[tokenId] = updatedToken;
+        }
       }
 
       const adjustedCollateralSum = getAdjustedSum("collateral", account.portfolio, assets.data);

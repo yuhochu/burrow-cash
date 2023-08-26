@@ -462,29 +462,34 @@ function OuterLink() {
     <div className="mt-7">
       <LabelOuterLink
         title="Acquire token from"
-        content={
+        content={[
           <REFIcon
+            key="1"
             className="opacity-60 hover:opacity-100"
             onClick={() => {
               window.open("https://app.ref.finance/");
             }}
-          />
-        }
+          />,
+        ]}
       />
       <LabelOuterLink
         title="Deposit from"
-        content={<REFIcon className="opacity-60 hover:opacity-100" />}
+        content={[
+          <CucoinIcon key="2" className="opacity-60 hover:opacity-100" />,
+          <BinanceIcon key="3" className="opacity-60 hover:opacity-100" />,
+        ]}
       />
       <LabelOuterLink
         title="Bridge in"
-        content={
+        content={[
           <RainbowIcon
+            key="4"
             className="opacity-60 hover:opacity-100"
             onClick={() => {
               window.open("https://rainbowbridge.app/");
             }}
-          />
-        }
+          />,
+        ]}
       />
     </div>
   );
@@ -517,14 +522,19 @@ function Label({ title, content }: { title: string; content: string | React.Reac
     </div>
   );
 }
-function LabelOuterLink({ title, content }: { title: string; content: string | React.ReactNode }) {
+function LabelOuterLink({ title, content }: { title: string; content: Array<React.ReactNode> }) {
   return (
     <div className="flex items-center justify-between mb-5">
       <span className="text-sm text-gray-300">{title}</span>
       <div className="flex items-center gap-2.5">
-        <span className="flex items-center h-[22px] px-2.5 rounded-md bg-gray-300 bg-opacity-20 hover:bg-opacity-30 cursor-pointer">
-          {content}
-        </span>
+        {content.map((item, index) => (
+          <span
+            key={index}
+            className="flex items-center h-[22px] px-2.5 rounded-md bg-gray-300 bg-opacity-20 hover:bg-opacity-30 cursor-pointer"
+          >
+            {item}
+          </span>
+        ))}
       </div>
     </div>
   );

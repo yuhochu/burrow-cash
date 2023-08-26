@@ -2,11 +2,12 @@ import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 
 export const Wrapper = styled(Box)(({ theme }) => ({
-  boxShadow: "4px 4px 4px rgba(0, 7, 65, 0.1)",
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: "8px",
   position: "relative",
   display: "flex",
+  backgroundColor: "#2E304B",
+  border: "1px solid #4F5178",
+  boxShadow: "0px 0px 10px 4px #00000026",
+  borderRadius: "6px",
   flexDirection: "column",
   [theme.breakpoints.down("sm")]: {
     position: "relative",
@@ -17,8 +18,7 @@ export const Wrapper = styled(Box)(({ theme }) => ({
     top: "calc(50% - 40vh)",
     left: "calc(50% - 210px)",
     display: "flex",
-    height: "80vh",
-    maxHeight: "620px",
+    maxHeight: "80vh",
     width: "420px",
   },
 }));

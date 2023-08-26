@@ -17,6 +17,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../utils/telemetry";
 import { useDegenMode } from "../../hooks/hooks";
+import { SubmitButton } from "./components";
 
 export default function Action({ maxBorrowAmount, healthFactor }) {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,6 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const asset = useAppSelector(getAssetData);
   const { action = "Deposit", tokenId } = asset;
   const { isRepayFromDeposits } = useDegenMode();
-  const theme = useTheme();
 
   const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
     ...asset,
@@ -39,11 +39,6 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       dispatch(toggleUseAsCollateral({ useAsCollateral: false }));
     }
   }, [useAsCollateral]);
-
-  const handleSwitchToggle = (event) => {
-    trackUseAsCollateral({ useAsCollateral: event.target.checked, action, tokenId });
-    dispatch(toggleUseAsCollateral({ useAsCollateral: event.target.checked }));
-  };
 
   const handleActionButtonClick = async () => {
     setLoading(true);
@@ -127,11 +122,9 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
     return false;
   }, [amount, healthFactor]);
 
-  const showToggle = action === "Supply";
-
   return (
     <>
-      {showToggle && (
+      {/* {showToggle && (
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="0.5rem">
           <Typography variant="body1" fontSize="0.85rem" color={theme.palette.secondary.main}>
             Use as Collateral
@@ -153,18 +146,20 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
             disabled={!canUseAsCollateral}
           />
         </Box>
-      )}
-      <LoadingButton
+      )} */}
+
+      {/* <LoadingButton
         disabled={actionDisabled}
         variant="contained"
         onClick={handleActionButtonClick}
         loading={loading}
         sx={{ width: "100%", mb: "1rem" }}
       >
-        Confirm
-      </LoadingButton>
+        {action === "Adjust" ? "Confirm" : action}
+      </LoadingButton> */}
+      <SubmitButton action={action} disabled={actionDisabled} onClick={handleActionButtonClick} />
       {action === "Repay" && isRepayFromDeposits && (
-        <Alert severity="warning">
+        <Alert severity="warning" sx={{ mt: "20px" }}>
           This is an advanced feature. Please Do Your Own Research before using it.
         </Alert>
       )}

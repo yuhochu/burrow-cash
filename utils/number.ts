@@ -18,3 +18,25 @@ export const toInternationalCurrencySystem = (labelValue: string, percent?: numb
     ? `${(Math.abs(Number(labelValue)) / 1.0e3).toFixed(percent || 2)}K`
     : Math.abs(Number(labelValue)).toFixed(hasPercent ? percent : 2);
 };
+
+export const toPrecision = (
+  number: string,
+  precision: number,
+  withCommas = false,
+  atLeastOne = true,
+): string => {
+  if (typeof number === "undefined") return "0";
+
+  const [whole, decimal = ""] = number.split(".");
+
+  let str = `${withCommas ? formatWithCommas(whole) : whole}.${decimal.slice(
+    0,
+    precision,
+  )}`.replace(/\.$/, "");
+  if (atLeastOne && Number(str) === 0 && str.length > 1) {
+    const n = str.lastIndexOf("0");
+    str = str.slice(0, n) + str.slice(n).replace("0", "1");
+  }
+
+  return str;
+};

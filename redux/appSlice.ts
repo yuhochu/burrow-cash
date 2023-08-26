@@ -62,7 +62,7 @@ export const initialState: AppState = {
   theme: "light",
   disclaimerAgreed: false,
   degenMode: {
-    enabled: false,
+    enabled: true,
     repayFromDeposits: false,
   },
   showModal: false,
