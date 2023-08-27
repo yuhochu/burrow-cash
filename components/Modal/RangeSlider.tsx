@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
+import { twMerge } from "tailwind-merge";
 import { toPrecision } from "../../utils/number";
 
 export default function RangeSlider(props: any) {
-  const { value, onChange, action } = props;
-  const [splitList] = useState([0, 25, 50, 75, 100]);
-
+  const { value, onChange, action, navs, selectNavValueOnly, isWidthAuto } = props;
+  const [splitList, setSplitList] = useState(["0%", "25%", "50%", "75%", "100%"]);
+  const [matchValue, setMatchValue] = useState();
   const tipRef = useRef(null) as any;
   const valueRef = useRef(null) as any;
   useEffect(() => {
@@ -17,13 +18,33 @@ export default function RangeSlider(props: any) {
       tipRef.current.style.marginLeft = `${marginLeft}px`;
     }
   }, [value]);
+
+  useEffect(() => {
+    if (navs) {
+      setSplitList(navs);
+    }
+  }, [navs]);
+
   function changeValue(v: string) {
-    onChange(v);
+    let matchedValue;
+
+    // get matched value
+    const nearestValue = 100 / (splitList.length - 1);
+    const ratio = Number(v) / nearestValue;
+    const nearest = Math.round(ratio);
+    // console.log("changeValue", splitList.length, nearestValue, Number(v) / nearestValue, nearest);
+    if (!Number.isNaN(nearest)) {
+      matchedValue = splitList[nearest];
+      setMatchValue(matchedValue);
+    }
+
+    onChange(v, matchedValue);
   }
+
   const actionShowRedColor = action === "Borrow" || action === "Repay";
   return (
     <div className="mt-5">
-      <div className="flex justify-between items-center mb-2 -mx-3">
+      <div className={twMerge("flex justify-between items-center mb-2", !isWidthAuto && "-mx-3")}>
         {splitList.map((p) => {
           return (
             <div
@@ -34,11 +55,13 @@ export default function RangeSlider(props: any) {
               }}
             >
               <span
-                className={`flex items-center justify-center text-xs text-gray-300 w-11 py-0.5 border border-transparent hover:border-v3LiquidityRemoveBarColor rounded-lg ${
-                  p === +value ? "bg-black bg-opacity-20" : ""
-                }`}
+                className={twMerge(
+                  `flex items-center justify-center text-xs text-gray-300 w-11 py-0.5 border border-transparent hover:border-v3LiquidityRemoveBarColor rounded-lg`,
+                  p === matchValue && "bg-black bg-opacity-20",
+                  isWidthAuto && "w-auto",
+                )}
               >
-                {p}%
+                {p}
               </span>
               <span style={{ height: "5px", width: "1px" }} className="bg-gray-300 mt-1" />
             </div>
@@ -59,17 +82,19 @@ export default function RangeSlider(props: any) {
           max="100"
           step="any"
         />
-        <div
-          className={`flex items-center justify-center absolute top-5 rounded-lg py-1 ${
-            actionShowRedColor ? "bg-red-100" : "bg-primary"
-          }`}
-          style={{ marginLeft: "-33px", left: "100%", width: "46px" }}
-          ref={tipRef}
-        >
-          <span className={`text-sm ${actionShowRedColor ? "text-white" : "text-dark-200"} `}>
-            <span className="gotham_bold">{toPrecision(value.toString(), 0)}</span>%
-          </span>
-        </div>
+        {!selectNavValueOnly && (
+          <div
+            className={`flex items-center justify-center absolute top-5 rounded-lg py-1 ${
+              actionShowRedColor ? "bg-red-100" : "bg-primary"
+            }`}
+            style={{ marginLeft: "-33px", left: "100%", width: "46px" }}
+            ref={tipRef}
+          >
+            <span className={`text-sm ${actionShowRedColor ? "text-white" : "text-dark-200"} `}>
+              <span className="gotham_bold">{toPrecision(value?.toString(), 0)}</span>%
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

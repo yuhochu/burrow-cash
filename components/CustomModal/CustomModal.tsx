@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import React from "react";
 import Portal from "./portal";
 import { BaseProps } from "../../interfaces/common";
+import { CloseIcon } from "../Icons/Icons";
 
 type onClickHandler = (event: React.MouseEvent<HTMLElement>) => any;
 
@@ -13,9 +14,11 @@ interface Props extends BaseProps {
   canScroll?: boolean;
   onClose: onClickHandler;
   onOutsideClick?: onClickHandler;
+  title?: string;
 }
 
 const CustomModal = ({
+  title,
   children,
   isOpen,
   onClose,
@@ -49,6 +52,16 @@ const CustomModal = ({
         <div className="overlay" onClick={onOutsideClick} />
         <div className={twMerge("modal-dialog background-paper", size && `modal-${size}`)}>
           <div className="modal-content" style={styles}>
+            {title && (
+              <div className="modal-header flex justify-center">
+                {title}
+                {onClose && (
+                  <div onClick={onClose} style={{ cursor: "pointer" }}>
+                    <CloseIcon />
+                  </div>
+                )}
+              </div>
+            )}
             <div className={twMerge("modal-body", canScroll && "modal-body-scroll")}>
               {children}
             </div>
@@ -69,6 +82,11 @@ const StyledWrapper = styled.div`
       }
     }
   }
+
+  //input {
+  //  border: 1px solid #40435a;
+  //  background: #282a42;
+  //}
 `;
 
 export default CustomModal;
