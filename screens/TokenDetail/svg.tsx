@@ -250,3 +250,134 @@ export function RainbowIcon(props) {
     </svg>
   );
 }
+
+export function RedLinearGradient(props) {
+  return (
+    <svg
+      {...props}
+      width="420"
+      height="216"
+      viewBox="0 0 420 216"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <mask
+        id="mask0_398_431"
+        style={{ maskType: "alpha" }}
+        maskUnits="userSpaceOnUse"
+        x="0"
+        y="0"
+        width="420"
+        height="216"
+      >
+        <path
+          opacity="0.2"
+          d="M0 6C0 2.68629 2.68629 0 6 0H414C417.314 0 420 2.68629 420 6V204C420 210.627 414.627 216 408 216H12C5.37258 216 0 210.627 0 204V6Z"
+          fill="#23253A"
+        />
+      </mask>
+      <g mask="url(#mask0_398_431)">
+        <g filter="url(#filter0_f_398_431)">
+          <ellipse
+            cx="43"
+            cy="-0.361237"
+            rx="207"
+            ry="110.216"
+            fill="url(#paint0_linear_398_431)"
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id="filter0_f_398_431"
+          x="-243"
+          y="-189.577"
+          width="572"
+          height="378.432"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feGaussianBlur stdDeviation="39.5" result="effect1_foregroundBlur_398_431" />
+        </filter>
+        <linearGradient
+          id="paint0_linear_398_431"
+          x1="8.00001"
+          y1="3.25239"
+          x2="106.573"
+          y2="124.871"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FF6BA9" />
+          <stop offset="1" stopColor="#FF6BA9" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+export function YellowLinearGradient(props) {
+  return (
+    <svg
+      {...props}
+      width="420"
+      height="216"
+      viewBox="0 0 420 216"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <mask
+        id="mask0_398_426"
+        style={{ maskType: "alpha" }}
+        maskUnits="userSpaceOnUse"
+        x="0"
+        y="0"
+        width="420"
+        height="216"
+      >
+        <path
+          opacity="0.1"
+          d="M0 6C0 2.68629 2.68629 0 6 0H414C417.314 0 420 2.68629 420 6V204C420 210.627 414.627 216 408 216H12C5.37258 216 0 210.627 0 204V6Z"
+          fill="#23253A"
+        />
+      </mask>
+      <g mask="url(#mask0_398_426)">
+        <g filter="url(#filter0_f_398_426)">
+          <ellipse
+            cx="43"
+            cy="-0.361237"
+            rx="207"
+            ry="110.216"
+            fill="url(#paint0_linear_398_426)"
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id="filter0_f_398_426"
+          x="-243"
+          y="-189.577"
+          width="572"
+          height="378.432"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feGaussianBlur stdDeviation="39.5" result="effect1_foregroundBlur_398_426" />
+        </filter>
+        <linearGradient
+          id="paint0_linear_398_426"
+          x1="8.00001"
+          y1="3.25239"
+          x2="106.573"
+          y2="124.871"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#D2FF3A" />
+          <stop offset="1" stopColor="#D2FF3A" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

@@ -10,6 +10,8 @@ import {
   CucoinIcon,
   BinanceIcon,
   RainbowIcon,
+  RedLinearGradient,
+  YellowLinearGradient,
 } from "./svg";
 import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import {
@@ -332,7 +334,7 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
   const adjust_disabled = !supplied?.canUseAsCollateral;
   const is_empty = !supplied;
   return (
-    <div>
+    <div className=" relative overflow-hidden">
       {is_empty ? (
         // bg-linear_gradient_yellow
         <UserBox className="mb-2.5">
@@ -384,6 +386,7 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
           </div>
         </UserBox>
       )}
+      <YellowLinearGradient className="absolute left-0 top-0 pointer-events-none" />
     </div>
   );
 }
@@ -422,7 +425,7 @@ function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any 
   const handleRepayClick = useRepayTrigger(tokenId);
   const is_empty = !borrowed;
   return (
-    <div>
+    <div className="relative overflow-hidden">
       {is_empty ? (
         // bg-linear_gradient_yellow
         <UserBox className="mb-2.5">
@@ -462,6 +465,7 @@ function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any 
           </div>
         </UserBox>
       )}
+      <RedLinearGradient className="absolute left-0 top-0 pointer-events-none" />
     </div>
   );
 }
