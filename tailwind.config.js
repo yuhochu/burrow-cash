@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 module.exports = {
   content: [
     "./screens/**/*.{js,ts,jsx,tsx,mdx}",
@@ -40,6 +40,9 @@ module.exports = {
         h1: "90px",
         h2: "26px",
         h3: "18px",
+      },
+      borderRadius: {
+        sm: "6px",
       },
       colors: {
         primary: "#D2FF3A",

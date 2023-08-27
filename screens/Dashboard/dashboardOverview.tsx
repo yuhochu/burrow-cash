@@ -7,14 +7,7 @@ import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
 import ModalHistoryInfo from "./modalHistoryInfo";
-
-type modalData = {
-  [key: string]: any;
-};
-type modalProps = {
-  name: string;
-  data?: modalData | null;
-};
+import { modalProps } from "../../interfaces/common";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
