@@ -3,8 +3,16 @@ import { twMerge } from "tailwind-merge";
 import { toPrecision } from "../../utils/number";
 
 export default function RangeSlider(props: any) {
-  const { value, onChange, action, navs, selectNavValueOnly, isWidthAuto } = props;
-  const [splitList, setSplitList] = useState(["0%", "25%", "50%", "75%", "100%"]);
+  const {
+    value,
+    onChange,
+    action,
+    valueSymbol = "%",
+    navs,
+    selectNavValueOnly,
+    isWidthAuto,
+  } = props;
+  const [splitList, setSplitList] = useState([0, 25, 50, 75, 100]);
   const [matchValue, setMatchValue] = useState();
   const tipRef = useRef(null) as any;
   const valueRef = useRef(null) as any;
@@ -57,11 +65,12 @@ export default function RangeSlider(props: any) {
               <span
                 className={twMerge(
                   `flex items-center justify-center text-xs text-gray-300 w-11 py-0.5 border border-transparent hover:border-v3LiquidityRemoveBarColor rounded-lg`,
-                  p === matchValue && "bg-black bg-opacity-20",
+                  (selectNavValueOnly ? p === matchValue : p === value) && "bg-black bg-opacity-20",
                   isWidthAuto && "w-auto",
                 )}
               >
                 {p}
+                {valueSymbol}
               </span>
               <span style={{ height: "5px", width: "1px" }} className="bg-gray-300 mt-1" />
             </div>

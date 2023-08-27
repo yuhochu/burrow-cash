@@ -62,8 +62,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
     setAmount((Number(total) * percent) / 100);
   };
 
-  const handleRangeSliderChange = (v) => {
-    const percent = v;
+  const handleRangeSliderChange = (percent) => {
     setAmount((Number(total) * percent) / 100);
   };
 
@@ -138,6 +137,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
             onChange={handleMonthChange}
             selectNavValueOnly
             isWidthAuto
+            valueSymbol=""
             navs={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]}
           />
         </StyledRow>
