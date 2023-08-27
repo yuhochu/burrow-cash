@@ -5,7 +5,7 @@ import { toPrecision } from "../../utils/number";
 export default function RangeSlider(props: any) {
   const { value, onChange, action, navs, selectNavValueOnly, isWidthAuto } = props;
   const [splitList, setSplitList] = useState(["0%", "25%", "50%", "75%", "100%"]);
-
+  const [matchValue, setMatchValue] = useState();
   const tipRef = useRef(null) as any;
   const valueRef = useRef(null) as any;
   useEffect(() => {
@@ -26,17 +26,19 @@ export default function RangeSlider(props: any) {
   }, [navs]);
 
   function changeValue(v: string) {
-    let changedValue;
-    if (selectNavValueOnly) {
-      const nearestValue = 100 / (splitList.length - 1);
-      const ratio = Number(v) / nearestValue;
-      const nearest = Math.round(ratio);
-      // console.log("changeValue", splitList.length, nearestValue, Number(v) / nearestValue, nearest);
-      if (!Number.isNaN(nearest)) {
-        changedValue = splitList[nearest];
-      }
+    let matchedValue;
+
+    // get matched value
+    const nearestValue = 100 / (splitList.length - 1);
+    const ratio = Number(v) / nearestValue;
+    const nearest = Math.round(ratio);
+    // console.log("changeValue", splitList.length, nearestValue, Number(v) / nearestValue, nearest);
+    if (!Number.isNaN(nearest)) {
+      matchedValue = splitList[nearest];
+      setMatchValue(matchedValue);
     }
-    onChange(v, changedValue);
+
+    onChange(v, matchedValue);
   }
 
   const actionShowRedColor = action === "Borrow" || action === "Repay";
@@ -54,8 +56,8 @@ export default function RangeSlider(props: any) {
             >
               <span
                 className={twMerge(
-                  `flex items-center justify-center text-xs text-gray-300 w-11 py-0.5 border border-transparent hover:border-v3LiquidityRemoveBarColor rounded-lg 
-                  ${p === +value ? "bg-black bg-opacity-20" : ""}`,
+                  `flex items-center justify-center text-xs text-gray-300 w-11 py-0.5 border border-transparent hover:border-v3LiquidityRemoveBarColor rounded-lg`,
+                  p === matchValue && "bg-black bg-opacity-20",
                   isWidthAuto && "w-auto",
                 )}
               >

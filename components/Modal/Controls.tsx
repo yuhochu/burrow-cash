@@ -1,7 +1,7 @@
 import { updateAmount } from "../../redux/appSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { trackMaxButton } from "../../utils/telemetry";
-import Slider from "./RangeSlider";
+import RangeSlider from "./RangeSlider";
 
 export default function Controls({
   amount,
@@ -28,10 +28,8 @@ export default function Controls({
     e.target.select();
   };
 
-  const handleSliderChange = (v) => {
-    const percent = v;
+  const handleSliderChange = (percent, v) => {
     const value = (Number(available) * percent) / 100;
-
     dispatch(
       updateAmount({
         isMax: value === Number(available),
@@ -88,7 +86,7 @@ export default function Controls({
         <span className="flex items-center">Balance: {totalAvailable}</span>
       </div>
       {/* Slider */}
-      <Slider value={sliderValue} onChange={handleSliderChange} action={action} />
+      <RangeSlider value={sliderValue} onChange={handleSliderChange} action={action} />
       <div className="h-[1px] bg-dark-700 -mx-[20px] mt-14" />
     </div>
   );
