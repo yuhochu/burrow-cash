@@ -46,6 +46,7 @@ module.exports = {
       },
       colors: {
         primary: "#D2FF3A",
+        claim: "#7C89FF",
         dark: {
           50: "#31344D",
           100: "#2E304B",
@@ -74,7 +75,12 @@ module.exports = {
         },
       },
     },
-    plugins: [],
+  },
+  variants: {
+    scale: ["responsive", "hover", "focus", "group-hover"],
+    textColor: ["responsive", "hover", "focus", "group-hover"],
+    opacity: [],
+    backgroundColor: ["responsive", "hover", "focus", "group-hover"],
   },
   plugins: [],
 };

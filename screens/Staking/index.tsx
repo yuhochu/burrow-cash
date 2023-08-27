@@ -16,6 +16,8 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import ModalStaking from "./modalStaking";
 import { modalProps } from "../../interfaces/common";
+import { LockIcon } from "../../components/Icons/Icons";
+import GiftIcon from "../../public/svg/Group 24710.svg";
 
 const Staking = () => {
   const [total] = useAppSelector(getTotalBRRR);
@@ -59,18 +61,28 @@ const Staking = () => {
           </StakingBox>
 
           <StakingBox
+            logoIcon={<LockIcon />}
             text1="🔒 Staking"
             value1={BRRR.toLocaleString(undefined, TOKEN_FORMAT)}
-            text2="Due to"
-            value2={unstakeDate.toFormat("yyyy-MM-dd / HH:mm")}
+            text2={BRRR ? "Due to" : ""}
+            value2={BRRR ? unstakeDate.toFormat("yyyy-MM-dd / HH:mm") : ""}
           >
-            <CustomButton onClick={handleUnstake} className="w-full">
+            <CustomButton onClick={handleUnstake} className="w-full" disabled={!BRRR}>
               Unstake
             </CustomButton>
           </StakingBox>
 
-          <StakingBox text1="🎁 Unclaimed Reward" value1={<LiveUnclaimedAmount />}>
-            <CustomButton onClick={handleClaimAll} className="w-full" isLoading={isLoading}>
+          <StakingBox
+            text1="🎁 Unclaimed Reward"
+            value1={<LiveUnclaimedAmount />}
+            logoIcon={<GiftIcon />}
+          >
+            <CustomButton
+              onClick={handleClaimAll}
+              className="w-full bg-claim border-claim text-black"
+              color="custom"
+              isLoading={isLoading}
+            >
               Claim
             </CustomButton>
           </StakingBox>
@@ -212,19 +224,25 @@ const Staking = () => {
 };
 
 type StakingBoxProps = {
+  logoIcon?: string | React.ReactNode;
   text1?: string | React.ReactNode;
   value1?: string | React.ReactNode;
   text2?: string;
   value2?: string;
   children?: string | React.ReactNode;
 };
-const StakingBox = ({ text1, value1, text2, value2, children }: StakingBoxProps) => {
+const StakingBox = ({ logoIcon, text1, value1, text2, value2, children }: StakingBoxProps) => {
   return (
     <ContentBox className="flex-1" padding="26px">
       <div className="flex justify-between flex-col h-full">
         <div className="flex justify-end lg:justify-between mb-2">
-          <div className="hidden lg:block">
+          <div className="hidden lg:block relative">
             <BrrrLogo color="#D2FF3A" />
+            {logoIcon && (
+              <div className="absolute" style={{ bottom: 8, right: -8 }}>
+                {logoIcon}
+              </div>
+            )}
           </div>
           <div className="text-right">
             <div>{text1}</div>

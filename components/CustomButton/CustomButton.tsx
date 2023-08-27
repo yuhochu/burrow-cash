@@ -109,6 +109,7 @@ const btnColor = {
   primary: "border-primary bg-primary hover:bg-primary text-black",
   secondary: "border border-gray-300 hover:border-gray-200 text-gray-300",
   third: "rounded-full border border-1 border-black text-black font-bold",
+  custom: "",
 };
 
 const btnSize = {
