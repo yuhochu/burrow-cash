@@ -22,7 +22,7 @@ import {
   useWithdrawTrigger,
   useAdjustTrigger,
   useRepayTrigger,
-} from "../../components/ModalAction";
+} from "../../components/Modal/components";
 
 const Index = () => {
   const accountId = useAccountId();

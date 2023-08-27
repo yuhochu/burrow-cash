@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Decimal from "decimal.js";
+import { useEffect, useState } from "react";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 import {
   ArrowLeft,
@@ -17,6 +18,7 @@ import {
   format_apy,
   formatWithCommas_number,
   formatWithCommas_usd,
+  isInvalid,
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
@@ -29,7 +31,8 @@ import {
   useSupplyTrigger,
   useBorrowTrigger,
   useRepayTrigger,
-} from "../../components/ModalAction";
+} from "../../components/Modal/components";
+import { get_token_detail } from "../../api/get-markets";
 
 const TokenDetail = () => {
   const router = useRouter();
@@ -88,6 +91,19 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   );
 }
 function TokenOverview({ tokenRow, depositAPY }: { tokenRow: UIAsset; depositAPY: any }) {
+  const [suppliers_number, set_suppliers_number] = useState<number>();
+  const [borrowers_number, set_borrowers_number] = useState<number>();
+  useEffect(() => {
+    get_token_detail(tokenRow.tokenId).then((response) => {
+      const { total_suppliers, total_borrowers } = response[0] || {};
+      if (!isInvalid(total_suppliers)) {
+        set_suppliers_number(total_suppliers);
+      }
+      if (!isInvalid(total_borrowers)) {
+        set_borrowers_number(total_borrowers);
+      }
+    });
+  }, []);
   return (
     <Box className="mb-7 pr-20">
       <div className="flex items-center">
@@ -138,14 +154,16 @@ function TokenOverview({ tokenRow, depositAPY }: { tokenRow: UIAsset; depositAPY
         <div className="flex flex-col w-1/3 ">
           <span className="text-sm text-gray-300"># of suppliers</span>
           <div className="flex items-center">
-            <span className="text-lg text-white font-bold">-</span>
+            <span className="text-lg text-white font-bold">
+              {formatWithCommas_number(suppliers_number)}
+            </span>
           </div>
         </div>
         <div className="flex flex-col w-1/3 ">
           <span className="text-sm text-gray-300"># of borrowers</span>
           <div className="flex items-center">
             <span className="text-lg text-white font-bold">
-              {!tokenRow?.can_borrow ? "-" : "-"}
+              {!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number)}
             </span>
           </div>
         </div>

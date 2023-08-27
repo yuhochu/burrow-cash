@@ -30,6 +30,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
+        centralizationUrl: "http://139.162.85.48:3001/burrow",
       } as unknown as ConnectConfig;
     case "development":
     case "testnet":
@@ -39,6 +40,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
+        centralizationUrl: "http://139.162.85.48:3001/burrow",
       } as unknown as ConnectConfig;
     case "betanet":
       return {

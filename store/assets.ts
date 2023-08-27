@@ -8,7 +8,6 @@ Decimal.set({ precision: DEFAULT_PRECISION });
 
 export const getAssets = async (): Promise<IAssetEntry[]> => {
   const { view, logicContract } = await getBurrow();
-
   return (
     (await view(logicContract, ViewMethodsLogic[ViewMethodsLogic.get_assets_paged])) as AssetEntry[]
   ).map(([token_id, asset]: AssetEntry) => ({
