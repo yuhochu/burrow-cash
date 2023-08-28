@@ -16,7 +16,7 @@ export async function adjustCollateral({
 }: {
   tokenId: string;
   extraDecimals: number;
-  amount: number;
+  amount: string;
   isMax: boolean;
 }) {
   const { oracleContract, logicContract, account, call } = await getBurrow();

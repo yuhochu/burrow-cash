@@ -13,7 +13,7 @@ export const WithdrawCell = ({ rowData }) => {
 
   const handleClick = () => {
     if (canWithdraw) {
-      dispatch(showModal({ action: "Withdraw", tokenId, amount: 0 }));
+      dispatch(showModal({ action: "Withdraw", tokenId, amount: "0" }));
     } else {
       setOpen(true);
     }
@@ -58,7 +58,7 @@ export const RepayCell = ({ rowData: { tokenId } }) => {
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    dispatch(showModal({ action: "Repay", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Repay", tokenId, amount: "0" }));
   };
 
   return (

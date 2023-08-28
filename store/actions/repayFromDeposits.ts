@@ -14,7 +14,7 @@ export async function repayFromDeposits({
   extraDecimals,
 }: {
   tokenId: string;
-  amount: number;
+  amount: string;
   extraDecimals: number;
 }) {
   const { logicContract, oracleContract } = await getBurrow();

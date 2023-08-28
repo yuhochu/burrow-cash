@@ -171,6 +171,7 @@ export interface UIAsset {
   borrowed: number;
   availableNEAR: number;
   available: number;
+  decimals: number;
   extraDecimals: number;
   brrrBorrow: number;
   brrrSupply: number;

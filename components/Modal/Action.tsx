@@ -17,7 +17,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../utils/telemetry";
 import { useDegenMode } from "../../hooks/hooks";
-import { SubmitButton } from "./components";
+import { SubmitButton, AlertWarning } from "./components";
 
 export default function Action({ maxBorrowAmount, healthFactor }) {
   const [loading, setLoading] = useState(false);
@@ -27,11 +27,12 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const { action = "Deposit", tokenId } = asset;
   const { isRepayFromDeposits } = useDegenMode();
 
-  const { available, canUseAsCollateral, extraDecimals, collateral } = getModalData({
+  const { available, canUseAsCollateral, extraDecimals, collateral, disabled } = getModalData({
     ...asset,
     maxBorrowAmount,
     healthFactor,
     amount,
+    isRepayFromDeposits,
   });
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       useAsCollateral,
       available,
       collateral,
-      sliderValue: Math.round((amount * 100) / available) || 0,
+      sliderValue: Math.round((+amount * 100) / available) || 0,
       isRepayFromDeposits,
     });
     dispatch(hideModal());
@@ -109,10 +110,10 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         break;
     }
   };
-
   const actionDisabled = useMemo(() => {
-    if (action === "Supply" && amount > 0) return false;
-    if (action !== "Adjust" && !amount) return true;
+    // if (action === "Supply" && +amount > 0) return false;
+    if (disabled) return true;
+    if (action !== "Adjust" && +amount <= 0) return true;
     if (
       action !== "Repay" &&
       parseFloat(healthFactor?.toFixed(2)) >= 0 &&
@@ -120,7 +121,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
     )
       return true;
     return false;
-  }, [amount, healthFactor]);
+  }, [amount, healthFactor, disabled]);
 
   return (
     <>
@@ -159,9 +160,13 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       </LoadingButton> */}
       <SubmitButton action={action} disabled={actionDisabled} onClick={handleActionButtonClick} />
       {action === "Repay" && isRepayFromDeposits && (
-        <Alert severity="warning" sx={{ mt: "20px" }}>
-          This is an advanced feature. Please Do Your Own Research before using it.
-        </Alert>
+        // <Alert severity="warning" sx={{ mt: "20px" }}>
+        //   This is an advanced feature. Please Do Your Own Research before using it.
+        // </Alert>
+        <AlertWarning
+          className="mt-5"
+          title="This is an advanced feature. Please Do Your Own Research before using it."
+        />
       )}
     </>
   );

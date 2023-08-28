@@ -1,6 +1,8 @@
+import Decimal from "decimal.js";
 import { updateAmount } from "../../redux/appSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { trackMaxButton } from "../../utils/telemetry";
+import { formatWithCommas_number } from "../../utils/uiNumber";
 import RangeSlider from "./RangeSlider";
 
 export default function Controls({
@@ -15,25 +17,32 @@ export default function Controls({
   const dispatch = useAppDispatch();
 
   const handleInputChange = (e) => {
-    if (Number(e.target.value) > available) return;
-    dispatch(updateAmount({ isMax: false, amount: e.target.value || 0 }));
+    const value = e.target.value || 0;
+    if (new Decimal(value).gt(available)) return;
+    // if (Number(e.target.value) > available) return;
+    dispatch(updateAmount({ isMax: false, amount: value }));
   };
 
   const handleMaxClick = () => {
-    trackMaxButton({ amount: Number(available), action, tokenId });
-    dispatch(updateAmount({ isMax: true, amount: Number(available) }));
+    // trackMaxButton({ amount: Number(available), action, tokenId });
+    // dispatch(updateAmount({ isMax: true, amount: Number(available) }));
+    dispatch(updateAmount({ isMax: true, amount: available }));
   };
 
   const handleFocus = (e) => {
     e.target.select();
   };
 
-  const handleSliderChange = (percent, v) => {
-    const value = (Number(available) * percent) / 100;
+  const handleSliderChange = (percent) => {
+    const p = percent < 1 ? 0 : percent > 99 ? 100 : percent;
+    // const value = (Number(available) * p) / 100;
+    const value = new Decimal(available).mul(p).div(100).toFixed();
     dispatch(
       updateAmount({
-        isMax: value === Number(available),
-        amount: value,
+        // isMax: value === Number(available),
+        // amount: value,
+        isMax: p === 100,
+        amount: new Decimal(value || 0).toFixed(),
       }),
     );
   };
@@ -60,8 +69,8 @@ export default function Controls({
         <Slider value={sliderValue} onChange={handleSliderChange} />
       </Box> */}
       {/* input field */}
-      <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5 gap-3">
+        <div className="flex items-center gap-2 flex-grow">
           <img src={asset?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
           <input
             type="number"
@@ -83,7 +92,9 @@ export default function Controls({
       {/* balance field */}
       <div className="flex items-center justify-between text-sm text-gray-300 mt-2.5 px-1">
         <span>{available$}</span>
-        <span className="flex items-center">Balance: {totalAvailable}</span>
+        <span className="flex items-center">
+          Balance: {formatWithCommas_number(totalAvailable)}
+        </span>
       </div>
       {/* Slider */}
       <RangeSlider value={sliderValue} onChange={handleSliderChange} action={action} />

@@ -14,7 +14,7 @@ export async function borrow({
 }: {
   tokenId: string;
   extraDecimals: number;
-  amount: number;
+  amount: string;
 }) {
   const { oracleContract, logicContract, account } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;

@@ -48,16 +48,16 @@ const Modal = () => {
 
   const healthFactor = useAppSelector(
     action === "Withdraw"
-      ? recomputeHealthFactorWithdraw(tokenId, amount)
+      ? recomputeHealthFactorWithdraw(tokenId, +amount)
       : action === "Adjust"
-      ? recomputeHealthFactorAdjust(tokenId, amount)
+      ? recomputeHealthFactorAdjust(tokenId, +amount)
       : action === "Supply"
-      ? recomputeHealthFactorSupply(tokenId, amount)
+      ? recomputeHealthFactorSupply(tokenId, +amount)
       : action === "Repay" && isRepayFromDeposits
-      ? recomputeHealthFactorRepayFromDeposits(tokenId, amount)
+      ? recomputeHealthFactorRepayFromDeposits(tokenId, +amount)
       : action === "Repay"
-      ? recomputeHealthFactorRepay(tokenId, amount)
-      : recomputeHealthFactor(tokenId, amount),
+      ? recomputeHealthFactorRepay(tokenId, +amount)
+      : recomputeHealthFactor(tokenId, +amount),
   );
 
   const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
@@ -82,9 +82,8 @@ const Modal = () => {
     amount,
   });
 
-  const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
+  const total = (price * +amount).toLocaleString(undefined, USD_FORMAT);
   const handleClose = () => dispatch(hideModal());
-
   useEffect(() => {
     if (isOpen) {
       dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
@@ -94,7 +93,7 @@ const Modal = () => {
     rates.push({
       label: "Use as Collateral",
       value: formatWithCommas_number(new Decimal(amount || 0).toFixed()),
-      value$: new Decimal(price * amount).toFixed(),
+      value$: new Decimal(price * +amount).toFixed(),
     });
   }
   return (

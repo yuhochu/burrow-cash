@@ -42,7 +42,7 @@ export interface AppState {
     action?: TokenAction;
     tokenId: string;
     useAsCollateral: boolean;
-    amount: number;
+    amount: string;
     isMax: boolean;
   };
   staking: {
@@ -69,7 +69,7 @@ export const initialState: AppState = {
   showInfo: true,
   protocolStats: true,
   displayAsTokenValue: true,
-  showDust: false,
+  showDust: true,
   showTicker: false,
   slimStats: false,
   showDailyReturns: false,
@@ -83,7 +83,7 @@ export const initialState: AppState = {
     action: undefined,
     tokenId: "",
     useAsCollateral: false,
-    amount: 0,
+    amount: "0",
     isMax: false,
   },
   staking: {
@@ -133,12 +133,12 @@ export const appSlice = createSlice({
     },
     showModal(
       state,
-      action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
+      action: PayloadAction<{ action: TokenAction; amount: string; tokenId: string }>,
     ) {
       state.selected = { ...state.selected, isMax: false, ...action.payload };
       state.showModal = true;
     },
-    updateAmount(state, action: PayloadAction<{ amount: number; isMax: boolean }>) {
+    updateAmount(state, action: PayloadAction<{ amount: string; isMax: boolean }>) {
       state.selected.amount = action.payload.amount;
       state.selected.isMax = action.payload.isMax;
     },
@@ -186,7 +186,7 @@ export const appSlice = createSlice({
       };
       state.selected = {
         ...state.selected,
-        amount: 0,
+        amount: "0",
       };
     },
     setDisclaimerAggreed(state, action) {

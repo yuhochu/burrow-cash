@@ -17,7 +17,7 @@ import { computeWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAm
 interface Props {
   tokenId: string;
   extraDecimals: number;
-  amount: number;
+  amount: string;
   isMax: boolean;
 }
 

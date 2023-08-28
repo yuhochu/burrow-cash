@@ -16,7 +16,7 @@ export async function repay({
   isMax,
 }: {
   tokenId: string;
-  amount: number;
+  amount: string;
   extraDecimals: number;
   isMax: boolean;
 }) {

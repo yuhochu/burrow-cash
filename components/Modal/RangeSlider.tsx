@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
+import Decimal from "decimal.js";
 import { toPrecision } from "../../utils/number";
 
 export default function RangeSlider(props: any) {
@@ -45,7 +46,6 @@ export default function RangeSlider(props: any) {
       matchedValue = splitList[nearest];
       setMatchValue(matchedValue);
     }
-
     onChange(v, matchedValue);
   }
 

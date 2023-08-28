@@ -115,7 +115,7 @@ export const transformAsset = (
   }
   return standardizeAsset({
     tokenId,
-    ...pick(["icon", "symbol", "name"], asset.metadata),
+    ...pick(["icon", "symbol", "name", "decimals"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,

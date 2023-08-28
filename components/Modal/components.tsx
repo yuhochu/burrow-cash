@@ -23,6 +23,7 @@ import { toggleUseAsCollateral, hideModal, showModal } from "../../redux/appSlic
 import { formatWithCommas_number, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
+import { TipIcon } from "./svg";
 
 export const CloseIcon = (props) => {
   return (
@@ -315,20 +316,58 @@ export const SubmitButton = ({ action, disabled, onClick }) => {
   );
 };
 
-export const Alerts = ({ data }) => (
-  <Stack my="1rem" spacing="1rem">
-    {Object.keys(data).map((alert) => (
-      <Alert key={alert} severity={data[alert].severity}>
-        {data[alert].title}
-      </Alert>
-    ))}
-  </Stack>
-);
+// export const Alerts = ({ data }) => (
+//   <Stack my="1rem" spacing="1rem">
+//     {Object.keys(data).map((alert) => (
+//       <Alert key={alert} severity={data[alert].severity}>
+//         {data[alert].title}
+//       </Alert>
+//     ))}
+//   </Stack>
+// );
+export const Alerts = ({ data }) => {
+  const sort = (b: any, a: any) => {
+    if (b[1].severity === "error") return 1;
+    if (a[1].severity === "error") return -1;
+    return 0;
+  };
+
+  return (
+    <div className="flex flex-col gap-4 my-5">
+      {Object.entries(data)
+        .sort(sort)
+        .map(([alert]) => {
+          if (data[alert].severity === "warning") {
+            return <AlertWarning className="-mt-2" key={alert} title={data[alert].title} />;
+          } else {
+            return <AlertError className="pb-5 -mb-7" key={alert} title={data[alert].title} />;
+          }
+        })}
+    </div>
+  );
+};
+
+export const AlertWarning = ({ title, className }: { title: string; className?: string }) => {
+  return <div className={`text-yellow-50 text-sm ${className || ""}`}>{title}</div>;
+};
+
+export const AlertError = ({ title, className }: { title: string; className?: string }) => {
+  return (
+    <div
+      className={`flex items-start gap-2 text-red-50 text-sm bg-red-50 bg-opacity-10 rounded-md p-3 ${
+        className || ""
+      }`}
+    >
+      <TipIcon className="flex-shrink-0 relative top-1" />
+      {title}
+    </div>
+  );
+};
 
 export function useWithdrawTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   return () => {
-    dispatch(showModal({ action: "Withdraw", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Withdraw", tokenId, amount: "0" }));
   };
 }
 export function useAdjustTrigger(tokenId: string) {
@@ -342,19 +381,19 @@ export function useAdjustTrigger(tokenId: string) {
 export function useSupplyTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   return () => {
-    dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Supply", tokenId, amount: "0" }));
   };
 }
 export function useBorrowTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   return () => {
-    dispatch(showModal({ action: "Borrow", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Borrow", tokenId, amount: "0" }));
   };
 }
 
 export function useRepayTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   return () => {
-    dispatch(showModal({ action: "Repay", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Repay", tokenId, amount: "0" }));
   };
 }

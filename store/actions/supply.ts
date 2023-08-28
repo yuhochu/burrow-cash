@@ -16,7 +16,7 @@ export async function supply({
   tokenId: string;
   extraDecimals: number;
   useAsCollateral: boolean;
-  amount: number;
+  amount: string;
   isMax: boolean;
 }): Promise<void> {
   const { account, logicContract } = await getBurrow();

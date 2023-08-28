@@ -61,7 +61,11 @@ export const format_apy = (v) => {
   }
 };
 
-export const isInvalid = function (v) {
+export const isInvalid = (v) => {
   if (v === "" || v === undefined || v == null) return true;
   return false;
+};
+
+export const toDecimal = (v) => {
+  return new Decimal(v).toFixed();
 };

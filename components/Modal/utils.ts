@@ -1,7 +1,8 @@
 import Decimal from "decimal.js";
 import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, NEAR_STORAGE_DEPOSIT } from "../../store";
 import type { UIAsset } from "../../interfaces";
-import { formatWithCommas_number } from "../../utils/uiNumber";
+import { formatWithCommas_number, toDecimal } from "../../utils/uiNumber";
+import { expandToken } from "../../store/helper";
 
 interface Alert {
   [key: string]: {
@@ -29,7 +30,7 @@ export const actionMapTitle = {
   Repay: "Repay",
 };
 
-export const getModalData = (asset): UIAsset & Props => {
+export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => {
   const {
     symbol,
     action,
@@ -49,12 +50,11 @@ export const getModalData = (asset): UIAsset & Props => {
     maxWithdrawAmount,
     isRepayFromDeposits,
   } = asset;
-
   const data: any = {
     apy: borrowApy,
     alerts: {},
   };
-
+  let disabled = false;
   if (healthFactor >= 0 && healthFactor <= 105) {
     data.alerts["liquidation"] = {
       title: "Your health factor will be dangerously low and you're at risk of liquidation",
@@ -64,28 +64,25 @@ export const getModalData = (asset): UIAsset & Props => {
     delete data.alerts["liquidation"];
   }
 
-  const getAvailableWithdrawOrAdjust = Number((supplied + collateral).toFixed(PERCENT_DIGITS));
+  const getAvailableWithdrawOrAdjust = toDecimal(Number(supplied + collateral));
 
   const isWrappedNear = symbol === "NEAR";
-
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
       data.totalTitle = `Total Supply`;
       data.rates = [{ label: "Collateral Factor", value: collateralFactor }];
-      data.available = available.toFixed(PERCENT_DIGITS);
+      data.available = toDecimal(available);
       if (isWrappedNear) {
-        data.available = Number(
-          Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT),
-        ).toFixed(PERCENT_DIGITS);
+        data.available = toDecimal(
+          Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT)),
+        );
       }
       data.alerts = {};
       break;
     case "Borrow":
       data.totalTitle = `Total Borrow`;
-      data.available = Math.min(Math.max(0, maxBorrowAmount), availableLiquidity).toFixed(
-        PERCENT_DIGITS,
-      );
+      data.available = toDecimal(Math.min(Math.max(0, maxBorrowAmount), availableLiquidity));
       data.rates = [
         { label: "Collateral Factor", value: collateralFactor },
         // {
@@ -94,10 +91,7 @@ export const getModalData = (asset): UIAsset & Props => {
         // },
       ];
 
-      if (
-        amount !== 0 &&
-        Number(amount).toFixed(PERCENT_DIGITS) === maxBorrowAmount?.toFixed(PERCENT_DIGITS)
-      ) {
+      if (amount !== 0 && Number(amount).toFixed() === maxBorrowAmount?.toFixed()) {
         data.alerts["maxBorrow"] = {
           title: "Due to pricing fluctuations the max borrow amount is approximate",
           severity: "warning",
@@ -107,11 +101,9 @@ export const getModalData = (asset): UIAsset & Props => {
     case "Withdraw":
       data.totalTitle = `Withdraw Supply Amount`;
       data.apy = supplyApy;
-      data.available = Math.min(
-        supplied + collateral,
-        maxWithdrawAmount,
-        availableLiquidity,
-      ).toFixed(PERCENT_DIGITS);
+      data.available = toDecimal(
+        Math.min(supplied + collateral, maxWithdrawAmount, availableLiquidity),
+      );
       data.rates = [
         {
           label: "Remaining Collateral",
@@ -130,14 +122,16 @@ export const getModalData = (asset): UIAsset & Props => {
       break;
     case "Repay":
       data.totalTitle = `Repay Borrow Amount`;
-      data.available = isRepayFromDeposits
-        ? Math.min(maxWithdrawAmount, borrowed)
-        : Math.min(
-            isWrappedNear
-              ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
-              : available,
-            borrowed,
-          );
+      data.available = toDecimal(
+        isRepayFromDeposits
+          ? Math.min(maxWithdrawAmount, borrowed)
+          : Math.min(
+              isWrappedNear
+                ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
+                : available,
+              borrowed,
+            ),
+      );
       data.alerts = {};
       data.rates = [
         {
@@ -156,10 +150,26 @@ export const getModalData = (asset): UIAsset & Props => {
 
     default:
   }
+  if (
+    action === "Borrow" ||
+    action === "Supply" ||
+    action === "Withdraw" ||
+    (action === "Repay" && !isRepayFromDeposits)
+  ) {
+    if (new Decimal(amount || 0).gt(0) && new Decimal(expandToken(amount, asset.decimals)).lt(1)) {
+      data.alerts["wallet"] = {
+        title:
+          "The current balance is below the minimum token decimals, so that it cannot be processed by the contract.",
+        severity: "warning",
+      };
+      disabled = true;
+    }
+  }
 
   return {
     ...asset,
     ...data,
     available$: (data.available * price).toLocaleString(undefined, USD_FORMAT),
+    disabled,
   };
 };

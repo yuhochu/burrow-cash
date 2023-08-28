@@ -11,7 +11,7 @@ const Market = () => {
   const rows = useAvailableAssets();
   const { sorting, setSorting } = useTableSorting();
   const handleOnRowClick = ({ tokenId }) => {
-    dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Supply", tokenId, amount: "0" }));
   };
   return (
     <LayoutBox className="flex flex-col items-center justify-center">

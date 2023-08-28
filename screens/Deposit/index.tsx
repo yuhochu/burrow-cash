@@ -18,7 +18,7 @@ const Deposit = () => {
     : [...defaultColumns.filter((col) => col.dataKey !== "totalSupplyMoney")];
 
   const handleOnRowClick = ({ tokenId }) => {
-    dispatch(showModal({ action: "Supply", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Supply", tokenId, amount: "0" }));
   };
 
   return (
