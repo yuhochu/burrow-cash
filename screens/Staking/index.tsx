@@ -42,6 +42,10 @@ const Staking = () => {
     }
   };
 
+  if (!accountId) {
+    return <div>Please connect your wallet.</div>;
+  }
+
   return (
     <LayoutContainer>
       <div>
@@ -93,63 +97,6 @@ const Staking = () => {
         isOpen={modal?.name === "staking"}
         onClose={() => setModal({ name: "", data: null })}
       />
-
-      <Stack
-        alignItems="center"
-        mt="2rem"
-        spacing="2rem"
-        sx={{ px: ["0rem", "2rem"], mx: "auto", mb: "2rem" }}
-      >
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <BrrrLogo />
-          <Typography
-            fontWeight="semibold"
-            fontSize={{ xs: "1.5rem", sm: "2rem" }}
-            color={theme.custom.textStaking}
-          >
-            <LiveUnclaimedAmount addAmount={total} /> BRRR
-          </Typography>
-        </Stack>
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <StakingPill>Staked</StakingPill>
-          <StakingPill sx={{ background: "#594a42" }}>Available</StakingPill>
-          <StakingPill sx={{ background: "#47c285" }}>Unclaimed</StakingPill>
-        </Stack>
-        <Stack
-          spacing={2}
-          direction={{ xs: "column-reverse", sm: "row" }}
-          sx={{
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <StakingCard
-            value={BRRR.toLocaleString(undefined, TOKEN_FORMAT)}
-            label={`Staked until ${unstakeDate.toFormat("yyyy-MM-dd / HH:mm")}`}
-            buttonLabel="Unstake"
-            isDisabled={disabledUnstake}
-            isLoading={loadingUnstake}
-            onClick={handleUnstake}
-          />
-          <StakingCard
-            value={total.toLocaleString(undefined, TOKEN_FORMAT)}
-            label="Available to stake"
-            color="#594a42"
-            buttonLabel="Stake"
-            onClick={openModal}
-          />
-          <StakingCard
-            value={<LiveUnclaimedAmount />}
-            label="Unclaimed rewards"
-            color="#47c285"
-            buttonLabel="Claim"
-            onClick={handleClaimAll}
-            isLoading={isLoading}
-          />
-        </Stack>
-        {/* <StakingModal open={isModalOpen} onClose={() => openModal(false)} /> */}
-      </Stack>
     </LayoutContainer>
   );
 

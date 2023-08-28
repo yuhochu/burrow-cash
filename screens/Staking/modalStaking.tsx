@@ -20,6 +20,8 @@ import { StakingRewards } from "./rewards";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import MaxIcon from "../../components/Input/max.svg";
 import { updateAmount } from "../../redux/appSlice";
+import { useRewards } from "../../hooks/useRewards";
+import { ContentBox } from "../../components/ContentBox/ContentBox";
 
 const ModalStaking = ({ isOpen, onClose }) => {
   const [total] = useAppSelector(getTotalBRRR);
@@ -54,7 +56,11 @@ const ModalStaking = ({ isOpen, onClose }) => {
   };
 
   const handleInputChange = (e) => {
-    setAmount(Number(e.target.value));
+    let value = e?.target || {};
+    if (Number(value) > Number(total)) {
+      value = total;
+    }
+    setAmount(Number(value));
   };
 
   const handleSliderChange = (e) => {
@@ -138,7 +144,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
             selectNavValueOnly
             isWidthAuto
             valueSymbol=""
-            navs={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]}
+            navs={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
           />
         </StyledRow>
       </StyledRow>
@@ -160,8 +166,23 @@ const ModalStaking = ({ isOpen, onClose }) => {
             {stakingNetTvlAPY.toLocaleString(undefined, APY_FORMAT)}%
           </div>
         </div>
-        <StakingRewards />
+        <StakingReward />
+        {/* <StakingRewards /> */}
       </StyledRow>
+
+      <CustomButton
+        disabled={disabledStake}
+        onClick={handleStake}
+        isLoading={loadingStake}
+        className="w-full mt-2 mb-4"
+      >
+        Confirm
+      </CustomButton>
+
+      <div className="text-primary h5 mb-4 text-center">
+        Staking duration applies to previously staked BRRR as well.
+      </div>
+
       <div>
         {invalidAmount && (
           <Alert severity="error">Amount must be lower than total BRRR earned</Alert>
@@ -172,15 +193,66 @@ const ModalStaking = ({ isOpen, onClose }) => {
           </Alert>
         )}
       </div>
-      <CustomButton disabled={disabledStake} onClick={handleStake} isLoading={loadingStake}>
-        Confirm
-      </CustomButton>
-      <div>
-        <div>Staking duration applies to previously staked BRRR as well.</div>
-      </div>
     </CustomModal>
   );
 };
+
+const StakingReward = () => {
+  const { extra, net } = useRewards();
+
+  return (
+    <div className="flex justify-between mb-4">
+      <div className="h5 text-gray-300">Net Liquidity Rewards</div>
+      <div className="h5 text-primary">
+        {net.map(([tokenId, r]) => {
+          const { icon, dailyAmount, symbol, multiplier, newDailyAmount } = r || {};
+          return (
+            <div className="flex gap-2 items-center text-claim" key={tokenId}>
+              <img src={icon} alt={symbol} width={26} height={26} className="rounded-full" />
+              <StyledNewDailyAmount
+                className="border-b border-dashed border-claim"
+                style={{ paddingBottom: 2 }}
+              >
+                {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+                <div className="_hints">
+                  <ContentBox padding="5px 8px">
+                    <div className="flex items-center justify-between gap-5">
+                      <div className="whitespace-nowrap">Current Daily</div>
+                      <div>{dailyAmount?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
+                    </div>
+                    <div className="flex items-center justify-between gap-5">
+                      <div className="whitespace-nowrap">Multiplier</div>
+                      <div>{multiplier?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
+                    </div>
+                  </ContentBox>
+                </div>
+              </StyledNewDailyAmount>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const StyledNewDailyAmount = styled.div`
+  position: relative;
+
+  ._hints {
+    display: none;
+    position: absolute;
+    left: 100%;
+    margin-left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &:hover {
+    ._hints {
+      display: block;
+    }
+  }
+`;
 
 const StyledRow = styled.div`
   margin-bottom: 10px;
