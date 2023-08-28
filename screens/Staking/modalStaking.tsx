@@ -56,7 +56,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
   };
 
   const handleInputChange = (e) => {
-    let value = e?.target || {};
+    let { value } = e?.target || {};
     if (Number(value) > Number(total)) {
       value = total;
     }
@@ -87,6 +87,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
 
   const handleStake = async () => {
     try {
+      // console.log("amountamount", amount, months, (amount / total) * 100);
       trackStaking({ amount, months, percent: (amount / total) * 100 });
       await stake({ amount, months });
       setLoadingStake(true);
@@ -201,36 +202,48 @@ const StakingReward = () => {
   const { extra, net } = useRewards();
 
   return (
-    <div className="flex justify-between mb-4">
-      <div className="h5 text-gray-300">Net Liquidity Rewards</div>
-      <div className="h5 text-primary">
-        {net.map(([tokenId, r]) => {
-          const { icon, dailyAmount, symbol, multiplier, newDailyAmount } = r || {};
-          return (
-            <div className="flex gap-2 items-center text-claim" key={tokenId}>
-              <img src={icon} alt={symbol} width={26} height={26} className="rounded-full" />
-              <StyledNewDailyAmount
-                className="border-b border-dashed border-claim"
-                style={{ paddingBottom: 2 }}
-              >
-                {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
-                <div className="_hints">
-                  <ContentBox padding="5px 8px">
-                    <div className="flex items-center justify-between gap-5">
-                      <div className="whitespace-nowrap">Current Daily</div>
-                      <div>{dailyAmount?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
-                    </div>
-                    <div className="flex items-center justify-between gap-5">
-                      <div className="whitespace-nowrap">Multiplier</div>
-                      <div>{multiplier?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
-                    </div>
-                  </ContentBox>
-                </div>
-              </StyledNewDailyAmount>
-            </div>
-          );
-        })}
+    <>
+      <div className="flex justify-between mb-4">
+        <div className="h5 text-gray-300">Net Liquidity Rewards</div>
+        <div className="h5 text-primary">
+          {net.map(([tokenId, r]) => (
+            <Reward key={tokenId} data={r} />
+          ))}
+        </div>
       </div>
+      <div className="h5 text-gray-300">Asset Rewards</div>
+      <div className="h5 text-primary">
+        {extra.map(([tokenId, r]) => (
+          <Reward key={tokenId} data={r} />
+        ))}
+      </div>
+    </>
+  );
+};
+
+const Reward = ({ data }) => {
+  const { icon, dailyAmount, symbol, multiplier, newDailyAmount } = data || {};
+  return (
+    <div className="flex gap-2 items-center text-claim">
+      <img src={icon} alt={symbol} width={26} height={26} className="rounded-full" />
+      <StyledNewDailyAmount
+        className="border-b border-dashed border-claim"
+        style={{ paddingBottom: 2 }}
+      >
+        {newDailyAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+        <div className="_hints">
+          <ContentBox padding="5px 8px">
+            <div className="flex items-center justify-between gap-5">
+              <div className="whitespace-nowrap">Current Daily</div>
+              <div>{dailyAmount?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
+            </div>
+            <div className="flex items-center justify-between gap-5">
+              <div className="whitespace-nowrap">Multiplier</div>
+              <div>{multiplier?.toLocaleString(undefined, TOKEN_FORMAT)}</div>
+            </div>
+          </ContentBox>
+        </div>
+      </StyledNewDailyAmount>
     </div>
   );
 };
