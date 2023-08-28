@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BeatLoader } from "react-spinners";
+import { twMerge } from "tailwind-merge";
+import SemiCircleProgressBar from "../../components/SemiCircleProgressBar/SemiCircleProgressBar";
 import { useUserHealth } from "../../hooks/useUserHealth";
 import { formatUSDValue } from "../../helpers/helpers";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -8,13 +10,16 @@ import { useRewards } from "../../hooks/useRewards";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
 import ModalHistoryInfo from "./modalHistoryInfo";
 import { modalProps } from "../../interfaces/common";
+import { DangerIcon, QuestionIcon } from "../../components/Icons/Icons";
+import CustomTooltips from "../../components/CustomTooltips/CustomTooltips";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
     name: "",
     data: null,
   });
-  const { data, netAPY, netLiquidityAPY } = useUserHealth();
+  const userHealth = useUserHealth();
+  const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
   const rewardsObj = useRewards();
   const APYAmount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
 
@@ -87,11 +92,8 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         </div>
       </div>
       <div className="flex">
-        <div>
-          <div className="text-color-">
-            {data?.amount} : {data?.label}
-          </div>
-          <div className="h6 text-gray-300">Health Factor</div>
+        <div className="relative mr-6">
+          <HealthFactor userHealth={userHealth} />
         </div>
 
         <div className="flex flex-col">
@@ -117,6 +119,45 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         tab={modal?.data?.tabIndex}
       />
     </div>
+  );
+};
+
+const HealthFactor = ({ userHealth }) => {
+  const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
+  const isDanger = healthFactor < lowHealthFactor;
+
+  return (
+    <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={75}>
+      <div className="absolute">
+        <div
+          className={twMerge(
+            "h2b text-primary",
+            isDanger && "text-red-100 flex gap-2 items-center",
+          )}
+        >
+          {isDanger && (
+            <CustomTooltips
+              alwaysShow
+              text={`Your health factor is dangerously low and you're at risk of liquidation`}
+              width={186}
+            >
+              <DangerIcon />
+            </CustomTooltips>
+          )}
+          {data?.valueLabel}
+        </div>
+        <div className="h5 text-gray-300 flex gap-1 items-center justify-center">
+          Health Factor
+          <div style={{ marginRight: -5 }} className="relative">
+            <CustomTooltips
+              text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${lowHealthFactor}, your account can be partially liquidated`}
+            >
+              <QuestionIcon />
+            </CustomTooltips>
+          </div>
+        </div>
+      </div>
+    </SemiCircleProgressBar>
   );
 };
 

@@ -211,11 +211,13 @@ const StakingReward = () => {
           ))}
         </div>
       </div>
-      <div className="h5 text-gray-300">Asset Rewards</div>
-      <div className="h5 text-primary">
-        {extra.map(([tokenId, r]) => (
-          <Reward key={tokenId} data={r} />
-        ))}
+      <div className="flex justify-between mb-4">
+        <div className="h5 text-gray-300">Asset Rewards</div>
+        <div className="h5 text-primary">
+          {extra.map(([tokenId, r]) => (
+            <Reward key={tokenId} data={r} />
+          ))}
+        </div>
       </div>
     </>
   );
