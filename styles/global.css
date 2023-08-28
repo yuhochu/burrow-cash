@@ -525,3 +525,6 @@ input[type="range"]::-webkit-slider-runnable-track {
 
 .custom-input-wrap .icon {
 }
+.MuiBox-root:focus {
+  outline: none;
+}
