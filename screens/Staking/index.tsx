@@ -43,9 +43,17 @@ const Staking = () => {
   };
 
   if (!accountId) {
-    return <div>Please connect your wallet.</div>;
+    return (
+      <div>
+        <div className="flex justify-center">
+          <div className="mb-10">
+            <div className="flex justify-center">{Mascot}</div>
+          </div>
+        </div>
+        <div className="h2 flex justify-center">Please connect your wallet.</div>
+      </div>
+    );
   }
-
   return (
     <LayoutContainer>
       <div>

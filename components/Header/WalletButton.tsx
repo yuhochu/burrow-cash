@@ -261,4 +261,47 @@ const ClaimButtonInAccount = (props) => {
   );
 };
 
+export const ConnectWalletButton = ({ accountId }) => {
+  const [isDisclaimerOpen, setDisclaimer] = useState(false);
+  const { getDisclaimer: hasAgreedDisclaimer } = useDisclaimer();
+
+  const onWalletButtonClick = async () => {
+    if (!hasAgreedDisclaimer) {
+      setDisclaimer(true);
+      return;
+    }
+    if (accountId) return;
+    trackConnectWallet();
+    window.modal.show();
+  };
+
+  return (
+    <>
+      <Button
+        size="small"
+        sx={{
+          justifySelf: "end",
+          alignItems: "center",
+          cursor: accountId ? "default" : "pointer",
+          color: "#000",
+          textTransform: "none",
+          fontSize: "16px",
+          padding: "0 20px",
+          height: "40px",
+          borderRadius: "6px",
+          ":hover": {
+            backgroundColor: "#D2FF3A",
+          },
+        }}
+        variant={accountId ? "outlined" : "contained"}
+        onClick={onWalletButtonClick}
+        disableRipple={!!accountId}
+      >
+        Connect Wallet
+      </Button>
+      <Disclaimer isOpen={isDisclaimerOpen} onClose={() => setDisclaimer(false)} />
+    </>
+  );
+};
+
 export default WalletButton;

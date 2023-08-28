@@ -23,6 +23,7 @@ import {
   useAdjustTrigger,
   useRepayTrigger,
 } from "../../components/Modal/components";
+import { ConnectWalletButton } from "../../components/Header/WalletButton";
 
 const Index = () => {
   const accountId = useAccountId();
@@ -41,20 +42,41 @@ const Index = () => {
     }
   };
 
+  let overviewNode;
+  if (accountId) {
+    overviewNode = (
+      <ContentBox className="mb-8">
+        <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />
+      </ContentBox>
+    );
+  } else {
+    overviewNode = (
+      <div className="flex justify-between items-center">
+        <div>
+          <div className="h3 mb-2">Connect your wallet</div>
+          <div className="mb-4 text-gray-300 h4">
+            Please connect your wallet to see your supplies, borrowings, and open positions.
+          </div>
+          <div>
+            <ConnectWalletButton accountId={accountId} />
+          </div>
+        </div>
+        <div style={{ margin: "-20px 0 -40px" }}>
+          <BookTokenSvg />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <LayoutContainer>
-        {/* <div> */}
-        {/*  <BookTokenSvg /> */}
-        {/* </div> */}
-        <ContentBox className="mb-8">
-          <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />
-        </ContentBox>
+        {overviewNode}
 
         <div style={{ minHeight: 600 }}>
           <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-            <YourSupplied suppliedRows={suppliedRows} />
-            <YourBorrowed borrowedRows={borrowedRows} />
+            <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
+            <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
           </StyledSupplyBorrow>
         </div>
       </LayoutContainer>
@@ -131,7 +153,7 @@ const yourSuppliedColumns = [
     },
   },
 ];
-const YourSupplied = ({ suppliedRows }) => {
+const YourSupplied = ({ suppliedRows, accountId }) => {
   return (
     <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
       <div className="flex items-center mb-4">
@@ -144,6 +166,7 @@ const YourSupplied = ({ suppliedRows }) => {
       <StyledCustomTable
         data={suppliedRows}
         columns={yourSuppliedColumns}
+        noDataText={!accountId ? "Your supplied assets will appear here" : ""}
         actionRow={
           <div className="flex gap-2 pb-6">
             <div className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1">
@@ -229,7 +252,7 @@ const yourBorrowedColumns = [
     },
   },
 ];
-const YourBorrowed = ({ borrowedRows }) => {
+const YourBorrowed = ({ borrowedRows, accountId }) => {
   const handleRepayClick = () => {
     console.info("todo");
   };
@@ -245,6 +268,7 @@ const YourBorrowed = ({ borrowedRows }) => {
       <StyledCustomTable
         data={borrowedRows}
         columns={yourBorrowedColumns}
+        noDataText={!accountId ? "You borrowed assets will appear here" : ""}
         actionRow={
           <div
             role="button"

@@ -26,6 +26,7 @@ interface Props {
   };
   setPagination?: any;
   isLoading?: boolean;
+  noDataText?: string;
 }
 
 const CustomTable = ({
@@ -37,6 +38,7 @@ const CustomTable = ({
   pagination,
   setPagination,
   isLoading,
+  noDataText,
 }: Props) => {
   const handleFirstClick = () => {
     if (setPagination) {
@@ -133,8 +135,8 @@ const CustomTable = ({
     });
   } else if (!isLoading) {
     bodyNodes = (
-      <div className="flex justify-center items-center" style={{ height: 300 }}>
-        No Data
+      <div className="flex justify-center items-center text-gray-400" style={{ height: 300 }}>
+        {noDataText || "No Data"}
       </div>
     );
   }
