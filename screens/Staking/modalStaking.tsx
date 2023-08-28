@@ -50,6 +50,10 @@ const ModalStaking = ({ isOpen, onClose }) => {
 
   const sliderValue = Math.round((amount * 100) / total) || 0;
 
+  useEffect(() => {
+    setMonths(selectedMonths);
+  }, [stakingTimestamp]);
+
   const handleMaxClick = () => {
     trackMaxStaking({ total });
     setAmount(total);
@@ -97,15 +101,18 @@ const ModalStaking = ({ isOpen, onClose }) => {
     }
   };
 
-  useEffect(() => {
-    setMonths(selectedMonths);
-  }, [stakingTimestamp]);
+  const handleModalClose = () => {
+    setMonths(1);
+    setMonthPercent(0);
+    setAmount(0);
+    onClose();
+  };
 
   return (
     <CustomModal
       isOpen={isOpen}
-      onClose={onClose}
-      onOutsideClick={onClose}
+      onClose={handleModalClose}
+      onOutsideClick={handleModalClose}
       width={540}
       title="Stake BRRR"
     >
