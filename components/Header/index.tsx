@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme, Box, Snackbar, Alert } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 import LogoIcon from "../../public/logo.svg";
+import BrrrIcon from "../../public/brrr.svg";
 import WalletButton from "./WalletButton";
-import DarkSwitch from "../DarkSwitch";
 import Bridge from "./Bridge";
-import { Wrapper, Logo, Menu, LinkStyled } from "./style";
+import { Wrapper, Logo, Menu, LinkStyled, WrapperMobile, WalletMobile } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { useViewAs } from "../../hooks/hooks";
-// import { Stats } from "./stats";
+import { helpMenu, mainMenuList } from "./menuData";
+import MenuMobile from "./MenuMobile";
 
 const MenuItem = ({ title, pathname, sx = {} }) => {
   const router = useRouter();
@@ -32,10 +32,10 @@ const HelpMenuItem = () => {
     <div
       className="flex items-center cursor-pointer text-white hover:text-primary"
       onClick={() => {
-        window.open("https://docs.burrow.cash/");
+        window.open(helpMenu.link);
       }}
     >
-      <span className="mr-1.5 text-base">Help</span>
+      <span className="mr-1.5 text-base">{helpMenu.title}</span>
       <svg
         width="10"
         height="10"
@@ -51,14 +51,10 @@ const HelpMenuItem = () => {
     </div>
   );
 };
-
 const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
-  const isViewingAs = useViewAs();
   const theme = useTheme();
-  // const { isDark } = useDarkMode();
-
   useEffect(() => {
     if (isFetching) {
       setOpen(true);
@@ -69,7 +65,6 @@ const Header = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -80,58 +75,44 @@ const Header = () => {
         mb: { xs: "1rem", sm: "2rem" },
       }}
     >
-      <Wrapper style={{ position: "relative" }}>
-        {isViewingAs && (
-          <Box
-            position="absolute"
-            left="calc(50% - 75px)"
-            width="150px"
-            fontWeight="bold"
-            color="#47C880"
-            textAlign="center"
-            top={["0rem", "3.5rem", "1rem"]}
-            zIndex="1"
-            py={1}
-            sx={{ backgroundColor: "#EBFFF4" }}
-          >
-            Read Only Mode
+      {/* pc */}
+      <div className="xsm:hidden">
+        <Wrapper style={{ position: "relative" }}>
+          <Logo>
+            <LogoIcon style={{ fill: "white" }} />
+          </Logo>
+          <Menu>
+            {mainMenuList.map((item) => {
+              return <MenuItem key={item.title} title={item.title} pathname={item.link} />;
+            })}
+            <HelpMenuItem />
+          </Menu>
+          <Box display="flex" justifyContent="flex-end" alignItems="stretch">
+            <Bridge />
+            <WalletButton />
           </Box>
-        )}
-        <Logo>
-          <LogoIcon style={{ fill: "white" }} />
-        </Logo>
-        <Menu>
-          <MenuItem title="Markets" pathname="/markets" />
-          <MenuItem title="Dashboard" pathname="/dashboard" />
-          <MenuItem title="Staking" pathname="/staking" />
-          <HelpMenuItem />
-          {/* <MenuItem title="Deposit" pathname="/deposit" />
-          <MenuItem title="Borrow" pathname="/borrow" />
-          <MenuItem title="Portfolio" pathname="/portfolio" />
-          <MenuItem
-            title="Bridge"
-            pathname="/bridge"
-            sx={{
-              color: isDark ? theme.palette.primary.main : theme.palette.primary.light,
-              fontWeight: "bold",
-            }}
-          /> */}
-        </Menu>
-        <Box display="flex" justifyContent="flex-end" alignItems="stretch">
-          {/* <DarkSwitch /> */}
-          <Bridge />
-          <WalletButton />
-        </Box>
-        <Snackbar
-          open={open}
-          autoHideDuration={2000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        >
-          <Alert severity="info">Refreshing assets data...</Alert>
-        </Snackbar>
-      </Wrapper>
-      {/* <Stats /> */}
+          <Snackbar
+            open={open}
+            autoHideDuration={2000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert severity="info">Refreshing assets data...</Alert>
+          </Snackbar>
+        </Wrapper>
+      </div>
+      {/* mobile */}
+      <div className="lg:hidden p-4">
+        <WrapperMobile>
+          <Logo>
+            <BrrrIcon />
+          </Logo>
+          <Box className="flex items-center">
+            <WalletButton />
+            <MenuMobile />
+          </Box>
+        </WrapperMobile>
+      </div>
     </Box>
   );
 };

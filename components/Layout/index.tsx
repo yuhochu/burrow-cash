@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
   return (
     <Theme>
       <PageGrid>
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {hasTicker && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -58,10 +58,9 @@ const Layout = ({ children }) => {
               <Ticker />
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
         <Header />
         <main className="px-10">{children}</main>
-        {/* <CheckNewAppVersion /> */}
         {isBlocked && <Blocked />}
       </PageGrid>
       <Footer />

@@ -4,23 +4,6 @@ import { ArrowRight } from "./svg";
 const Bridge = () => {
   const [show_bridge_box, set_show_bridge_box] = useState(false);
 
-  const bridgeList = [
-    {
-      title: "Rainbow",
-      subTitle: "Ethereum | Aurora",
-      link: "https://rainbowbridge.app/",
-    },
-    {
-      title: "Allbridge",
-      subTitle: "Solana | Terra | Celo",
-      link: "https://app.allbridge.io/bridge",
-    },
-    {
-      title: "Electron Labs",
-      subTitle: "Ethereum",
-      link: "https://mainnet.electronlabs.org/bridge",
-    },
-  ];
   function open_new_window(url: string) {
     window.open(url);
   }
@@ -64,6 +47,29 @@ const Bridge = () => {
       </div>
     </div>
   );
+};
+export const bridgeList: IBridge[] = [
+  {
+    title: "Rainbow",
+    subTitle: "Ethereum | Aurora",
+    link: "https://rainbowbridge.app/",
+  },
+  {
+    title: "Allbridge",
+    subTitle: "Solana | Terra | Celo",
+    link: "https://app.allbridge.io/bridge",
+  },
+  {
+    title: "Electron Labs",
+    subTitle: "Ethereum",
+    link: "https://mainnet.electronlabs.org/bridge",
+  },
+];
+
+type IBridge = {
+  title: string;
+  subTitle: string;
+  link: string;
 };
 
 export default Bridge;

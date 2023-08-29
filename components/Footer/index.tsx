@@ -2,27 +2,39 @@ import { Link, Box, useTheme, Typography } from "@mui/material";
 import NextLink from "next/link";
 import { TwitterIcon, DiscordIcon, MediumIcon } from "./svg";
 import { Wrapper, CopyWrapper, LinksWrapper } from "./style";
+import { isMobileDevice } from "../../helpers/helpers";
 
 const Footer = () => {
-  // const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
     <Wrapper>
-      <CopyWrapper>
-        {/* <LogoWrapper>
-          <Logo />
-        </LogoWrapper>
-        <Copyright variant="h6" color={theme.custom.footerText}>
-          © 2022 All Rights Reserved.
-        </Copyright> */}
-        <LinksWrapper>
-          <Declaration />
-        </LinksWrapper>
-      </CopyWrapper>
-      <LinksWrapper>
-        <Github />
-        <BugBounty />
-        <Links />
-      </LinksWrapper>
+      {isMobile ? (
+        <>
+          <CopyWrapper>
+            <Github />
+            <BugBounty />
+            <LinksWrapper>
+              <Declaration />
+            </LinksWrapper>
+          </CopyWrapper>
+          <LinksWrapper>
+            <Links />
+          </LinksWrapper>
+        </>
+      ) : (
+        <>
+          <CopyWrapper>
+            <LinksWrapper>
+              <Declaration />
+            </LinksWrapper>
+          </CopyWrapper>
+          <LinksWrapper>
+            <Github />
+            <BugBounty />
+            <Links />
+          </LinksWrapper>
+        </>
+      )}
     </Wrapper>
   );
 };
@@ -66,12 +78,12 @@ const Links = () => {
 };
 
 export const Declaration = () => {
-  const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
     <>
       {/* <Divider orientation="vertical" flexItem color={theme.palette.background.paper} /> */}
       <NextLink href="/declaration" passHref>
-        <Link href="/declaration" underline="none" color={theme.custom.footerText}>
+        <Link href="/declaration" underline="none" color={isMobile ? "#6F7188" : "#C0C4E9"}>
           Declaration and Disclaimers
         </Link>
       </NextLink>
@@ -80,7 +92,7 @@ export const Declaration = () => {
 };
 
 const BugBounty = () => {
-  const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
     <Link
       href="https://immunefi.com/bounty/burrow/"
@@ -88,7 +100,11 @@ const BugBounty = () => {
       target="_blank"
       underline="none"
     >
-      <Typography fontSize="12px" lineHeight="12px" style={{ color: theme.custom.footerText }}>
+      <Typography
+        fontSize="12px"
+        lineHeight="12px"
+        style={{ color: isMobile ? "#6F7188" : "#C0C4E9" }}
+      >
         Bug Bounty
       </Typography>
     </Link>
@@ -96,10 +112,14 @@ const BugBounty = () => {
 };
 
 const Github = () => {
-  const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
     <Link href="https://github.com/burrowHQ/" title="Github" target="_blank" underline="none">
-      <Typography fontSize="12px" lineHeight="12px" style={{ color: theme.custom.footerText }}>
+      <Typography
+        fontSize="12px"
+        lineHeight="12px"
+        style={{ color: isMobile ? "#6F7188" : "#C0C4E9" }}
+      >
         Github
       </Typography>
     </Link>

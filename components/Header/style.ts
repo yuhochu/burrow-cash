@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import { Toolbar, Link, MenuItem } from "@mui/material";
+import { display } from "@mui/system";
 
 export const Wrapper = styled(Toolbar)(({ theme }) => ({
   display: "grid",
@@ -69,4 +70,21 @@ export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.palette.primary.light,
   },
+}));
+
+export const WrapperMobile = styled("div")(() => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+}));
+
+export const WalletMobile = styled("div")(() => ({
+  display: "flex",
+}));
+export const WrapperMenuMobile = styled("div")(() => ({
+  backgroundColor: "#2E304B",
+  borderBottomLeftRadius: "12px",
+  borderBottomRightRadius: "12px",
+  outline: "none",
+  paddingTop: "16px",
 }));

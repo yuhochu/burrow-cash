@@ -93,3 +93,6 @@ export const getDateString = (date) => {
 
   return `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec}`;
 };
+export const isMobileDevice = (): boolean => {
+  return window.screen.width <= 1023;
+};

@@ -58,3 +58,209 @@ export function ArrowDownIcon(props) {
     </svg>
   );
 }
+
+export function MenuButton(props) {
+  return (
+    <svg
+      {...props}
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="#23253A" />
+      <rect x="8" y="10" width="16" height="2" rx="1" fill="white" />
+      <rect x="8" y="15" width="16" height="2" rx="1" fill="white" />
+      <rect x="8" y="20" width="12" height="2" rx="1" fill="white" />
+      <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" stroke="#31344D" />
+    </svg>
+  );
+}
+
+export function CloseIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="13"
+      height="13"
+      viewBox="0 0 13 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        y="11.3135"
+        width="16"
+        height="2"
+        rx="1"
+        transform="rotate(-45 0 11.3135)"
+        fill="#979ABE"
+      />
+      <rect
+        x="1.41431"
+        width="16"
+        height="2"
+        rx="1"
+        transform="rotate(45 1.41431 0)"
+        fill="#979ABE"
+      />
+    </svg>
+  );
+}
+
+export function ArrowRightIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="7"
+      height="13"
+      viewBox="0 0 7 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.00024 12L5.40024 6.5L1.00024 1"
+        stroke="white"
+        strokeWidth="1.58"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function ArrowTopRightIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.46918 14.4135C4.14529 14.7067 4.12037 15.2069 4.41354 15.5308C4.7067 15.8547 5.20692 15.8796 5.53082 15.5865L4.46918 14.4135ZM16.2771 5.5474C16.2988 5.11108 15.9627 4.73975 15.5264 4.71802L8.41606 4.36387C7.97974 4.34214 7.60841 4.67824 7.58668 5.11456C7.56495 5.55089 7.90104 5.92221 8.33736 5.94395L14.6577 6.25874L14.3429 12.579C14.3211 13.0154 14.6572 13.3867 15.0935 13.4084C15.5299 13.4301 15.9012 13.0941 15.9229 12.6577L16.2771 5.5474ZM5.53082 15.5865L16.0179 6.09452L14.9562 4.92159L4.46918 14.4135L5.53082 15.5865Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+export function MarketIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6 9H4C3.44772 9 3 9.44772 3 10V17C3 17.5523 3.44772 18 4 18H6C6.55228 18 7 17.5523 7 17V10C7 9.44772 6.55228 9 6 9Z"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M13 4H11C10.4477 4 10 4.44772 10 5V17C10 17.5523 10.4477 18 11 18H13C13.5523 18 14 17.5523 14 17V5C14 4.44772 13.5523 4 13 4Z"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M20 12H18C17.4477 12 17 12.4477 17 13V17C17 17.5523 17.4477 18 18 18H20C20.5523 18 21 17.5523 21 17V13C21 12.4477 20.5523 12 20 12Z"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+export function DashboardIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.16612 18.5837C4.67317 17.0907 3.74976 15.0282 3.74976 12.75C3.74976 8.19364 7.44339 4.5 11.9998 4.5C16.5561 4.5 20.2498 8.19364 20.2498 12.75C20.2498 15.0282 19.3264 17.0907 17.8334 18.5837"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.28793 16.4623C7.33787 15.5123 6.75024 14.1998 6.75024 12.75C6.75024 9.8505 9.10074 7.5 12.0002 7.5"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M12 13.875V10.875"
+        stroke="#C0C4E9"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function StakeIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.5 9.5C9.98528 9.5 12 8.49264 12 7.25C12 6.00736 9.98528 5 7.5 5C5.01472 5 3 6.00736 3 7.25C3 8.49264 5.01472 9.5 7.5 9.5Z"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 7.25C3 7.25 3 9.15737 3 10.4C3 11.6426 5.01472 12.65 7.5 12.65C9.98526 12.65 12 11.6426 12 10.4C12 9.66398 12 7.25 12 7.25"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 10.4004C3 10.4004 3 12.3078 3 13.5504C3 14.793 5.01472 15.8004 7.5 15.8004C9.98526 15.8004 12 14.793 12 13.5504C12 12.8144 12 10.4004 12 10.4004"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 13.5498C3 13.5498 3 15.4572 3 16.6998C3 17.9424 5.01472 18.9498 7.5 18.9498C9.98526 18.9498 12 17.9424 12 16.6998C12 15.9638 12 13.5498 12 13.5498"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.5 15.7998C18.9853 15.7998 21 14.7924 21 13.5498C21 12.3072 18.9853 11.2998 16.5 11.2998C14.0147 11.2998 12 12.3072 12 13.5498C12 14.7924 14.0147 15.7998 16.5 15.7998Z"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 13.5498C12 13.5498 12 15.4572 12 16.6998C12 17.9424 14.0147 18.9498 16.5 18.9498C18.9853 18.9498 21 17.9424 21 16.6998C21 15.9638 21 13.5498 21 13.5498"
+        stroke="#C0C4E9"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

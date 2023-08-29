@@ -9,7 +9,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
   marginTop: "20px",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
-    gap: "2rem",
+    gap: "16px",
     bottom: 0,
     left: 0,
     right: 0,

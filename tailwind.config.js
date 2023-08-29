@@ -14,7 +14,7 @@ module.exports = {
       xl: { min: "1280px" },
       "2xl": { min: "1536px" },
       // xs: { min: "300px", max: "600px" },
-      // xsm: { min: "300px", max: "1023px" },
+      xsm: { min: "300px", max: "1023px" },
       // md: { min: "600px", max: "1023px" },
       // lg: { min: "1024px" },
       lg2: { min: "1092px" },
@@ -56,6 +56,8 @@ module.exports = {
           500: "#40435A",
           600: "#282A42",
           700: "#393C58",
+          800: "#979ABE",
+          900: "#3F4162",
         },
         red: {
           50: "#FF6BA9",
