@@ -8,12 +8,7 @@ import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hook
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
-import {
-  formatDustValue,
-  formatTokenValue,
-  formatUSDValue,
-  millifyNumber,
-} from "../../helpers/helpers";
+import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
 import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
 import CustomButton from "../../components/CustomButton/CustomButton";
