@@ -22,5 +22,11 @@ LayoutContainer.displayName = "LayoutContainer";
 export default LayoutContainer;
 
 export const LayoutBox = ({ children, className = "" }: Props) => {
-  return <div className={`mx-auto min-w-[800px] xl:max-w-[1200px] ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`mx-auto lg:min-w-[800px] xl:max-w-[1200px] xsm:w-full overflow-x-hidden ${className}`}
+    >
+      {children}
+    </div>
+  );
 };

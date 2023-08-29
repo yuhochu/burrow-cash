@@ -246,7 +246,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
-        <div className="relative flex items-center w-full justify-between px-6 h-[60px] mb-5">
+        <div className="relative flex items-center w-full justify-between h-[60px] mb-5">
           <span className="text-dark-800 text-xl">Account</span>
           <CloseIcon onClick={onClose} />
           <div className="absolute h-0.5 -left-6 -right-6 bottom-0 bg-dark-700" />

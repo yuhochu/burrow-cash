@@ -49,6 +49,12 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
             display: "none",
           },
+          border: "1px solid #4F5178",
+          [theme.breakpoints.down("sm")]: {
+            position: "absolute",
+            bottom: "0px",
+            margin: "0px",
+          },
           scrollbarWidth: "none",
         }}
       >
@@ -171,7 +177,16 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           >
             Agree & Confirm
           </Button>
-          <Typography fontSize="0.625rem" textAlign="center" mx="4rem">
+          <Typography
+            fontSize="0.625rem"
+            textAlign="center"
+            mx="4rem"
+            sx={{
+              [theme.breakpoints.down("sm")]: {
+                margin: "10px",
+              },
+            }}
+          >
             By clicking this button you acknowledge and agree to all statements in this disclaimer.
           </Typography>
         </Box>
