@@ -13,6 +13,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
     bottom: 0,
     left: 0,
     right: 0,
+    marginTop: "38px",
   },
   [theme.breakpoints.up("sm")]: {
     gridTemplateColumns: "1fr 1fr",
