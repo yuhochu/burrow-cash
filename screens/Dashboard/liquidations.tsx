@@ -7,6 +7,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
+import { useDidUpdateEffect } from "../../hooks/useDidUpdateEffect";
 
 const Liquidations = ({ isShow }) => {
   const accountId = useAccountId();
@@ -17,12 +18,11 @@ const Liquidations = ({ isShow }) => {
     page?: number;
     totalPages?: number;
     totalItems?: number;
-    onNextClick?: () => any;
   }>({
     page: 1,
   });
 
-  useEffect(() => {
+  useDidUpdateEffect(() => {
     if (isShow) {
       fetchData({
         page: pagination?.page,

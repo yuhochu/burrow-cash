@@ -5,7 +5,7 @@ import Liquidations from "./liquidations";
 import { CloseIcon } from "../../components/Icons/Icons";
 import Records from "./records";
 
-const ModalHistoryInfo = ({ isOpen, onClose, tab = 0 }) => {
+const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
   const [tabIndex, setTabIndex] = useState(tab);
 
   useEffect(() => {
@@ -18,14 +18,11 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab = 0 }) => {
 
   let node;
   switch (tabIndex) {
-    case 0:
-      node = <Records isShow={tabIndex === 0} />;
-      break;
     case 1:
-      node = <Liquidations isShow={tabIndex === 1} />;
+      node = <Liquidations isShow={tabIndex === 1 && isOpen} />;
       break;
     default:
-      node = <Records isShow={tabIndex === 0} />;
+      node = <Records isShow={tabIndex === 0 && isOpen} />;
       break;
   }
 
