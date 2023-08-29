@@ -27,6 +27,8 @@ interface Props {
   setPagination?: any;
   isLoading?: boolean;
   noDataText?: string;
+  onSelectRow?: (data: object | null | undefined, index: number | null | undefined) => unknown;
+  selectedRowIndex?: number | null | undefined;
 }
 
 const CustomTable = ({
@@ -39,6 +41,8 @@ const CustomTable = ({
   setPagination,
   isLoading,
   noDataText,
+  onSelectRow,
+  selectedRowIndex,
 }: Props) => {
   const handleFirstClick = () => {
     if (setPagination) {
@@ -73,6 +77,18 @@ const CustomTable = ({
         ...d,
         page: pagination?.page ? pagination.page + 1 : 1,
       }));
+    }
+  };
+
+  const handleRowEnter = (rowData, rowIndex) => {
+    if (typeof onSelectRow === "function" && selectedRowIndex !== rowIndex) {
+      onSelectRow(rowData, rowIndex);
+    }
+  };
+
+  const handleRowLeave = () => {
+    if (typeof onSelectRow === "function") {
+      onSelectRow(null, null);
     }
   };
 
@@ -121,7 +137,12 @@ const CustomTable = ({
           styles.flex = `0 0 ${col.size}px`;
         }
         return (
-          <div className="custom-table-td" key={col.id || col.header} style={styles}>
+          <div
+            className="custom-table-td"
+            key={col.id || col.header}
+            style={styles}
+            onMouseEnter={() => handleRowEnter(d, i)}
+          >
             {content}
           </div>
         );

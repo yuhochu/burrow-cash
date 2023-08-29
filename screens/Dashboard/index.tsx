@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
@@ -24,6 +24,8 @@ import {
   useRepayTrigger,
 } from "../../components/Modal/components";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
+import { useAppDispatch } from "../../redux/hooks";
+import { showModal } from "../../redux/appSlice";
 
 const Index = () => {
   const accountId = useAccountId();
@@ -153,7 +155,21 @@ const yourSuppliedColumns = [
     },
   },
 ];
+
+type TableRowSelect = {
+  data: {
+    tokenId: string | null | undefined;
+  } | null;
+  index: number | null | undefined;
+};
+
 const YourSupplied = ({ suppliedRows, accountId }) => {
+  const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
+
+  const handleRowSelect = (rowData, rowIndex) => {
+    setSelected({ data: rowData, index: rowIndex });
+  };
+
   return (
     <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
       <div className="flex items-center mb-4">
@@ -167,16 +183,50 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         data={suppliedRows}
         columns={yourSuppliedColumns}
         noDataText={!accountId ? "Your supplied assets will appear here" : ""}
+        onSelectRow={handleRowSelect}
+        selectedRowIndex={selected?.index}
         actionRow={
           <div className="flex gap-2 pb-6">
-            <div className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1">
-              Withdraw
-            </div>
-            <CustomButton className="flex-1">Adjust</CustomButton>
+            <WithdrawButton tokenId={selected?.data?.tokenId} />
+            <AdjustButton tokenId={selected?.data?.tokenId} />
           </div>
         }
       />
     </ContentBox>
+  );
+};
+
+const WithdrawButton = ({ tokenId }) => {
+  const handleWithdrawClick = useWithdrawTrigger(tokenId);
+  return (
+    <CustomButton
+      className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1"
+      onClick={handleWithdrawClick}
+    >
+      Withdraw
+    </CustomButton>
+  );
+};
+
+const AdjustButton = ({ tokenId }) => {
+  const handleAdjustClick = useAdjustTrigger(tokenId);
+  return (
+    <CustomButton className="flex-1" onClick={handleAdjustClick}>
+      Adjust
+    </CustomButton>
+  );
+};
+
+const RepayButton = ({ tokenId }) => {
+  const handleRepayClick = useRepayTrigger(tokenId);
+  return (
+    <div
+      role="button"
+      onClick={handleRepayClick}
+      className="flex items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-2"
+    >
+      Repay
+    </div>
   );
 };
 
@@ -253,9 +303,12 @@ const yourBorrowedColumns = [
   },
 ];
 const YourBorrowed = ({ borrowedRows, accountId }) => {
-  const handleRepayClick = () => {
-    console.info("todo");
+  const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
+
+  const handleRowSelect = (rowData, rowIndex) => {
+    setSelected({ data: rowData, index: rowIndex });
   };
+
   return (
     <ContentBox>
       <div className="flex items-center mb-4">
@@ -269,15 +322,9 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
         data={borrowedRows}
         columns={yourBorrowedColumns}
         noDataText={!accountId ? "You borrowed assets will appear here" : ""}
-        actionRow={
-          <div
-            role="button"
-            onClick={handleRepayClick}
-            className="flex items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-1"
-          >
-            Repay
-          </div>
-        }
+        onSelectRow={handleRowSelect}
+        selectedRowIndex={selected?.index}
+        actionRow={<RepayButton tokenId={selected?.data?.tokenId} />}
       />
     </ContentBox>
   );

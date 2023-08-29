@@ -370,6 +370,7 @@ export function useWithdrawTrigger(tokenId: string) {
     dispatch(showModal({ action: "Withdraw", tokenId, amount: "0" }));
   };
 }
+
 export function useAdjustTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   const amount = useAppSelector(getCollateralAmount(tokenId));
@@ -384,6 +385,7 @@ export function useSupplyTrigger(tokenId: string) {
     dispatch(showModal({ action: "Supply", tokenId, amount: "0" }));
   };
 }
+
 export function useBorrowTrigger(tokenId: string) {
   const dispatch = useAppDispatch();
   return () => {
