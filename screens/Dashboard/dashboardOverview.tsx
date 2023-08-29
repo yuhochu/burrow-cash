@@ -60,7 +60,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             title="Unclaimed Rewards"
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
-          <div className="flex hidden md:block" style={{ marginBottom: 9, marginRight: 20 }}>
+          <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
             <img
               src={rewardsObj?.brrr?.icon}
               width={26}
