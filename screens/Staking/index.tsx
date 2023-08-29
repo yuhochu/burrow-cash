@@ -57,11 +57,13 @@ const Staking = () => {
   return (
     <LayoutContainer>
       <div>
-        <div className="flex justify-center">
-          <div className="mb-10">
-            <div className="flex justify-center">{Mascot}</div>
-            <div className="h2 flex gap-4">
-              <BrrrLogo color="#D2FF3A" /> <LiveUnclaimedAmount addAmount={total} /> BRRR
+        <div className="flex justify-between md:justify-center flex-row-reverse items-end gap-4 mb-2 md:mb-10 md:flex-col md:items-center">
+          <div className="flex justify-center">{Mascot}</div>
+          <div className="h2 flex gap-4 mb-4 md:mb-0">
+            <BrrrLogo color="#D2FF3A" />
+            <div className="brrr-amount flex flex-col md:flex-row md:gap-4 md:items-center">
+              <LiveUnclaimedAmount addAmount={total} />{" "}
+              <div className="text-gray-300 brrr-token">BRRR</div>
             </div>
           </div>
         </div>
@@ -188,7 +190,7 @@ type StakingBoxProps = {
 };
 const StakingBox = ({ logoIcon, text1, value1, text2, value2, children }: StakingBoxProps) => {
   return (
-    <ContentBox className="flex-1" padding="26px">
+    <ContentBox className="flex-1 mb-4" padding="26px">
       <div className="flex justify-between flex-col h-full">
         <div className="flex justify-end lg:justify-between mb-2">
           <div className="hidden lg:block relative">
@@ -199,8 +201,10 @@ const StakingBox = ({ logoIcon, text1, value1, text2, value2, children }: Stakin
               </div>
             )}
           </div>
-          <div className="text-right">
-            <div>{text1}</div>
+          <div className="flex justify-between w-full md:text-right md:block">
+            <div className="h5 text-gray-300" style={{ fontSize: 14 }}>
+              {text1}
+            </div>
             <div className="h2">{value1}</div>
           </div>
         </div>

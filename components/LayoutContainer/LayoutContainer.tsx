@@ -16,6 +16,10 @@ const StyledWrapper = styled.div`
   margin-right: auto;
   padding-left: 20px;
   padding-right: 20px;
+
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
 `;
 
 LayoutContainer.displayName = "LayoutContainer";

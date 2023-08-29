@@ -47,20 +47,20 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   };
 
   return (
-    <div className="flex md:justify-between lg:justify-between">
-      <div>
+    <div className="md:flex md:justify-between lg:justify-between">
+      <div className="mb-6 mb-0">
         <div className="flex gap-10 md:gap-20 mb-8">
           <OverviewItem title="Net APY" value={APYAmount} />
           <OverviewItem title="Supplied" value={formatUSDValue(totalSuppliedUSD)} />
           <OverviewItem title="Borrowed" value={formatUSDValue(totalBorrowedUSD)} />
         </div>
 
-        <div className="flex gap-1 items-end">
+        <div className="flex gap-2 items-end">
           <OverviewItem
             title="Unclaimed Rewards"
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
-          <div className="flex" style={{ marginBottom: 9, marginRight: 20 }}>
+          <div className="flex hidden md:block" style={{ marginBottom: 9, marginRight: 20 }}>
             <img
               src={rewardsObj?.brrr?.icon}
               width={26}
@@ -91,7 +91,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           </div>
         </div>
       </div>
-      <div className="flex">
+      <div className="flex items-center justify-end">
         <div className="relative mr-6">
           <HealthFactor userHealth={userHealth} />
         </div>

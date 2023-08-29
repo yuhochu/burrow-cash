@@ -60,7 +60,9 @@ const Layout = ({ children }) => {
           )}
         </AnimatePresence> */}
         <Header />
-        <main className="px-10">{children}</main>
+        <main className="md:px-10">{children}</main>
+        {/* <CheckNewAppVersion /> */}
+
         {isBlocked && <Blocked />}
       </PageGrid>
       <Footer />

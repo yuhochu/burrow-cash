@@ -45,8 +45,8 @@ const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, div
 const StyledWrapper = styled.div`
   position: relative;
   margin: 4px;
-  float: left;
   text-align: center;
+
   .bar-wrapper {
     position: relative;
     width: 240px;
@@ -55,6 +55,7 @@ const StyledWrapper = styled.div`
     justify-content: center;
     align-items: end;
   }
+
   .bar-container {
     position: relative;
     overflow: hidden; /* Comment this line to understand the trick */
@@ -94,6 +95,28 @@ const StyledWrapper = styled.div`
       top: 26px;
       right: 37px;
       border-radius: 4px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .bar-wrapper,
+    .bar-container,
+    .bar {
+      width: 160px !important;
+      height: 160px !important;
+    }
+    .bar-wrapper,
+    .bar-container {
+      height: 80px !important;
+    }
+
+    .bar {
+      border-width: 6px !important;
+    }
+
+    .bar-divider {
+      top: 21px !important;
+      right: 19px !important;
     }
   }
 `;

@@ -21,4 +21,8 @@ const StyledBox = styled.div<{ padding?: string }>`
   border: 1px solid #31344d;
   background: #23253a;
   padding: ${(p) => p.padding ?? "20px 30px"};
+
+  @media (max-width: 767px) {
+    padding: 20px;
+  }
 `;
