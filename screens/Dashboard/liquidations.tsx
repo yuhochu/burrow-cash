@@ -8,6 +8,7 @@ import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
 import { useDidUpdateEffect } from "../../hooks/useDidUpdateEffect";
+import { getLiquidations } from "../../api/get-liquidations";
 
 const Liquidations = ({ isShow }) => {
   const accountId = useAccountId();
@@ -34,29 +35,8 @@ const Liquidations = ({ isShow }) => {
     try {
       setIsLoading(true);
       // return setDocs([]);
-      const response = await Datasource.shared.getLiquidations(accountId, page, 10);
-      const nearTokens = [...nearNativeTokens, "meta-pool.near"];
-      const list = response?.record_list?.map((d) => {
-        d.RepaidAssets?.forEach((a) => {
-          const tokenId = a.token_id;
-          let asset = assets?.data?.[tokenId];
-          if (!asset && nearTokens.includes(tokenId)) {
-            asset = assets?.data?.[nearTokenId];
-          }
-          a.data = asset;
-        });
-
-        d.LiquidatedAssets?.forEach((a) => {
-          const tokenId = a.token_id;
-          let asset = assets?.data?.[tokenId];
-          if (!asset && nearTokens.includes(tokenId)) {
-            asset = assets?.data?.[nearTokenId];
-          }
-          a.data = asset;
-        });
-        return d;
-      });
-      setDocs(list);
+      const response = await getLiquidations(accountId, page, 10, assets);
+      setDocs(response?.record_list);
       setPagination((d) => {
         return {
           ...d,

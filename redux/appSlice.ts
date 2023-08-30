@@ -55,11 +55,13 @@ export interface AppState {
     portfolioBorrowed: ITableSorting;
   };
   config: IConfig;
+  unreadLiquidation: number;
 }
 
 export const initialState: AppState = {
   isBlocked: {},
   theme: "light",
+  unreadLiquidation: 0,
   disclaimerAgreed: false,
   degenMode: {
     enabled: true,
@@ -199,6 +201,9 @@ export const appSlice = createSlice({
     setTheme(state, action) {
       state.theme = action.payload;
     },
+    setUnreadLiquidation(state, action) {
+      state.unreadLiquidation = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -227,6 +232,7 @@ export const {
   setDisclaimerAggreed,
   setBlocked,
   setTheme,
+  setUnreadLiquidation,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -77,7 +77,7 @@ export default function RangeSlider(props: any) {
           );
         })}
       </div>
-      <div className="relative flex flex-col">
+      <div className="relative flex flex-col z-10">
         <input
           ref={valueRef}
           onChange={(e) => {

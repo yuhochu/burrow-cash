@@ -114,8 +114,8 @@ const btnColor = {
 
 const btnSize = {
   lg: "py-3 px-6 text-lg",
-  md: "py-1 md:py-2 px-2 md:px-5 text-sm md:text-md",
-  sm: "py-2 px-4 text-sm",
+  md: "py-2 md:py-2 px-2 md:px-5 text-sm md:text-md",
+  sm: "py-1 px-2 text-sm",
 };
 
 const getBtnColorClassName = (color: string | undefined) => {

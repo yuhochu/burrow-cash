@@ -111,3 +111,8 @@ export const getAssetDataByTokenId = (tokenId: string) =>
       };
     },
   );
+
+export const getUnreadLiquidation = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.unreadLiquidation,
+);
