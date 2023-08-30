@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
 import SemiCircleProgressBar from "../../components/SemiCircleProgressBar/SemiCircleProgressBar";
 import { useUserHealth } from "../../hooks/useUserHealth";
-import { formatUSDValue } from "../../helpers/helpers";
+import { formatUSDValue, isMobileDevice } from "../../helpers/helpers";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { APY_FORMAT, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
@@ -12,6 +12,7 @@ import ModalHistoryInfo from "./modalHistoryInfo";
 import { modalProps } from "../../interfaces/common";
 import { DangerIcon, QuestionIcon } from "../../components/Icons/Icons";
 import CustomTooltips from "../../components/CustomTooltips/CustomTooltips";
+import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
@@ -22,6 +23,8 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
   const rewardsObj = useRewards();
   const APYAmount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
+  const { unreadCount, fetchUnreadLiquidation } = useUnreadLiquidation();
+  const isMobile = isMobileDevice();
 
   let totalSuppliedUSD = 0;
   suppliedRows?.forEach((d) => {
@@ -99,12 +102,20 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         <div className="flex flex-col">
           <CustomButton
             onClick={() => handleModalOpen("history", { tabIndex: 1 })}
-            className="mb-2"
+            className="mb-2 relative"
             color="secondary"
+            size={isMobile ? "sm" : "md"}
           >
+            {/* <span */}
+            {/*  className="unread-count absolute rounded-full bg-pink-400 text-black" */}
+            {/*  style={{ top: -8, right: -8 }} */}
+            {/* > */}
+            {/*  {unreadCount} */}
+            {/* </span> */}
             Liquidation
           </CustomButton>
           <CustomButton
+            size={isMobile ? "sm" : "md"}
             color="secondary"
             onClick={() => handleModalOpen("history", { tabIndex: 0 })}
           >
@@ -125,6 +136,19 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 const HealthFactor = ({ userHealth }) => {
   const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
   const isDanger = healthFactor < lowHealthFactor;
+  const isMobile = isMobileDevice();
+
+  let dangerTooltipStyles = {};
+  let tooltipStyles = {};
+  if (isMobile) {
+    tooltipStyles = {
+      left: -133,
+    };
+    dangerTooltipStyles = {
+      left: "100%",
+      bottom: 0,
+    };
+  }
 
   return (
     <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={75}>
@@ -137,7 +161,8 @@ const HealthFactor = ({ userHealth }) => {
         >
           {isDanger && (
             <CustomTooltips
-              alwaysShow
+              alwaysShow={!isMobile}
+              style={dangerTooltipStyles}
               text={`Your health factor is dangerously low and you're at risk of liquidation`}
               width={186}
             >
@@ -150,6 +175,7 @@ const HealthFactor = ({ userHealth }) => {
           Health Factor
           <div style={{ marginRight: -5 }} className="relative">
             <CustomTooltips
+              style={tooltipStyles}
               text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${lowHealthFactor}, your account can be partially liquidated`}
             >
               <QuestionIcon />

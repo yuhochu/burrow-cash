@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const CustomTooltips = ({ children, text, width = 300, alwaysShow = false }) => {
-  const styles: { width?: number; display?: string } = { width };
+const CustomTooltips = ({ children, text, width = 300, alwaysShow = false, style = {} }) => {
+  const styles: { width?: number; display?: string } = { width, ...style };
   if (alwaysShow) {
     styles.display = "block";
   }
@@ -34,6 +34,7 @@ const StyledWrapper = styled.div`
     font-size: 11px;
     right: 0;
     font-weight: 400;
+    z-index: 999;
   }
 
   &:hover {

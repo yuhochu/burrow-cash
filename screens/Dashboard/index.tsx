@@ -8,36 +8,22 @@ import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hook
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
-import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
+import {
+  formatTokenValue,
+  formatUSDValue,
+  isMobileDevice,
+  millifyNumber,
+} from "../../helpers/helpers";
 import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
-import CustomButton from "../../components/CustomButton/CustomButton";
-import DataSource from "../../data/datasource";
-import {
-  useWithdrawTrigger,
-  useAdjustTrigger,
-  useRepayTrigger,
-} from "../../components/Modal/components";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
-import { useAppDispatch } from "../../redux/hooks";
-import { showModal } from "../../redux/appSlice";
+import SupplyBorrowListMobile from "./supplyBorrowListMobile";
+import { AdjustButton, WithdrawButton, RepayButton } from "./supplyBorrowButtons";
 
 const Index = () => {
   const accountId = useAccountId();
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
-  // const rows = useAvailableAssets();
-
-  useEffect(() => {
-    fetchData().then();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await DataSource.shared.getLiquidations(accountId);
-    } catch (e) {
-      // console.log("fetchData err",e)
-    }
-  };
+  const isMobile = isMobileDevice();
 
   let overviewNode;
   if (accountId) {
@@ -70,11 +56,19 @@ const Index = () => {
       <LayoutContainer>
         {overviewNode}
 
-        <div style={{ minHeight: 600 }}>
-          <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-            <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
-            <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
-          </StyledSupplyBorrow>
+        <div style={{ minHeight: isMobile ? 300 : 600 }}>
+          {isMobile ? (
+            <SupplyBorrowListMobile
+              suppliedRows={suppliedRows}
+              borrowedRows={borrowedRows}
+              accountId={accountId}
+            />
+          ) : (
+            <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
+              <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
+              <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
+            </StyledSupplyBorrow>
+          )}
         </div>
       </LayoutContainer>
     </div>
@@ -188,40 +182,6 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         }
       />
     </ContentBox>
-  );
-};
-
-const WithdrawButton = ({ tokenId }) => {
-  const handleWithdrawClick = useWithdrawTrigger(tokenId);
-  return (
-    <CustomButton
-      className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1"
-      onClick={handleWithdrawClick}
-    >
-      Withdraw
-    </CustomButton>
-  );
-};
-
-const AdjustButton = ({ tokenId }) => {
-  const handleAdjustClick = useAdjustTrigger(tokenId);
-  return (
-    <CustomButton className="flex-1" onClick={handleAdjustClick}>
-      Adjust
-    </CustomButton>
-  );
-};
-
-const RepayButton = ({ tokenId }) => {
-  const handleRepayClick = useRepayTrigger(tokenId);
-  return (
-    <div
-      role="button"
-      onClick={handleRepayClick}
-      className="flex items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-2"
-    >
-      Repay
-    </div>
   );
 };
 
