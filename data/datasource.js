@@ -52,6 +52,16 @@ class DataSource {
     );
   }
 
+  markLiquidationRead(id) {
+    return this.callAPI(
+      `/set_liquidation_info-records/${id}`,
+      "GET",
+      null,
+      null,
+      process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST,
+    );
+  }
+
   getRecords(accountId, pageNumber = 1, pageSize = 10) {
     const qryObj = {
       account_id: accountId,

@@ -8,36 +8,22 @@ import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hook
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
-import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
+import {
+  formatTokenValue,
+  formatUSDValue,
+  isMobileDevice,
+  millifyNumber,
+} from "../../helpers/helpers";
 import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
-import CustomButton from "../../components/CustomButton/CustomButton";
-import DataSource from "../../data/datasource";
-import {
-  useWithdrawTrigger,
-  useAdjustTrigger,
-  useRepayTrigger,
-} from "../../components/Modal/components";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
-import { useAppDispatch } from "../../redux/hooks";
-import { showModal } from "../../redux/appSlice";
+import SupplyBorrowListMobile from "./supplyBorrowListMobile";
+import { AdjustButton, WithdrawButton, RepayButton } from "./supplyBorrowButtons";
 
 const Index = () => {
   const accountId = useAccountId();
   const [suppliedRows, borrowedRows] = usePortfolioAssets();
-  // const rows = useAvailableAssets();
-
-  useEffect(() => {
-    fetchData().then();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await DataSource.shared.getLiquidations(accountId);
-    } catch (e) {
-      // console.log("fetchData err",e)
-    }
-  };
+  const isMobile = isMobileDevice();
 
   let overviewNode;
   if (accountId) {
@@ -48,20 +34,42 @@ const Index = () => {
     );
   } else {
     overviewNode = (
-      <div className="flex justify-between items-center">
+      <div className="bg-gray-800 p-4 mb-4 rounded md:bg-transparent md:p-0 md:mb-0 md:flex justify-between items-center">
         <div>
           <div className="h3 mb-2">Connect your wallet</div>
           <div className="mb-4 text-gray-300 h4">
             Please connect your wallet to see your supplies, borrowings, and open positions.
           </div>
-          <div>
+          <div className="w-full md-w-auto">
             <ConnectWalletButton accountId={accountId} />
           </div>
         </div>
-        <div style={{ margin: "-20px 0 -40px" }}>
+        <div className="hidden md:block" style={{ margin: "-20px 0 -40px" }}>
           <BookTokenSvg />
         </div>
       </div>
+    );
+  }
+
+  let supplyBorrowNode;
+  if (isMobile) {
+    if (accountId) {
+      supplyBorrowNode = (
+        <SupplyBorrowListMobile
+          suppliedRows={suppliedRows}
+          borrowedRows={borrowedRows}
+          accountId={accountId}
+        />
+      );
+    } else {
+      supplyBorrowNode = <div>Your supplied assets will appear here</div>;
+    }
+  } else {
+    supplyBorrowNode = (
+      <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
+        <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
+        <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
+      </StyledSupplyBorrow>
     );
   }
 
@@ -70,12 +78,7 @@ const Index = () => {
       <LayoutContainer>
         {overviewNode}
 
-        <div style={{ minHeight: 600 }}>
-          <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-            <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
-            <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
-          </StyledSupplyBorrow>
-        </div>
+        <div style={{ minHeight: isMobile ? 300 : 600 }}>{supplyBorrowNode}</div>
       </LayoutContainer>
     </div>
   );
@@ -188,40 +191,6 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         }
       />
     </ContentBox>
-  );
-};
-
-const WithdrawButton = ({ tokenId }) => {
-  const handleWithdrawClick = useWithdrawTrigger(tokenId);
-  return (
-    <CustomButton
-      className="flex-1 flex items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1"
-      onClick={handleWithdrawClick}
-    >
-      Withdraw
-    </CustomButton>
-  );
-};
-
-const AdjustButton = ({ tokenId }) => {
-  const handleAdjustClick = useAdjustTrigger(tokenId);
-  return (
-    <CustomButton className="flex-1" onClick={handleAdjustClick}>
-      Adjust
-    </CustomButton>
-  );
-};
-
-const RepayButton = ({ tokenId }) => {
-  const handleRepayClick = useRepayTrigger(tokenId);
-  return (
-    <div
-      role="button"
-      onClick={handleRepayClick}
-      className="flex items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-2"
-    >
-      Repay
-    </div>
   );
 };
 

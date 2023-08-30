@@ -2,6 +2,8 @@ import styled from "styled-components";
 import React, { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import CustomPagination from "./CustomPagination";
+import CustomTableMobile from "./CustomTableMobile";
+import { isMobileDevice } from "../../helpers/helpers";
 
 type columnType = {
   id?: string;
@@ -44,6 +46,19 @@ const CustomTable = ({
   onSelectRow,
   selectedRowIndex,
 }: Props) => {
+  const isMobile = isMobileDevice();
+
+  if (isMobile) {
+    return (
+      <CustomTableMobile
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        noDataText={noDataText}
+      />
+    );
+  }
+
   const handleFirstClick = () => {
     if (setPagination) {
       setPagination((d) => ({

@@ -106,16 +106,17 @@ const StyledButton = styled.button`
 `;
 
 const btnColor = {
-  primary: "border-primary bg-primary hover:bg-primary text-black",
+  primary: "border-primary bg-primary hover:opacity-80 text-black",
   secondary: "border border-gray-300 hover:border-gray-200 text-gray-300",
   third: "rounded-full border border-1 border-black text-black font-bold",
+  info: "border-yellow-50 bg-yellow-50 hover:opacity-80 text-black",
   custom: "",
 };
 
 const btnSize = {
   lg: "py-3 px-6 text-lg",
-  md: "py-1 md:py-2 px-2 md:px-5 text-sm md:text-md",
-  sm: "py-2 px-4 text-sm",
+  md: "py-2 md:py-2 px-2 md:px-5 text-sm md:text-md",
+  sm: "py-1 px-2 text-sm",
 };
 
 const getBtnColorClassName = (color: string | undefined) => {

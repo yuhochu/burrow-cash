@@ -1,11 +1,20 @@
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import { getAccountId, getHasNonFarmedAssets, isAccountLoading } from "../redux/accountSelectors";
 import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
-import { getConfig, getSlimStats, getDegenMode, getTheme } from "../redux/appSelectors";
-import { setRepayFrom, toggleDegenMode, setTheme } from "../redux/appSlice";
+import {
+  getConfig,
+  getSlimStats,
+  getDegenMode,
+  getTheme,
+  getUnreadLiquidation,
+} from "../redux/appSelectors";
+import { setRepayFrom, toggleDegenMode, setTheme, setUnreadLiquidation } from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
+import { getLiquidations } from "../api/get-liquidations";
+import { useDidUpdateEffect } from "./useDidUpdateEffect";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -79,4 +88,32 @@ export function useDarkMode() {
   };
 
   return { toggle, theme, isDark: theme === "dark" };
+}
+
+export function useUnreadLiquidation() {
+  const unreadCount = useAppSelector(getUnreadLiquidation);
+  const accountId = useAccountId();
+
+  useDidUpdateEffect(() => {
+    fetchUnreadLiquidation().then();
+  }, []);
+
+  const dispatch = useAppDispatch();
+
+  const fetchUnreadLiquidation = async () => {
+    try {
+      const response = await getLiquidations(accountId);
+      if (response?.unread) {
+        setCount(response?.unread);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const setCount = (count) => {
+    dispatch(setUnreadLiquidation(count));
+  };
+
+  return { setCount, unreadCount, fetchUnreadLiquidation };
 }
