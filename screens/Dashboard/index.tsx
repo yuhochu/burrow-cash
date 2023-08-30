@@ -34,20 +34,42 @@ const Index = () => {
     );
   } else {
     overviewNode = (
-      <div className="flex justify-between items-center">
+      <div className="bg-gray-800 p-4 mb-4 rounded md:bg-transparent md:p-0 md:mb-0 md:flex justify-between items-center">
         <div>
           <div className="h3 mb-2">Connect your wallet</div>
           <div className="mb-4 text-gray-300 h4">
             Please connect your wallet to see your supplies, borrowings, and open positions.
           </div>
-          <div>
+          <div className="w-full md-w-auto">
             <ConnectWalletButton accountId={accountId} />
           </div>
         </div>
-        <div style={{ margin: "-20px 0 -40px" }}>
+        <div className="hidden md:block" style={{ margin: "-20px 0 -40px" }}>
           <BookTokenSvg />
         </div>
       </div>
+    );
+  }
+
+  let supplyBorrowNode;
+  if (isMobile) {
+    if (accountId) {
+      supplyBorrowNode = (
+        <SupplyBorrowListMobile
+          suppliedRows={suppliedRows}
+          borrowedRows={borrowedRows}
+          accountId={accountId}
+        />
+      );
+    } else {
+      supplyBorrowNode = <div>Your supplied assets will appear here</div>;
+    }
+  } else {
+    supplyBorrowNode = (
+      <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
+        <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
+        <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
+      </StyledSupplyBorrow>
     );
   }
 
@@ -55,21 +77,7 @@ const Index = () => {
     <div>
       <LayoutContainer>
         {overviewNode}
-
-        <div style={{ minHeight: isMobile ? 300 : 600 }}>
-          {isMobile ? (
-            <SupplyBorrowListMobile
-              suppliedRows={suppliedRows}
-              borrowedRows={borrowedRows}
-              accountId={accountId}
-            />
-          ) : (
-            <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-              <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
-              <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
-            </StyledSupplyBorrow>
-          )}
-        </div>
+        <div style={{ minHeight: isMobile ? 300 : 600 }}>{supplyBorrowNode}</div>
       </LayoutContainer>
     </div>
   );

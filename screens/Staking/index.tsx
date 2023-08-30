@@ -88,7 +88,12 @@ const Staking = () => {
             text2={BRRR ? "Due to" : ""}
             value2={BRRR ? unstakeDate.toFormat("yyyy-MM-dd / HH:mm") : ""}
           >
-            <CustomButton onClick={handleUnstake} className="w-full" disabled={!BRRR}>
+            <CustomButton
+              onClick={handleUnstake}
+              className="w-full"
+              disabled={disabledUnstake}
+              color="info"
+            >
               Unstake
             </CustomButton>
           </StakingBox>
