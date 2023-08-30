@@ -27,7 +27,11 @@ const CustomTableMobile = ({ data, columns, noDataText, isLoading }) => {
           </ItemRow>
         );
       });
-      return <div className="border-b border-gray-700 py-4 h4b">{colNode}</div>;
+      return (
+        <div className="border-b border-gray-700 py-4 h4b" key={i}>
+          {colNode}
+        </div>
+      );
     });
   } else if (!isLoading) {
     bodyNodes = (
@@ -38,37 +42,6 @@ const CustomTableMobile = ({ data, columns, noDataText, isLoading }) => {
   }
 
   return <div>{bodyNodes}</div>;
-};
-
-const SupplyItem = ({ data }) => {
-  return (
-    <div>
-      <div
-        className="flex justify-between border-b"
-        style={{ padding: "16px", borderColor: "#31344C" }}
-      >
-        <div className="flex gap-2 items-center">
-          <img src={data?.icon} width={26} height={26} alt="token" className="rounded-full" />
-          <div className="truncate h4b">{data?.symbol}</div>
-        </div>
-        <div className="text-right">
-          <div>{formatTokenValue(data?.supplied)}</div>
-          <div className="h6 text-gray-300">{formatUSDValue(data.supplied * data.price)}</div>
-        </div>
-      </div>
-
-      <div style={{ padding: "16px" }}>
-        <ItemRow label="APY">sdf</ItemRow>
-        <ItemRow label="Rewards">sdfdsf</ItemRow>
-        <ItemRow label="Collateral">
-          {/* <div>{formatTokenValue(data?.collateral)}</div> */}
-          <div>{formatUSDValue(data.collateral * data.price)}</div>
-        </ItemRow>
-
-        <div className="flex gap-2">dfgfd</div>
-      </div>
-    </div>
-  );
 };
 
 const ItemRow = ({ label, children, style = {} }) => {

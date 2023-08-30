@@ -77,7 +77,6 @@ const Index = () => {
     <div>
       <LayoutContainer>
         {overviewNode}
-
         <div style={{ minHeight: isMobile ? 300 : 600 }}>{supplyBorrowNode}</div>
       </LayoutContainer>
     </div>

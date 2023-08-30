@@ -570,6 +570,13 @@ input[type="range"]::-webkit-slider-runnable-track {
         font-size: 13px;
     }
 
+    .h4b {
+        font-size: 14px;
+    }
+    .h4c {
+        font-size: 13px;
+    }
+
     .h5 {
         font-size: 12px;
     }
