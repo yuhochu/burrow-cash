@@ -24,8 +24,13 @@ const Liquidations = ({ isShow }) => {
     page: 1,
   });
 
+  console.info("renderLiquidations");
+  useEffect(() => {
+    console.info("Liquidations useEffect", isShow, pagination?.page);
+  }, []);
+
   useDidUpdateEffect(() => {
-    console.info("Liquidations toFetch", isShow, pagination?.page);
+    console.info("Liquidations useDidUpdateEffect", isShow, pagination?.page);
     if (isShow) {
       fetchData({
         page: pagination?.page,
