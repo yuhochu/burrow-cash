@@ -134,14 +134,12 @@ function DetailMobile() {
       </div>
       {/* Tab */}
       <div className="grid grid-cols-2 bg-gray-800 rounded-xl h-[42px] text-white text-base items-center justify-items-stretch mt-6 mb-6">
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center border-r border-dark-1000">
           <span
             onClick={() => {
               switchTab("market");
             }}
-            className={`relative z-10 border-r border-dark-1000 text-center ${
-              isMarket ? "text-primary" : ""
-            }`}
+            className={`relative z-10 text-center ${isMarket ? "text-primary" : ""}`}
           >
             Market Info
           </span>
