@@ -6,6 +6,7 @@ export const useDidUpdateEffect = (callback, inputs) => {
   const didMountRef = useRef(false);
 
   useEffect(() => {
+    console.info("didMountRef", didMountRef);
     if (didMountRef.current) callback();
     else didMountRef.current = true;
   }, inputs);
