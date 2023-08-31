@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import { trackMaxButton } from "../../utils/telemetry";
 import { formatWithCommas_number } from "../../utils/uiNumber";
 import RangeSlider from "./RangeSlider";
+import SelectToken from "./SelectToken";
 
 export default function Controls({
   amount,
@@ -54,24 +55,19 @@ export default function Controls({
     .replace(/(\..*)\./g, "$1")
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
-
   return (
     <div>
-      {/* <Input
-        value={inputAmount}
-        type="number"
-        step="0.01"
-        onClickMax={handleMaxClick}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-      />
-      <Box mx="1.5rem" my="1rem">
-        <Slider value={sliderValue} onChange={handleSliderChange} />
-      </Box> */}
+      {/* balance field */}
+      <div className="flex items-center justify-between text-sm text-gray-300 mb-3 px-1">
+        <span className="text-sm text-gray-300">Available</span>
+        <span className="flex items-center text-sm text-white">
+          {formatWithCommas_number(totalAvailable)}
+          <span className="text-xs text-gray-300 ml-2">({available$})</span>
+        </span>
+      </div>
       {/* input field */}
       <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5 gap-3">
-        <div className="flex items-center gap-2 flex-grow">
-          <img src={asset?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
+        <div className="flex items-center flex-grow">
           <input
             type="number"
             placeholder="0.0"
@@ -82,19 +78,13 @@ export default function Controls({
             className="text-white"
           />
         </div>
-        <div
+        <SelectToken asset={asset} />
+        {/* <div
           onClick={handleMaxClick}
           className="flex items-center border border-dark-500 rounded-md px-2 py-1 cursor-pointer text-xs text-gray-300 opacity-60 hover:opacity-100"
         >
           Max
-        </div>
-      </div>
-      {/* balance field */}
-      <div className="flex items-center justify-between text-sm text-gray-300 mt-2.5 px-1">
-        <span>{available$}</span>
-        <span className="flex items-center">
-          Balance: {formatWithCommas_number(totalAvailable)}
-        </span>
+        </div> */}
       </div>
       {/* Slider */}
       <RangeSlider value={sliderValue} onChange={handleSliderChange} action={action} />

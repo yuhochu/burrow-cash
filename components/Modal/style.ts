@@ -7,12 +7,14 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   backgroundColor: "#2E304B",
   border: "1px solid #4F5178",
   boxShadow: "0px 0px 10px 4px #00000026",
-  borderRadius: "6px",
   flexDirection: "column",
   [theme.breakpoints.down("sm")]: {
-    position: "relative",
-    height: "100%",
+    position: "absolute",
     width: "100%",
+    bottom: "0",
+    left: "0",
+    borderTopLeftRadius: "16px",
+    borderTopRightRadius: "16px",
   },
   [theme.breakpoints.up("sm")]: {
     top: "calc(50% - 40vh)",
@@ -20,5 +22,6 @@ export const Wrapper = styled(Box)(({ theme }) => ({
     display: "flex",
     maxHeight: "80vh",
     width: "420px",
+    borderRadius: "6px",
   },
 }));

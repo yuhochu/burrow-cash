@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const actionMapTitle = {
-  Supply: "Deposit",
+  Supply: "Supply",
   Borrow: "Borrow",
   Adjust: "Adjust Collateral",
   Withdraw: "Withdraw",

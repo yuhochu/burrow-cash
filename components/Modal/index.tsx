@@ -108,7 +108,6 @@ const Modal = () => {
         <Box sx={{ overflowY: "auto", p: ["20px", "20px"] }}>
           {!accountId && <NotConnected />}
           <TokenInfo apy={apy} asset={asset} onClose={handleClose} />
-          {/* {action === "Supply" && symbol === "USN" && <USNInfo />} */}
           <Controls
             amount={amount}
             available={available}
@@ -118,17 +117,8 @@ const Modal = () => {
             totalAvailable={available}
             available$={total}
           />
-          {/* <Available totalAvailable={available} available$={available$} /> */}
           <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />
-            {/* <Box display="flex" justifyContent="space-between">
-              <Typography fontSize="0.85rem" color="gray">
-                <span>{totalTitle}</span>
-              </Typography>
-              <Typography fontSize="0.85rem" fontWeight="500" color={theme.palette.secondary.main}>
-                {total}
-              </Typography>
-            </Box> */}
             <Rates rates={rates} />
             <CollateralSwitch action={action} canUseAsCollateral={canUseAsCollateral} />
           </div>
