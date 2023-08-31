@@ -6,6 +6,7 @@ import DashboardApy from "./dashboardApy";
 import DashboardReward from "./dashboardReward";
 import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
 import { AdjustButton, RepayButton, WithdrawButton } from "./supplyBorrowButtons";
+import { NoDataMascot } from "../../components/Icons/Icons";
 
 const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -59,7 +60,14 @@ const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
 };
 
 const NoLoginContent = ({ text = "No Data" }) => {
-  return <ContentBox className="text-gray-400 h4 flex justify-center">{text}</ContentBox>;
+  return (
+    <ContentBox className="text-gray-400 h4 flex justify-center flex-col items-center">
+      <div className="mb-4">
+        <NoDataMascot />
+      </div>
+      {text}
+    </ContentBox>
+  );
 };
 
 const TabItem = ({ text, onClick, active, tabIndex }) => {
