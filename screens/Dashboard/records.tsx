@@ -23,7 +23,7 @@ const Records = ({ isShow }) => {
     page: 1,
   });
 
-  useDidUpdateEffect(() => {
+  useEffect(() => {
     if (isShow) {
       fetchData({
         page: pagination?.page,
