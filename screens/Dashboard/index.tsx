@@ -4,6 +4,7 @@ import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import SupplyTokenSvg from "../../public/svg/Group 24791.svg";
+import BorrowTokenSvg from "../../public/svg/Group 24677.svg";
 import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
@@ -179,7 +180,7 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
         actionRow={
-          <div className="flex gap-2 pb-6">
+          <div className="flex gap-2 pb-6 table-action-row">
             <WithdrawButton tokenId={selected?.data?.tokenId} />
             <AdjustButton tokenId={selected?.data?.tokenId} />
           </div>
@@ -199,7 +200,11 @@ const StyledCustomTable = styled(CustomTable)`
       cursor: pointer;
 
       &:last-child {
-        padding-bottom: 10px;
+        padding-bottom: 20px;
+
+        .table-action-row {
+          padding-bottom: 0px;
+        }
       }
     }
   }
@@ -274,7 +279,7 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
         <div className="absolute" style={{ left: 0, top: 0 }}>
           {assets.svg.borrowBg}
         </div>
-        <SupplyTokenSvg className="mr-10" />
+        <BorrowTokenSvg className="mr-10" />
         <div className="h3">You Borrowed</div>
       </div>
       <StyledCustomTable

@@ -35,6 +35,7 @@ const StyledWrapper = styled.div`
     right: 0;
     font-weight: 400;
     z-index: 999;
+    text-align: left;
   }
 
   &:hover {

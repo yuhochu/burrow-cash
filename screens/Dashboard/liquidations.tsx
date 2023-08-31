@@ -24,7 +24,13 @@ const Liquidations = ({ isShow }) => {
     page: 1,
   });
 
+  console.info("renderLiquidations");
+  useEffect(() => {
+    console.info("Liquidations useEffect", isShow, pagination?.page);
+  }, []);
+
   useDidUpdateEffect(() => {
+    console.info("Liquidations useDidUpdateEffect", isShow, pagination?.page);
     if (isShow) {
       fetchData({
         page: pagination?.page,
@@ -35,7 +41,6 @@ const Liquidations = ({ isShow }) => {
   const fetchData = async ({ page }) => {
     try {
       setIsLoading(true);
-      // return setDocs([]);
       const response = await getLiquidations(accountId, page, 10, assets);
       let newUnreadCount = 0;
       response?.record_list?.forEach((d) => {

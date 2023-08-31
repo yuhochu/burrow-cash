@@ -3,10 +3,20 @@ import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
 
 const MAX_DEGREE = 225;
-const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, dividerPercent }) => {
+const SemiCircleProgressBar = ({
+  percent = 0,
+  children,
+  value,
+  dividerValue,
+  dividerPercent,
+  isWarning,
+}) => {
   let rotateDegree = 45; // start degree
   let isUnderDivider;
   // advance usage
+  if (value < 0) {
+    value = 0;
+  }
   if (value !== undefined && dividerValue && dividerPercent) {
     const base = dividerPercent / dividerValue;
     percent = value * base;
@@ -21,7 +31,11 @@ const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, div
   if (children) {
     node = children;
   } else {
-    node = <span>{percent}%</span>;
+    node = (
+      <span className={twMerge(isWarning && "text-warning", isUnderDivider && "text-danger")}>
+        {percent}%
+      </span>
+    );
   }
 
   return (
@@ -29,7 +43,7 @@ const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, div
       <div className="bar-wrapper">
         <div className="bar-container">
           <div
-            className={twMerge("bar", isUnderDivider && "bar-danger")}
+            className={twMerge("bar", isWarning && "bar-warning", isUnderDivider && "bar-danger")}
             style={{ transform: `rotate(${rotateDegree}deg)` }}
           />
           <div
@@ -78,7 +92,12 @@ const StyledWrapper = styled.div`
       border: 10px solid #2e304b; /* half gray, */
       border-bottom-color: #d2ff3a; /* half azure */
       border-right-color: #d2ff3a;
-      opacity: 0.6;
+      opacity: 1;
+
+      &.bar-warning {
+        border-bottom-color: #fff852;
+        border-right-color: #fff852;
+      }
 
       &.bar-danger {
         border-bottom-color: #ff68a7;
@@ -89,7 +108,7 @@ const StyledWrapper = styled.div`
     .bar-divider {
       height: 21px;
       width: 6px;
-      background: #d2ff3a;
+      background: #979abe;
       transform: rotate(45deg);
       position: absolute;
       top: 26px;
@@ -105,6 +124,7 @@ const StyledWrapper = styled.div`
       width: 160px !important;
       height: 160px !important;
     }
+
     .bar-wrapper,
     .bar-container {
       height: 80px !important;

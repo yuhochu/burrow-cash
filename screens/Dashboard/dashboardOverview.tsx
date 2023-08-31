@@ -64,14 +64,17 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
           <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
-            <img
-              src={rewardsObj?.brrr?.icon}
-              width={26}
-              height={26}
-              alt="token"
-              className="rounded-full"
-              style={{ margin: -3 }}
-            />
+            {rewardsObj?.brrr?.icon ? (
+              <img
+                src={rewardsObj?.brrr?.icon}
+                width={26}
+                height={26}
+                alt="token"
+                className="rounded-full"
+                style={{ margin: -3 }}
+              />
+            ) : null}
+
             {rewardsObj?.extra?.length
               ? rewardsObj.extra.map((d, i) => {
                   const extraData = d?.[1];
@@ -136,8 +139,9 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 };
 
 const HealthFactor = ({ userHealth }) => {
-  const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
-  const isDanger = healthFactor < lowHealthFactor;
+  const { data, healthFactor, lowHealthFactor, dangerHealthFactor } = userHealth || {};
+  const isDanger = healthFactor !== -1 && healthFactor < dangerHealthFactor;
+  const isWarning = healthFactor !== -1 && healthFactor < lowHealthFactor;
   const isMobile = isMobileDevice();
 
   let dangerTooltipStyles = {};
@@ -153,11 +157,17 @@ const HealthFactor = ({ userHealth }) => {
   }
 
   return (
-    <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={75}>
+    <SemiCircleProgressBar
+      value={healthFactor}
+      dividerValue={100}
+      dividerPercent={75}
+      isWarning={isWarning}
+    >
       <div className="absolute">
         <div
           className={twMerge(
             "h2b text-primary",
+            isWarning && "text-warning",
             isDanger && "text-red-100 flex gap-2 items-center",
           )}
         >
@@ -178,7 +188,7 @@ const HealthFactor = ({ userHealth }) => {
           <div style={{ marginRight: -5 }} className="relative">
             <CustomTooltips
               style={tooltipStyles}
-              text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${lowHealthFactor}, your account can be partially liquidated`}
+              text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${dangerHealthFactor}%, your account can be partially liquidated`}
             >
               <QuestionIcon />
             </CustomTooltips>
