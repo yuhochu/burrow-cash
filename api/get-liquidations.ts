@@ -13,6 +13,7 @@ export async function getLiquidations(
 ) {
   const response = await Datasource.shared.getLiquidations(accountId, page || 1, pageSize || 10);
   const nearTokens = [...nearNativeTokens, "meta-pool.near"];
+  const unreadIds: Array<string> = [];
   response?.record_list?.forEach((d) => {
     d.RepaidAssets?.forEach((a) => {
       const tokenId = a.token_id;
@@ -31,6 +32,37 @@ export async function getLiquidations(
       }
       a.data = asset;
     });
+    if (d.isRead === false) {
+      unreadIds.push(d.id);
+    }
   });
+
+  // mark read
+  console.info("unreadIds", unreadIds);
+  const promises = unreadIds.map((id) => markRead(id));
+  try {
+    const ids = await Promise.all(promises);
+    ids.forEach((id) => {
+      const item = response?.record_list?.find((d) => d.id === id);
+      if (item) {
+        item.isRead = true;
+        console.info("itemId", item?.id, item?.isRead);
+      }
+    });
+  } catch (e) {
+    console.error("markRead err", e);
+  }
+
   return response;
+}
+
+// eslint-disable-next-line consistent-return
+async function markRead(id) {
+  try {
+    const a = await Datasource.shared.markLiquidationRead(id);
+    console.info("markReadDone", a);
+    return id;
+  } catch (e) {
+    console.error("markRead err", e);
+  }
 }

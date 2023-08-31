@@ -57,11 +57,11 @@ class DataSource {
 
   markLiquidationRead(id) {
     return this.callAPI(
-      `/set_liquidation_info-records/${id}`,
-      "GET",
+      `/burrow/set_liquidation_info/${id}`,
+      "POST",
       null,
       null,
-      process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST,
+      config?.liquidationUrl,
     );
   }
 

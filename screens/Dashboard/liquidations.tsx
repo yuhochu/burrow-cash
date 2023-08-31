@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import Datasource from "../../data/datasource";
-import { useAccountId } from "../../hooks/hooks";
+import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
@@ -11,6 +11,7 @@ import { useDidUpdateEffect } from "../../hooks/useDidUpdateEffect";
 import { getLiquidations } from "../../api/get-liquidations";
 
 const Liquidations = ({ isShow }) => {
+  const { setCount } = useUnreadLiquidation();
   const accountId = useAccountId();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,11 @@ const Liquidations = ({ isShow }) => {
       setIsLoading(true);
       // return setDocs([]);
       const response = await getLiquidations(accountId, page, 10, assets);
+      let newUnreadCount = 0;
+      response?.record_list?.forEach((d) => {
+        if (d.isRead === false) newUnreadCount++;
+      });
+      setCount(newUnreadCount);
       setDocs(response?.record_list);
       setPagination((d) => {
         return {

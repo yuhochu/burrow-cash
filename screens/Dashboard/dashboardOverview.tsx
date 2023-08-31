@@ -106,12 +106,14 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             color="secondary"
             size={isMobile ? "sm" : "md"}
           >
-            {/* <span */}
-            {/*  className="unread-count absolute rounded-full bg-pink-400 text-black" */}
-            {/*  style={{ top: -8, right: -8 }} */}
-            {/* > */}
-            {/*  {unreadCount} */}
-            {/* </span> */}
+            {unreadCount ? (
+              <span
+                className="unread-count absolute rounded-full bg-pink-400 text-black"
+                style={{ top: -8, right: -8 }}
+              >
+                {unreadCount}
+              </span>
+            ) : null}
             Liquidation
           </CustomButton>
           <CustomButton

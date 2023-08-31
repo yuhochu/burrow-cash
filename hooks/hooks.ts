@@ -93,11 +93,6 @@ export function useDarkMode() {
 export function useUnreadLiquidation() {
   const unreadCount = useAppSelector(getUnreadLiquidation);
   const accountId = useAccountId();
-
-  useDidUpdateEffect(() => {
-    fetchUnreadLiquidation().then();
-  }, []);
-
   const dispatch = useAppDispatch();
 
   const fetchUnreadLiquidation = async () => {

@@ -4,9 +4,11 @@ import CustomModal from "../../components/CustomModal/CustomModal";
 import Liquidations from "./liquidations";
 import { CloseIcon } from "../../components/Icons/Icons";
 import Records from "./records";
+import { useUnreadLiquidation } from "../../hooks/hooks";
 
 const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
   const [tabIndex, setTabIndex] = useState(tab);
+  const { unreadCount, fetchUnreadLiquidation } = useUnreadLiquidation();
 
   useEffect(() => {
     setTabIndex(tab);
@@ -34,7 +36,12 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
       >
         <div className="flex gap-4">
           <TabItem text="Records" onClick={() => handleTabChange(0)} active={tabIndex === 0} />
-          <TabItem text="Liquidation" onClick={() => handleTabChange(1)} active={tabIndex === 1} />
+          <TabItem
+            text="Liquidation"
+            onClick={() => handleTabChange(1)}
+            active={tabIndex === 1}
+            unreadCount={unreadCount}
+          />
         </div>
         <div onClick={onClose} style={{ marginTop: 28, cursor: "pointer" }}>
           <CloseIcon />
@@ -47,14 +54,30 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
   );
 };
 
-const TabItem = ({ text, onClick, active }) => {
+type Props = {
+  text?: string;
+  onClick?: () => any;
+  active?: boolean;
+  unreadCount?: number | string | undefined;
+};
+const TabItem = ({ text, onClick, active, unreadCount }: Props) => {
   return (
     <div
       className={twMerge(active && "border-b-2 border-primary", "cursor-pointer")}
       style={{ padding: "28px 0 14px" }}
       onClick={onClick}
     >
-      {text}
+      <div className="relative">
+        {text}
+        {unreadCount ? (
+          <span
+            className="unread-count absolute rounded-full bg-pink-400 text-black"
+            style={{ top: -8, right: -8 }}
+          >
+            {unreadCount}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 };
