@@ -180,7 +180,7 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
         actionRow={
-          <div className="flex gap-2 pb-6">
+          <div className="flex gap-2 pb-6 table-action-row">
             <WithdrawButton tokenId={selected?.data?.tokenId} />
             <AdjustButton tokenId={selected?.data?.tokenId} />
           </div>
@@ -200,7 +200,11 @@ const StyledCustomTable = styled(CustomTable)`
       cursor: pointer;
 
       &:last-child {
-        padding-bottom: 10px;
+        padding-bottom: 20px;
+
+        .table-action-row {
+          padding-bottom: 0px;
+        }
       }
     }
   }

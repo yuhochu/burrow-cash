@@ -248,6 +248,9 @@ const StyledTable = styled.div`
 
     .custom-table-td {
       padding: 15px 5px;
+      justify-content: center;
+      display: flex;
+      flex-direction: column;
     }
   }
 

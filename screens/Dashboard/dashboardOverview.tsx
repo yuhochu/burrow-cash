@@ -143,7 +143,7 @@ const HealthFactor = ({ userHealth }) => {
   const isDanger = healthFactor !== -1 && healthFactor < dangerHealthFactor;
   const isWarning = healthFactor !== -1 && healthFactor < lowHealthFactor;
   const isMobile = isMobileDevice();
-  console.log("lowHealthFactor", lowHealthFactor, dangerHealthFactor, isWarning);
+
   let dangerTooltipStyles = {};
   let tooltipStyles = {};
   if (isMobile) {
