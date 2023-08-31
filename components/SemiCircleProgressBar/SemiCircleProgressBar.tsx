@@ -7,6 +7,9 @@ const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, div
   let rotateDegree = 45; // start degree
   let isUnderDivider;
   // advance usage
+  if (value < 0) {
+    value = 0;
+  }
   if (value !== undefined && dividerValue && dividerPercent) {
     const base = dividerPercent / dividerValue;
     percent = value * base;
@@ -33,7 +36,7 @@ const SemiCircleProgressBar = ({ percent = 0, children, value, dividerValue, div
             style={{ transform: `rotate(${rotateDegree}deg)` }}
           />
           <div
-            className={twMerge("bg-primary bar-divider hidden", dividerPercent === 75 && "block")}
+            className={twMerge("bg-primary bar-divider hidden", dividerPercent === 100 && "block")}
           />
         </div>
         {node}
@@ -105,6 +108,7 @@ const StyledWrapper = styled.div`
       width: 160px !important;
       height: 160px !important;
     }
+
     .bar-wrapper,
     .bar-container {
       height: 80px !important;

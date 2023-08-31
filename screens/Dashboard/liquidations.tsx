@@ -25,6 +25,7 @@ const Liquidations = ({ isShow }) => {
   });
 
   useDidUpdateEffect(() => {
+    console.info("Liquidations toFetch", isShow, pagination?.page);
     if (isShow) {
       fetchData({
         page: pagination?.page,
@@ -35,7 +36,6 @@ const Liquidations = ({ isShow }) => {
   const fetchData = async ({ page }) => {
     try {
       setIsLoading(true);
-      // return setDocs([]);
       const response = await getLiquidations(accountId, page, 10, assets);
       let newUnreadCount = 0;
       response?.record_list?.forEach((d) => {

@@ -64,14 +64,17 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
           />
           <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
-            <img
-              src={rewardsObj?.brrr?.icon}
-              width={26}
-              height={26}
-              alt="token"
-              className="rounded-full"
-              style={{ margin: -3 }}
-            />
+            {rewardsObj?.brrr?.icon ? (
+              <img
+                src={rewardsObj?.brrr?.icon}
+                width={26}
+                height={26}
+                alt="token"
+                className="rounded-full"
+                style={{ margin: -3 }}
+              />
+            ) : null}
+
             {rewardsObj?.extra?.length
               ? rewardsObj.extra.map((d, i) => {
                   const extraData = d?.[1];
@@ -137,7 +140,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
 const HealthFactor = ({ userHealth }) => {
   const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
-  const isDanger = healthFactor < lowHealthFactor;
+  const isDanger = healthFactor !== -1 && healthFactor < lowHealthFactor;
   const isMobile = isMobileDevice();
 
   let dangerTooltipStyles = {};
@@ -153,7 +156,7 @@ const HealthFactor = ({ userHealth }) => {
   }
 
   return (
-    <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={75}>
+    <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={100}>
       <div className="absolute">
         <div
           className={twMerge(
