@@ -14,22 +14,28 @@ const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
     setTabIndex(i);
   };
 
-  const supplyNode = suppliedRows?.map((d) => (
-    <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
-      <SupplyItem data={d} key={d.tokenId} />
-    </ContentBox>
-  ));
-
-  const borrowNode = borrowedRows?.map((d) => (
-    <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
-      <BorrowItem data={d} key={d.tokenId} />
-    </ContentBox>
-  ));
+  let supplyNode;
+  let borrowNode;
+  if (accountId) {
+    supplyNode = suppliedRows?.map((d) => (
+      <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
+        <SupplyItem data={d} key={d.tokenId} />
+      </ContentBox>
+    ));
+    borrowNode = borrowedRows?.map((d) => (
+      <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
+        <BorrowItem data={d} key={d.tokenId} />
+      </ContentBox>
+    ));
+  } else {
+    supplyNode = <NoLoginContent text="Your supplied assets will appear here" />;
+    borrowNode = <NoLoginContent text="Your borrowed assets will appear here" />;
+  }
 
   return (
     <div>
       <div
-        className="flex gap-4 justify-around bg-gray-800 mb-4 items-center relative z-12"
+        className="flex gap-4 justify-evenly bg-gray-800 mb-4 items-center relative z-12"
         style={{ borderRadius: 8 }}
       >
         <TabItem
@@ -52,6 +58,10 @@ const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
   );
 };
 
+const NoLoginContent = ({ text = "No Data" }) => {
+  return <ContentBox className="text-gray-400 h4 flex justify-center">{text}</ContentBox>;
+};
+
 const TabItem = ({ text, onClick, active, tabIndex }) => {
   return (
     <div
@@ -59,12 +69,19 @@ const TabItem = ({ text, onClick, active, tabIndex }) => {
       style={{ padding: "14px 0 14px" }}
       onClick={onClick}
     >
-      <div className={twMerge("relative z-20")}>{text}</div>
+      <div
+        className={twMerge(
+          "relative z-20",
+          active && (tabIndex === 1 ? "text-pink-500" : "text-primary"),
+        )}
+      >
+        {text}
+      </div>
       <StyledTabActiveBall className={twMerge(`bg-gray-800 hidden`, active && "flex")}>
         <div
           className={twMerge(
             "tab-ball bg-primary shadow-primary",
-            tabIndex && "bg-pink-500 shadow-pink-500",
+            tabIndex === 1 && "bg-pink-500 shadow-pink-500",
           )}
         />
       </StyledTabActiveBall>

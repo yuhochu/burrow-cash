@@ -53,17 +53,13 @@ const Index = () => {
 
   let supplyBorrowNode;
   if (isMobile) {
-    if (accountId) {
-      supplyBorrowNode = (
-        <SupplyBorrowListMobile
-          suppliedRows={suppliedRows}
-          borrowedRows={borrowedRows}
-          accountId={accountId}
-        />
-      );
-    } else {
-      supplyBorrowNode = <div>Your supplied assets will appear here</div>;
-    }
+    supplyBorrowNode = (
+      <SupplyBorrowListMobile
+        suppliedRows={suppliedRows}
+        borrowedRows={borrowedRows}
+        accountId={accountId}
+      />
+    );
   } else {
     supplyBorrowNode = (
       <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">

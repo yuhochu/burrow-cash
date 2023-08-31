@@ -31,6 +31,9 @@ const getConfig = (env: string) => {
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
         centralizationUrl: "http://139.162.85.48:3001/burrow",
+        liquidationUrl: process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST || "http://139.162.85.48:3001",
+        recordsUrl:
+          process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://mainnet-indexer.ref-finance.com",
       } as unknown as ConnectConfig;
     case "development":
     case "testnet":
@@ -41,6 +44,9 @@ const getConfig = (env: string) => {
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
         centralizationUrl: "http://139.162.85.48:3001/burrow",
+        liquidationUrl: process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST || "http://139.162.85.48:3001",
+        recordsUrl:
+          process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://mainnet-indexer.ref-finance.com",
       } as unknown as ConnectConfig;
     case "betanet":
       return {

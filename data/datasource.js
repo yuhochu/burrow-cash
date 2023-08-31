@@ -1,4 +1,7 @@
 import { parseResponse, URLForEndpoint } from "./request";
+import getConfig, { defaultNetwork } from "../utils/config";
+
+const config = getConfig(defaultNetwork);
 
 class DataSource {
   static get shared() {
@@ -48,7 +51,7 @@ class DataSource {
       "GET",
       qryObj,
       null,
-      process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST,
+      config?.liquidationUrl,
     );
   }
 
@@ -68,13 +71,7 @@ class DataSource {
       page_number: pageNumber,
       page_size: pageSize,
     };
-    return this.callAPI(
-      `/get-burrow-records`,
-      "GET",
-      qryObj,
-      null,
-      process.env.NEXT_PUBLIC_RECORDS_API_HOST,
-    );
+    return this.callAPI(`/get-burrow-records`, "GET", qryObj, null, config?.recordsUrl);
   }
 }
 
