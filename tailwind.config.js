@@ -47,6 +47,8 @@ module.exports = {
       colors: {
         primary: "#D2FF3A",
         claim: "#7C89FF",
+        warning: "#FFF852",
+        danger: "#FF68A7",
         dark: {
           50: "#31344D",
           100: "#2E304B",

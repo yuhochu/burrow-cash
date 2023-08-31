@@ -13,8 +13,8 @@ export const getAdjustedSum = (
   type: "borrowed" | "collateral",
   portfolio: Portfolio,
   assets: Assets,
-) =>
-  Object.keys(portfolio[type])
+) => {
+  return Object.keys(portfolio[type])
     .map((id) => {
       const asset = assets[id];
 
@@ -31,6 +31,7 @@ export const getAdjustedSum = (
         : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);
     })
     .reduce(sumReducerDecimal, new Decimal(0));
+};
 
 export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfolio: Portfolio) => {
   const asset = assets[tokenId];

@@ -139,10 +139,11 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 };
 
 const HealthFactor = ({ userHealth }) => {
-  const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
-  const isDanger = healthFactor !== -1 && healthFactor < lowHealthFactor;
+  const { data, healthFactor, lowHealthFactor, dangerHealthFactor } = userHealth || {};
+  const isDanger = healthFactor !== -1 && healthFactor < dangerHealthFactor;
+  const isWarning = healthFactor !== -1 && healthFactor < lowHealthFactor;
   const isMobile = isMobileDevice();
-
+  console.log("lowHealthFactor", lowHealthFactor, dangerHealthFactor, isWarning);
   let dangerTooltipStyles = {};
   let tooltipStyles = {};
   if (isMobile) {
@@ -156,11 +157,17 @@ const HealthFactor = ({ userHealth }) => {
   }
 
   return (
-    <SemiCircleProgressBar value={healthFactor} dividerValue={lowHealthFactor} dividerPercent={100}>
+    <SemiCircleProgressBar
+      value={healthFactor}
+      dividerValue={100}
+      dividerPercent={75}
+      isWarning={isWarning}
+    >
       <div className="absolute">
         <div
           className={twMerge(
             "h2b text-primary",
+            isWarning && "text-warning",
             isDanger && "text-red-100 flex gap-2 items-center",
           )}
         >
@@ -181,7 +188,7 @@ const HealthFactor = ({ userHealth }) => {
           <div style={{ marginRight: -5 }} className="relative">
             <CustomTooltips
               style={tooltipStyles}
-              text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${lowHealthFactor}, your account can be partially liquidated`}
+              text={`Represents the combined collateral ratios of the borrowed assets. If it is less than ${dangerHealthFactor}%, your account can be partially liquidated`}
             >
               <QuestionIcon />
             </CustomTooltips>

@@ -15,9 +15,11 @@ export function useUserHealth() {
   const netLiquidityAPY = useAppSelector(getNetTvlAPY({ isStaking: false }));
   const dailyReturns = useAppSelector(getDailyReturns);
   const healthFactor = useAppSelector(getHealthFactor);
+
   const { fullDigits, setDigits } = useFullDigits();
   const slimStats = useSlimStats();
   const lowHealthFactor = 180;
+  const dangerHealthFactor = 100;
 
   const toggleDailyReturns = () => {
     trackShowDailyReturns({ showDailyReturns });
@@ -31,7 +33,7 @@ export function useUserHealth() {
   const valueLocale = healthFactor?.toLocaleString(undefined, {
     maximumFractionDigits: healthFactor <= 105 ? 2 : 0,
   });
-  const valueLabel = healthFactor === -1 || healthFactor === null ? "N/A" : `${valueLocale}%`;
+  const valueLabel = healthFactor === -1 || healthFactor === null ? "-%" : `${valueLocale}%`;
 
   const label =
     healthFactor === -1 || healthFactor === null
@@ -48,6 +50,7 @@ export function useUserHealth() {
     dailyReturns,
     healthFactor,
     lowHealthFactor,
+    dangerHealthFactor,
     slimStats,
     fullDigits,
     toggleDigits,
