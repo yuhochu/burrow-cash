@@ -33,3 +33,39 @@ export function ArrowUpIcon(props) {
     </svg>
   );
 }
+
+export function ArrowLineDownIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="7"
+      viewBox="0 0 12 7"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M1 1L6 5L11 1" stroke="white" strokeWidth="1.58" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function CheckIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="15"
+      height="11"
+      viewBox="0 0 15 11"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 4.61111L5.64286 9.125L14 1"
+        stroke="#D2FF3A"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

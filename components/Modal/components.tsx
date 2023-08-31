@@ -102,34 +102,20 @@ export const CloseButton = ({ onClose, ...props }) => (
 );
 
 export const TokenInfo = ({ apy, asset, onClose }) => {
-  const { action, symbol, tokenId, icon, depositRewards, borrowRewards, price } = asset;
+  const { action, symbol, tokenId, icon, depositRewards, borrowRewards } = asset;
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
-  const apyRewards = page === "deposit" ? depositRewards : borrowRewards;
   const isRepay = action === "Repay";
   const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
-  const theme = useTheme();
   return (
     <div className="mb-[20px]">
       <div className="flex items-center justify-between text-lg text-white">
-        {actionMapTitle[action]}
+        <div className="flex items-center">
+          {actionMapTitle[action]} <span className="ml-1.5">{symbol}</span>
+        </div>
         <CloseIcon onClick={onClose} />
       </div>
       {isRepay && degenMode.enabled && (
         <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-12 mt-5 p-1.5">
-          {/* <Button
-            key="wallet"
-            color={isRepayFromDeposits ? "info" : "primary"}
-            onClick={() => setRepayFromDeposits(false)}
-          >ModalActionModalAction
-            From Wallet
-          </Button>
-          <Button
-            key="deposits"
-            color={isRepayFromDeposits ? "primary" : "info"}
-            onClick={() => setRepayFromDeposits(true)}
-          >
-            From Deposits
-          </Button> */}
           <span
             onClick={() => setRepayFromDeposits(false)}
             className={`flex items-center justify-center flex-grow w-1 h-full text-sm rounded-md cursor-pointer ${
@@ -148,55 +134,6 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
           </span>
         </div>
       )}
-      {/* <Box
-        boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
-        borderRadius={1}
-        p={2}
-        display="flex"
-        sx={{ backgroundColor: theme.custom.backgroundStaking }}
-      >
-        <TokenIcon icon={icon} />
-        <Box ml="12px">
-          <Typography fontSize="0.85rem" fontWeight="500" color={theme.palette.secondary.main}>
-            {symbol}
-          </Typography>
-          <Typography fontSize="0.7rem" color={theme.palette.secondary.main}>
-            {Number(price).toLocaleString(undefined, USD_FORMAT)}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            height: "24px",
-            bgcolor: theme.palette.background.default,
-            alignItems: "center",
-            borderRadius: "4px",
-            px: "8px",
-            ml: "auto",
-            alignSelf: "center",
-          }}
-        >
-          <APYCell
-            rewards={apyRewards}
-            baseAPY={apy}
-            page={page}
-            tokenId={tokenId}
-            showIcons={false}
-            justifyContent="center"
-            sx={{
-              fontSize: "0.75rem",
-              color: theme.palette.secondary.main,
-              minWidth: "auto",
-              mr: "4px",
-            }}
-          />
-          <Typography
-            sx={{ fontSize: "0.75rem", color: theme.palette.secondary.main, fontWeight: "bold" }}
-          >
-            APY
-          </Typography>
-        </Box>
-      </Box> */}
     </div>
   );
 };

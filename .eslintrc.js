@@ -62,6 +62,7 @@ module.exports = {
     "no-else-return": "off",
     "no-empty": "off",
     "react/jsx-no-bind": "off",
+    "jsx-a11y/no-noninteractive-tabindex": "off",
   },
   settings: {
     react: {
