@@ -22,7 +22,7 @@ import GiftIcon from "../../public/svg/Group 24710.svg";
 import { isMobileDevice } from "../../helpers/helpers";
 
 const Staking = () => {
-  const [total] = useAppSelector(getTotalBRRR);
+  const [total, totalUnclaim] = useAppSelector(getTotalBRRR);
   const { BRRR, stakingTimestamp } = useStaking();
   const { handleClaimAll, isLoading } = useClaimAllRewards("staking");
   const [loadingUnstake, setLoadingUnstake] = useState(false);
@@ -59,6 +59,7 @@ const Staking = () => {
       </div>
     );
   }
+
   return (
     <LayoutContainer>
       <div>
@@ -69,12 +70,12 @@ const Staking = () => {
           <div className="h2 flex items-center gap-3 mb-4 md:mb-0">
             <BrrrLogo color="#D2FF3A" className="brrr-logo" />
             <div className="brrr-amount flex flex-col md:flex-row md:gap-4 md:items-center">
-              <LiveUnclaimedAmount addAmount={total} />{" "}
+              <LiveUnclaimedAmount addAmount={BRRR + total} />{" "}
               <div className="text-gray-300 brrr-token">BRRR</div>
             </div>
           </div>
         </StyledStakingHeader>
-        <div className="md:flex justify-center gap-4">
+        <div className="md:flex justify-center gap-4 md:gap-6">
           <StakingBox text1="💰 Available" value1={total.toLocaleString(undefined, TOKEN_FORMAT)}>
             <CustomButton onClick={() => setModal({ name: "staking" })} className="w-full">
               Stake
@@ -98,20 +99,20 @@ const Staking = () => {
             </CustomButton>
           </StakingBox>
 
-          <StakingBox
-            text1="🎁 Unclaimed Reward"
-            value1={<LiveUnclaimedAmount />}
-            logoIcon={<GiftIcon />}
-          >
-            <CustomButton
-              onClick={handleClaimAll}
-              className="w-full bg-claim border-claim text-black"
-              color="custom"
-              isLoading={isLoading}
-            >
-              Claim
-            </CustomButton>
-          </StakingBox>
+          {/* <StakingBox */}
+          {/*  text1="🎁 Unclaimed Reward" */}
+          {/*  value1={<LiveUnclaimedAmount />} */}
+          {/*  logoIcon={<GiftIcon />} */}
+          {/* > */}
+          {/*  <CustomButton */}
+          {/*    onClick={handleClaimAll} */}
+          {/*    className="w-full bg-claim border-claim text-black" */}
+          {/*    color="custom" */}
+          {/*    isLoading={isLoading} */}
+          {/*  > */}
+          {/*    Claim */}
+          {/*  </CustomButton> */}
+          {/* </StakingBox> */}
         </div>
       </div>
 
@@ -142,7 +143,7 @@ type StakingBoxProps = {
 };
 const StakingBox = ({ logoIcon, text1, value1, text2, value2, children }: StakingBoxProps) => {
   return (
-    <ContentBox className="flex-1 mb-4" padding="26px">
+    <ContentBox className="mb-4 md:w-[363px]" padding="26px">
       <div className="flex justify-between flex-col h-full">
         <div className="flex justify-end lg:justify-between mb-2">
           <div className="hidden lg:block relative">

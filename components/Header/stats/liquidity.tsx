@@ -73,10 +73,16 @@ export const UserLiquidity = () => {
       {
         value: userDepositedValue,
         text: "Deposited",
+        valueStyle: {
+          color: "#D2FF3A",
+        },
       },
       {
         value: userBorrowedValue,
         text: "Borrowed",
+        valueStyle: {
+          color: "#FF68A7",
+        },
       },
     ],
   ];
@@ -87,11 +93,9 @@ export const UserLiquidity = () => {
     setDigits({ user });
   };
 
-  const title = <Typography>Weighted Net Liquidity</Typography>;
-
   return (
     <Stat
-      title={title}
+      title="Weighted Net Liquidity"
       titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
       labels={netLiquidityLabels}

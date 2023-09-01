@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import BookTokenSvg from "../../public/svg/Group 74.svg";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
@@ -19,7 +20,9 @@ import assets from "../../components/Assets";
 import DashboardOverview from "./dashboardOverview";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import SupplyBorrowListMobile from "./supplyBorrowListMobile";
-import { AdjustButton, WithdrawButton, RepayButton } from "./supplyBorrowButtons";
+import { AdjustButton, WithdrawButton, RepayButton, MarketButton } from "./supplyBorrowButtons";
+import CustomButton from "../../components/CustomButton/CustomButton";
+import { ArrowUpIcon } from "../../components/Icons/Icons";
 
 const Index = () => {
   const accountId = useAccountId();
@@ -119,7 +122,16 @@ const yourSuppliedColumns = [
   {
     header: "Rewards",
     cell: ({ originalData }) => {
-      return <DashboardReward rewardList={originalData?.rewards} price={originalData?.price} />;
+      if (!originalData?.borrowRewards?.length) {
+        return "-";
+      }
+
+      return (
+        <>
+          <DashboardReward rewardList={originalData?.rewards} />
+          <div className="h6 text-gray-300 mt-1">{originalData.price}</div>
+        </>
+      );
     },
   },
   {
@@ -161,6 +173,7 @@ type TableRowSelect = {
 const YourSupplied = ({ suppliedRows, accountId }) => {
   const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
   const { canUseAsCollateral, tokenId } = selected?.data || {};
+
   const handleRowSelect = (rowData, rowIndex) => {
     setSelected({ data: rowData, index: rowIndex });
   };
@@ -182,6 +195,7 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         selectedRowIndex={selected?.index}
         actionRow={
           <div className="flex gap-2 pb-6 table-action-row">
+            <MarketButton tokenId={selected?.data?.tokenId} />
             <WithdrawButton tokenId={selected?.data?.tokenId} />
             {canUseAsCollateral && <AdjustButton tokenId={selected?.data?.tokenId} />}
           </div>
@@ -260,8 +274,8 @@ const yourBorrowedColumns = [
       }
       return (
         <>
-          <DashboardReward rewardList={originalData.borrowRewards} />
-          <div className="h6 text-gray-300">{originalData.price}</div>
+          <DashboardReward rewardList={originalData.borrowRewards} price={originalData.price} />
+          {/* <div className="h6 text-gray-300 mt-1">{originalData.price}</div> */}
         </>
       );
     },
@@ -303,7 +317,8 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
         actionRow={
-          <div className="pb-6 table-action-row">
+          <div className="flex gap-2 pb-6 table-action-row">
+            <MarketButton tokenId={selected?.data?.tokenId} />
             <RepayButton tokenId={selected?.data?.tokenId} />
           </div>
         }

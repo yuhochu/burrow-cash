@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
+import { Link, Stack, Typography } from "@mui/material";
 import SemiCircleProgressBar from "../../components/SemiCircleProgressBar/SemiCircleProgressBar";
 import { useUserHealth } from "../../hooks/useUserHealth";
 import { formatUSDValue, isMobileDevice } from "../../helpers/helpers";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { APY_FORMAT, USD_FORMAT } from "../../store";
+import { APY_FORMAT, COMPACT_USD_FORMAT, m, USD_FORMAT } from "../../store";
 import { useRewards } from "../../hooks/useRewards";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
 import ModalHistoryInfo from "./modalHistoryInfo";
 import { modalProps } from "../../interfaces/common";
 import { DangerIcon, QuestionIcon } from "../../components/Icons/Icons";
 import CustomTooltips from "../../components/CustomTooltips/CustomTooltips";
-import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
+import { useAccountId, useNonFarmedAssets, useUnreadLiquidation } from "../../hooks/hooks";
+import { ProtocolDailyRewards, UserDailyRewards } from "../../components/Header/stats/rewards";
+import { UserLiquidity } from "../../components/Header/stats/liquidity";
+import { APY } from "../../components/Header/stats/apy";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
@@ -20,9 +24,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
     data: null,
   });
   const userHealth = useUserHealth();
-  const { data, netAPY, netLiquidityAPY, healthFactor, lowHealthFactor } = userHealth || {};
   const rewardsObj = useRewards();
-  const APYAmount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
   const { unreadCount, fetchUnreadLiquidation } = useUnreadLiquidation();
   const isMobile = isMobileDevice();
 
@@ -50,53 +52,57 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   };
 
   return (
-    <div className="md:flex md:justify-between lg:justify-between">
-      <div className="mb-6 mb-0">
-        <div className="flex gap-10 md:gap-20 mb-8">
-          <OverviewItem title="Net APY" value={APYAmount} />
-          <OverviewItem title="Supplied" value={formatUSDValue(totalSuppliedUSD)} />
-          <OverviewItem title="Borrowed" value={formatUSDValue(totalBorrowedUSD)} />
-        </div>
-
-        <div className="flex gap-2 items-end">
-          <OverviewItem
-            title="Unclaimed Rewards"
-            value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
-          />
-          <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
-            {rewardsObj?.brrr?.icon ? (
-              <img
-                src={rewardsObj?.brrr?.icon}
-                width={26}
-                height={26}
-                alt="token"
-                className="rounded-full"
-                style={{ margin: -3 }}
-              />
-            ) : null}
-
-            {rewardsObj?.extra?.length
-              ? rewardsObj.extra.map((d, i) => {
-                  const extraData = d?.[1];
-                  return (
-                    <img
-                      src={extraData?.icon}
-                      width={26}
-                      key={(extraData?.tokenId || "0") + i}
-                      height={26}
-                      alt="token"
-                      className="rounded-full"
-                      style={{ margin: -3 }}
-                    />
-                  );
-                })
-              : null}
+    <div className="lg:flex md:justify-between lg:justify-between">
+      <div className="mb-4 md:mb-0">
+        <div className="flex gap-2 md:gap-6 lg:gap-8">
+          <div className="gap-6 flex flex-col">
+            <UserLiquidity />
+            <UserDailyRewards />
           </div>
-          {rewardsObj?.data?.totalUnClaimUSD > 0 && (
-            <div style={{ marginBottom: 4 }}>
-              <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+
+          <div className="gap-6 flex flex-col">
+            <APY />
+            <div className="flex gap-2 md:items-end flex-col md:flex-row">
+              <OverviewItem
+                title="Unclaimed Rewards"
+                value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
+              />
+              <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
+                {rewardsObj?.brrr?.icon ? (
+                  <img
+                    src={rewardsObj?.brrr?.icon}
+                    width={26}
+                    height={26}
+                    alt="token"
+                    className="rounded-full"
+                    style={{ margin: -3 }}
+                  />
+                ) : null}
+
+                {rewardsObj?.extra?.length
+                  ? rewardsObj.extra.map((d, i) => {
+                      const extraData = d?.[1];
+                      return (
+                        <img
+                          src={extraData?.icon}
+                          width={26}
+                          key={(extraData?.tokenId || "0") + i}
+                          height={26}
+                          alt="token"
+                          className="rounded-full"
+                          style={{ margin: -3 }}
+                        />
+                      );
+                    })
+                  : null}
+              </div>
+              {rewardsObj?.data?.totalUnClaimUSD > 0 && (
+                <div style={{ marginBottom: 4 }}>
+                  <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-end">
@@ -201,11 +207,30 @@ const HealthFactor = ({ userHealth }) => {
   );
 };
 
-const OverviewItem = ({ title, value }) => {
+type OverviewItemProps = {
+  title: string;
+  value?: any;
+  labels?: any;
+};
+const OverviewItem = ({ title, value, labels }: OverviewItemProps) => {
   return (
     <div>
       <div className="h6 text-gray-300">{title}</div>
       <div className="h2">{value}</div>
+      {labels?.map((row, i) => (
+        <div className="flex gap-2" key={i}>
+          {row?.map((d) => (
+            <div
+              key={d.text}
+              className="flex items-center gap-2 h5 rounded-[21px] bg-dark-100"
+              style={{ padding: "1px 8px" }}
+            >
+              <div style={d.textStyle}>{d.text}</div>
+              <div style={d.valueStyle}>{d.value}</div>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

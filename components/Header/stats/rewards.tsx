@@ -2,10 +2,10 @@ import { useRewards } from "../../../hooks/useRewards";
 import { TOKEN_FORMAT, USD_FORMAT, NUMBER_FORMAT } from "../../../store";
 import { Stat } from "./components";
 
-const transformAssetReward = (r) => ({
+const transformAssetReward = (r, text) => ({
   value: r.dailyAmount.toLocaleString(undefined, TOKEN_FORMAT),
   tooltip: `${r.unclaimedAmount.toLocaleString(undefined, TOKEN_FORMAT)} unclaimed`,
-  text: r.symbol,
+  text: text || r.symbol,
   icon: r.icon,
 });
 
@@ -21,13 +21,10 @@ export const UserDailyRewards = () => {
 
   const netRewards = net.flatMap((f) => f[1]);
 
-  const assetLabels = assetRewards.map(transformAssetReward);
-  const netLabels = netRewards.map(transformAssetReward);
+  const assetLabels = assetRewards.map((r) => transformAssetReward(r, "Pools"));
+  const netLabels = netRewards.map((r) => transformAssetReward(r, "Net Liquidity"));
 
-  const labels = [
-    [{ text: "Pools:" }, ...assetLabels],
-    // netLabels.length ? [{ text: "Net Liquidity:" }, ...netLabels] : [],
-  ];
+  const labels = [[...assetLabels], netLabels.length ? [...netLabels] : []];
   const amount = assetRewards.reduce(sumRewards, 0) + netRewards.reduce(sumRewards, 0);
 
   return (

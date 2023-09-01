@@ -8,7 +8,6 @@ import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
-import { useDidUpdateEffect } from "../../hooks/useDidUpdateEffect";
 
 const Records = ({ isShow }) => {
   const accountId = useAccountId();
