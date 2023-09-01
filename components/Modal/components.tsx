@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -25,7 +25,7 @@ import {
   showModal,
   setUnreadLiquidation,
 } from "../../redux/appSlice";
-import { formatWithCommas_number, formatWithCommas_usd } from "../../utils/uiNumber";
+import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
 import { TipIcon } from "./svg";
@@ -166,17 +166,19 @@ export const HealthFactor = ({ value }) => {
 };
 
 export const CollateralSwitch = ({ action, canUseAsCollateral }) => {
-  const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
+  const [collateralStatus, setCollateralStatus] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const showToggle = action === "Supply";
 
   useEffect(() => {
     if (!canUseAsCollateral) {
       dispatch(toggleUseAsCollateral({ useAsCollateral: false }));
+    } else {
+      dispatch(toggleUseAsCollateral({ useAsCollateral: collateralStatus }));
     }
-  }, [useAsCollateral]);
+  }, [collateralStatus]);
   const handleSwitchToggle = (checked: boolean) => {
-    dispatch(toggleUseAsCollateral({ useAsCollateral: checked }));
+    setCollateralStatus(checked);
   };
   if (!showToggle) return null;
   return (
@@ -193,16 +195,12 @@ export const CollateralSwitch = ({ action, canUseAsCollateral }) => {
           </Box>
         </Tooltip>
       )}
-      <Switch
-        onChange={handleSwitchToggle}
-        checked={useAsCollateral}
-        disabled={!canUseAsCollateral}
-      />
+      <Switch onChange={handleSwitchToggle} checked={collateralStatus} />
     </div>
   );
 };
 
-const Switch = ({ onChange, checked, disabled }) => {
+const Switch = ({ onChange, checked }) => {
   if (checked) {
     return (
       <div
@@ -235,7 +233,7 @@ export const Rates = ({ rates }) => {
       <span className="text-sm text-gray-300">{label}</span>
       <div className="flex items-center">
         <span className="text-sm text-white">{value}</span>
-        {value$ && (
+        {!isInvalid(value$) && (
           <span className="text-xs text-gray-300 ml-1.5">({formatWithCommas_usd(value$)})</span>
         )}
       </div>

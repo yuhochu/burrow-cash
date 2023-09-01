@@ -83,13 +83,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
     case "Borrow":
       data.totalTitle = `Total Borrow`;
       data.available = toDecimal(Math.min(Math.max(0, maxBorrowAmount), availableLiquidity));
-      data.rates = [
-        { label: "Collateral Factor", value: collateralFactor },
-        // {
-        //   label: "Pool Liquidity",
-        //   value: availableLiquidity.toLocaleString(undefined, TOKEN_FORMAT),
-        // },
-      ];
+      data.rates = [{ label: "Collateral Factor", value: collateralFactor }];
 
       if (amount !== 0 && Number(amount).toFixed() === maxBorrowAmount?.toFixed()) {
         data.alerts["maxBorrow"] = {

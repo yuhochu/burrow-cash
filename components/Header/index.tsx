@@ -16,7 +16,7 @@ import MenuMobile from "./MenuMobile";
 const MenuItem = ({ title, pathname, appendPathname, sx = {} }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isSelected = router.asPath.includes(pathname) || router.asPath.includes(appendPathname);
+  const isSelected = router.asPath.includes(pathname) || router.asPath === appendPathname;
 
   const style = isSelected ? { color: "#D2FF3A" } : {};
 

@@ -66,13 +66,13 @@ export default function Disclaimer({ isOpen = false, onClose }) {
         >
           Disclaimer
         </Typography>
-        <Box sx={{ overflow: "scroll", marginTop: "40px" }}>
+        <Box sx={{ overflow: "scroll", marginTop: "30px" }}>
           <FormControlLabel
             control={
               <CheckBoxCustom
                 checked={checked1}
                 onClick={() => setChecked1(!checked1)}
-                className="flex flex-shrink-0 mr-3"
+                className="flex flex-shrink-0 mr-3 relative top-0.5"
               />
             }
             sx={{ display: "flex", alignItems: "flex-start", marginLeft: "0px" }}
@@ -94,7 +94,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
               <CheckBoxCustom
                 checked={checked2}
                 onClick={() => setChecked2(!checked2)}
-                className="flex flex-shrink-0 mr-3"
+                className="flex flex-shrink-0 mr-3 relative top-0.5"
               />
             }
             sx={{ display: "flex", alignItems: "flex-start", marginLeft: "0px", marginTop: "30px" }}

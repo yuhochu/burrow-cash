@@ -20,6 +20,6 @@ export function useUserBalance(tokenId: string, isWrappedNear: boolean) {
     supplyBalance = new Decimal(available || 0).toFixed();
   }
   // get borrow balance
-  borrowBalance = Decimal.min(maxBorrowAmount || 0, availableLiquidity || 0).toFixed();
+  borrowBalance = Decimal.min(Math.max(0, maxBorrowAmount), availableLiquidity || 0).toFixed();
   return { supplyBalance, borrowBalance };
 }

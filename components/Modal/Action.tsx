@@ -111,7 +111,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
     }
   };
   const actionDisabled = useMemo(() => {
-    // if (action === "Supply" && +amount > 0) return false;
+    if (action === "Supply" && +amount > 0) return false;
     if (disabled) return true;
     if (action !== "Adjust" && +amount <= 0) return true;
     if (
@@ -125,44 +125,8 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
 
   return (
     <>
-      {/* {showToggle && (
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb="0.5rem">
-          <Typography variant="body1" fontSize="0.85rem" color={theme.palette.secondary.main}>
-            Use as Collateral
-          </Typography>
-          {!canUseAsCollateral && (
-            <Tooltip
-              sx={{ ml: "auto" }}
-              placement="top"
-              title="This asset can't be used as collateral yet"
-            >
-              <Box alignItems="center" display="flex">
-                <FcInfo />
-              </Box>
-            </Tooltip>
-          )}
-          <Switch
-            onChange={handleSwitchToggle}
-            checked={useAsCollateral}
-            disabled={!canUseAsCollateral}
-          />
-        </Box>
-      )} */}
-
-      {/* <LoadingButton
-        disabled={actionDisabled}
-        variant="contained"
-        onClick={handleActionButtonClick}
-        loading={loading}
-        sx={{ width: "100%", mb: "1rem" }}
-      >
-        {action === "Adjust" ? "Confirm" : action}
-      </LoadingButton> */}
       <SubmitButton action={action} disabled={actionDisabled} onClick={handleActionButtonClick} />
       {action === "Repay" && isRepayFromDeposits && (
-        // <Alert severity="warning" sx={{ mt: "20px" }}>
-        //   This is an advanced feature. Please Do Your Own Research before using it.
-        // </Alert>
         <AlertWarning
           className="mt-5"
           title="This is an advanced feature. Please Do Your Own Research before using it."

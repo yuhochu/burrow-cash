@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Decimal from "decimal.js";
 import { useEffect, useState, createContext, useContext } from "react";
 import { Modal as MUIModal } from "@mui/material";
+import { twMerge } from "tailwind-merge";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 import {
   ArrowLeft,
@@ -15,6 +16,9 @@ import {
   YellowLinearGradient,
   ModalCloseIcon,
   YellowBallIcon,
+  OKXIon,
+  GateIcon,
+  CoinbaseIcon,
 } from "./svg";
 import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import {
@@ -39,6 +43,7 @@ import {
 } from "../../components/Modal/components";
 import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
+import { ConnectWalletButton } from "../../components/Header/WalletButton";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -184,7 +189,7 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   }
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <div className="absolute bottom-0 left-0 bg-dark-100 w-full rounded-t-2xl border border-dark-300 p-4">
+      <div className="absolute bottom-0 left-0 bg-dark-100 w-full rounded-t-2xl border border-dark-300 p-4 outline-none">
         {/* Head */}
         <div className="flex items-center justify-between">
           <span className="text-base text-white font-bold">Get {tokenRow.symbol}</span>
@@ -481,14 +486,7 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
             </RedSolidButton>
           </>
         ) : (
-          <YellowSolidButton
-            className="w-full"
-            onClick={() => {
-              window.modal.show();
-            }}
-          >
-            Connect Wallet
-          </YellowSolidButton>
+          <ConnectWalletButton accountId={accountId} className="w-full" />
         )}
       </div>
     </UserBox>
@@ -671,34 +669,58 @@ function OuterLink() {
     <div className="mt-7 outline-none">
       <LabelOuterLink
         title="Acquire token from"
-        content={[
-          <REFIcon
-            key="1"
-            className="lg:opacity-60 lg:hover:opacity-100"
-            onClick={() => {
-              window.open("https://app.ref.finance/");
-            }}
-          />,
-        ]}
+        content={
+          <LabelOuterLinkIcon>
+            <REFIcon
+              key="1"
+              className="lg:opacity-60 lg:hover:opacity-100"
+              onClick={() => {
+                window.open("https://app.ref.finance/");
+              }}
+            />
+          </LabelOuterLinkIcon>
+        }
       />
       <LabelOuterLink
         title="Deposit from"
-        content={[
-          <CucoinIcon key="2" className="lg:opacity-60 lg:hover:opacity-100" />,
-          <BinanceIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />,
-        ]}
+        className="items-start"
+        content={
+          <div className="grid grid-rows-2 gap-1.5">
+            <div className="flex items-center justify-end gap-1.5">
+              <LabelOuterLinkIcon>
+                <CucoinIcon key="2" className="lg:opacity-60 lg:hover:opacity-100" />
+              </LabelOuterLinkIcon>
+              <LabelOuterLinkIcon>
+                <BinanceIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
+              </LabelOuterLinkIcon>
+            </div>
+            <div className="flex items-center justify-end gap-1.5">
+              <LabelOuterLinkIcon>
+                <OKXIon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
+              </LabelOuterLinkIcon>
+              <LabelOuterLinkIcon>
+                <GateIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
+              </LabelOuterLinkIcon>
+              <LabelOuterLinkIcon>
+                <CoinbaseIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
+              </LabelOuterLinkIcon>
+            </div>
+          </div>
+        }
       />
       <LabelOuterLink
         title="Bridge in"
-        content={[
-          <RainbowIcon
-            key="4"
-            className="lg:opacity-60 lg:hover:opacity-100"
-            onClick={() => {
-              window.open("https://rainbowbridge.app/");
-            }}
-          />,
-        ]}
+        content={
+          <LabelOuterLinkIcon>
+            <RainbowIcon
+              key="4"
+              className="lg:opacity-60 lg:hover:opacity-100"
+              onClick={() => {
+                window.open("https://rainbowbridge.app/");
+              }}
+            />
+          </LabelOuterLinkIcon>
+        }
       />
     </div>
   );
@@ -719,7 +741,7 @@ function UserBox({
 }) {
   return (
     <div
-      className={`p-5 border border-dark-50 lg:rounded-md xsm:rounded-xl bg-gray-800 ${className}`}
+      className={`p-5 pb-6 border border-dark-50 lg:rounded-md xsm:rounded-xl bg-gray-800 ${className}`}
     >
       {children}
     </div>
@@ -733,21 +755,27 @@ function Label({ title, content }: { title: string; content: string | React.Reac
     </div>
   );
 }
-function LabelOuterLink({ title, content }: { title: string; content: Array<React.ReactNode> }) {
+function LabelOuterLink({
+  title,
+  content,
+  className,
+}: {
+  title: string;
+  content: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex items-center justify-between mb-5 xsm:items-start">
+    <div className={twMerge("flex items-center justify-between mb-5", className)}>
       <span className="text-sm text-gray-300">{title}</span>
-      <div className="flex items-center gap-2.5 xsm:flex-col">
-        {content.map((item, index) => (
-          <span
-            key={index}
-            className="flex items-center justify-center h-[22px] px-2.5  xsm:h-8 xsm:w-[136px]  rounded-md lg:bg-gray-300 lg:bg-opacity-20 xsm:bg-dark-150 cursor-pointer"
-          >
-            <span className="">{item}</span>
-          </span>
-        ))}
-      </div>
+      {content}
     </div>
+  );
+}
+function LabelOuterLinkIcon({ children }) {
+  return (
+    <span className="flex items-center justify-center h-[22px] px-2.5  xsm:h-8 rounded-md lg:bg-gray-300 lg:bg-opacity-20 xsm:bg-dark-150 cursor-pointer">
+      <span className="">{children}</span>
+    </span>
   );
 }
 function LabelMobile({

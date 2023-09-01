@@ -311,7 +311,13 @@ const ClaimButtonInAccount = (props) => {
   );
 };
 
-export const ConnectWalletButton = ({ accountId }) => {
+export const ConnectWalletButton = ({
+  accountId,
+  className,
+}: {
+  accountId;
+  className?: string;
+}) => {
   const [isDisclaimerOpen, setDisclaimer] = useState(false);
   const { getDisclaimer: hasAgreedDisclaimer } = useDisclaimer();
 
@@ -329,6 +335,7 @@ export const ConnectWalletButton = ({ accountId }) => {
     <>
       <Button
         size="small"
+        className={`${className || ""}`}
         sx={{
           justifySelf: "end",
           alignItems: "center",
@@ -337,7 +344,7 @@ export const ConnectWalletButton = ({ accountId }) => {
           textTransform: "none",
           fontSize: "16px",
           padding: "0 20px",
-          height: "40px",
+          height: "42px",
           borderRadius: "6px",
           ":hover": {
             backgroundColor: "#D2FF3A",

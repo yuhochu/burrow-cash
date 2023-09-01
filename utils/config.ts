@@ -30,7 +30,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
-        centralizationUrl: "http://139.162.85.48:3001/burrow",
+        centralizationUrl: "https://dev.data-service.ref-finance.com/burrow",
         liquidationUrl:
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://dev.data-service.ref-finance.com",
@@ -45,7 +45,7 @@ const getConfig = (env: string) => {
         walletUrl: "https://wallet.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
         explorerUrl: "https://explorer.testnet.near.org",
-        centralizationUrl: "http://139.162.85.48:3001/burrow",
+        centralizationUrl: "https://dev.data-service.ref-finance.com/burrow",
         liquidationUrl:
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://dev.data-service.ref-finance.com",
