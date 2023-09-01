@@ -244,7 +244,7 @@ const StyledTable = styled.div`
   }
 
   .custom-table-tbody {
-    min-height: 300px;
+    min-height: 85px;
 
     .custom-table-td {
       padding: 15px 5px;
