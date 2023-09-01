@@ -113,7 +113,7 @@ const yourSuppliedColumns = [
       return (
         <DashboardApy
           baseAPY={originalData?.apy}
-          rewardList={originalData?.rewards}
+          rewardList={originalData?.depositRewards}
           tokenId={originalData?.tokenId}
         />
       );
@@ -122,14 +122,14 @@ const yourSuppliedColumns = [
   {
     header: "Rewards",
     cell: ({ originalData }) => {
-      if (!originalData?.borrowRewards?.length) {
+      if (!originalData?.depositRewards?.length) {
         return "-";
       }
 
       return (
         <>
-          <DashboardReward rewardList={originalData?.rewards} />
-          <div className="h6 text-gray-300 mt-1">{originalData.price}</div>
+          <DashboardReward rewardList={originalData?.depositRewards} price={originalData.price} />
+          {/* <div className="h6 text-gray-300 mt-1">{originalData.price}</div> */}
         </>
       );
     },

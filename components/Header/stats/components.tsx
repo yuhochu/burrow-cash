@@ -124,7 +124,7 @@ export const Stat = ({
             <Label>{labels}</Label>
           ) : (
             labels?.map((row, i) => (
-              <div className="flex gap-1 flex-col md:flex-row" key={i}>
+              <div className="flex gap-1 items-start flex-col md:flex-row" key={i}>
                 {row?.map((d) => {
                   if (!d.value) {
                     return null;

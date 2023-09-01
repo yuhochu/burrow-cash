@@ -43,7 +43,7 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
       const cloned = metadata && standardizeAsset({ ...metadata });
       return (
         <div key={symbol} style={{ margin: "0 -3px" }}>
-          <img src={cloned?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
+          <img src={cloned?.icon} className="w-[16px] h-[16px] rounded-full" alt="" />
         </div>
       );
     });
@@ -56,8 +56,8 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
 
   return (
     <div>
-      <div className="flex items-center mb-2">{node}</div>
-      {usdNode}
+      <div className="flex items-center mb-1">{node}</div>
+      <div className="h6 text-gray-300">{usdNode}</div>
     </div>
   );
 };

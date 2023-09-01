@@ -137,10 +137,14 @@ const SupplyItem = ({ data }) => {
 
       <div style={{ padding: "16px" }}>
         <ItemRow label="APY">
-          <DashboardApy baseAPY={data?.apy} rewardList={data?.rewards} tokenId={data?.tokenId} />
+          <DashboardApy
+            baseAPY={data?.apy}
+            rewardList={data?.depositRewards}
+            tokenId={data?.tokenId}
+          />
         </ItemRow>
         <ItemRow label="Rewards">
-          <DashboardReward rewardList={data?.rewards} price={data?.price} />
+          <DashboardReward rewardList={data?.depositRewards} price={data?.price} />
         </ItemRow>
         <ItemRow label="Collateral">
           {/* <div>{formatTokenValue(data?.collateral)}</div> */}
