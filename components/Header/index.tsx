@@ -13,12 +13,12 @@ import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { helpMenu, mainMenuList } from "./menuData";
 import MenuMobile from "./MenuMobile";
 
-const MenuItem = ({ title, pathname, sx = {} }) => {
+const MenuItem = ({ title, pathname, appendPathname, sx = {} }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isSelected = router.asPath.includes(pathname);
+  const isSelected = router.asPath.includes(pathname) || router.asPath.includes(appendPathname);
 
-  const style = isSelected ? { color: theme.palette.primary.main } : {};
+  const style = isSelected ? { color: "#D2FF3A" } : {};
 
   return (
     <Link href={pathname}>
@@ -30,7 +30,7 @@ const MenuItem = ({ title, pathname, sx = {} }) => {
 const HelpMenuItem = () => {
   return (
     <div
-      className="flex items-center cursor-pointer text-white hover:text-primary"
+      className="flex items-center cursor-pointer text-white  hover:text-opacity-80"
       onClick={() => {
         window.open(helpMenu.link);
       }}
@@ -83,7 +83,14 @@ const Header = () => {
           </Logo>
           <Menu>
             {mainMenuList.map((item) => {
-              return <MenuItem key={item.title} title={item.title} pathname={item.link} />;
+              return (
+                <MenuItem
+                  key={item.title}
+                  title={item.title}
+                  pathname={item.link}
+                  appendPathname={item.appendLink}
+                />
+              );
             })}
             <HelpMenuItem />
           </Menu>

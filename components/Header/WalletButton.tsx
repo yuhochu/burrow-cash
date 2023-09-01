@@ -144,6 +144,7 @@ const WalletButton = () => {
               borderRadius: "6px",
               ":hover": {
                 backgroundColor: "#D2FF3A",
+                opacity: "0.8",
               },
               [theme.breakpoints.down("lg")]: {
                 height: "30px",
@@ -340,6 +341,7 @@ export const ConnectWalletButton = ({ accountId }) => {
           borderRadius: "6px",
           ":hover": {
             backgroundColor: "#D2FF3A",
+            opacity: "0.8",
           },
         }}
         variant={accountId ? "outlined" : "contained"}

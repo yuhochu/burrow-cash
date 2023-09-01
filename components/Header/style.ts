@@ -42,16 +42,10 @@ export const Menu = styled("div")(({ theme }) => ({
 }));
 
 export const LinkStyled = styled(Link)(({ theme }) => ({
-  // borderWidth: 2,
-  // borderStyle: "solid",
-  // borderColor: "transparent",
   color: "white",
-  // opacity: 0.6,
   textDecoration: "none",
   fontFamily: "Roboto, Helvetica, Arial, sans-serif",
   textAlign: "center",
-  // fontWeight: 500,
-  // fontSize: "0.875rem",
   fontSize: "16px",
   lineHeight: 1.75,
   letterSpacing: "0.02857rem",
@@ -59,9 +53,7 @@ export const LinkStyled = styled(Link)(({ theme }) => ({
   paddingBottom: 4,
   cursor: "pointer",
   ":hover": {
-    // borderWidth: 2,
-    // borderBottomColor: theme.palette.primary.main,
-    color: theme.palette.primary.main,
+    opacity: "0.8",
   },
 }));
 

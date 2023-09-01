@@ -54,11 +54,11 @@ export const bridgeList: IBridge[] = [
     subTitle: "Ethereum | Aurora",
     link: "https://rainbowbridge.app/",
   },
-  {
-    title: "Allbridge",
-    subTitle: "Solana | Terra | Celo",
-    link: "https://app.allbridge.io/bridge",
-  },
+  // {
+  //   title: "Allbridge",
+  //   subTitle: "Solana | Terra | Celo",
+  //   link: "https://app.allbridge.io/bridge",
+  // },
   {
     title: "Electron Labs",
     subTitle: "Ethereum",
