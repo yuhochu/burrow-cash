@@ -164,7 +164,6 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
   const handleRowSelect = (rowData, rowIndex) => {
     setSelected({ data: rowData, index: rowIndex });
   };
-  console.log("canUseAsCollateral", tokenId, canUseAsCollateral);
 
   return (
     <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
