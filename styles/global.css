@@ -606,3 +606,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     width: 100%;
   }
 }
+.MuiModal-root .css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+  background-color: #14162b;
+  opacity: 0.8 !important;
+}

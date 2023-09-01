@@ -17,7 +17,8 @@ export const Wrapper = styled(Box)(({ theme }) => ({
     borderTopRightRadius: "16px",
   },
   [theme.breakpoints.up("sm")]: {
-    top: "calc(50% - 40vh)",
+    top: "50%",
+    transform: "translateY(-50%)",
     left: "calc(50% - 210px)",
     display: "flex",
     maxHeight: "80vh",

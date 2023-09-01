@@ -115,7 +115,7 @@ const Modal = () => {
             tokenId={tokenId}
             asset={asset}
             totalAvailable={available}
-            available$={total}
+            available$={available$}
           />
           <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />

@@ -256,15 +256,6 @@ export const SubmitButton = ({ action, disabled, onClick }) => {
   );
 };
 
-// export const Alerts = ({ data }) => (
-//   <Stack my="1rem" spacing="1rem">
-//     {Object.keys(data).map((alert) => (
-//       <Alert key={alert} severity={data[alert].severity}>
-//         {data[alert].title}
-//       </Alert>
-//     ))}
-//   </Stack>
-// );
 export const Alerts = ({ data }) => {
   const sort = (b: any, a: any) => {
     if (b[1].severity === "error") return 1;

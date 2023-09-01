@@ -34,7 +34,6 @@ export default function Disclaimer({ isOpen = false, onClose }) {
     <Modal open={isOpen} onClose={onClose}>
       <Box
         bgcolor={theme.palette.background.paper}
-        m="2rem"
         borderRadius="0.5rem"
         className="p-6"
         width={{ small: "100%", md: "460px" }}
@@ -44,7 +43,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           display: "flex",
           flexDirection: "column",
           mx: "auto",
-          maxHeight: "90vh",
+          maxHeight: "680px",
           overflow: "hidden",
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
             display: "none",
@@ -54,6 +53,12 @@ export default function Disclaimer({ isOpen = false, onClose }) {
             position: "absolute",
             bottom: "0px",
             margin: "0px",
+          },
+          [theme.breakpoints.up("sm")]: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
           },
           scrollbarWidth: "none",
         }}

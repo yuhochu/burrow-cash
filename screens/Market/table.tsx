@@ -5,6 +5,7 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon } from "./svg"
 import type { UIAsset } from "../../interfaces";
 import { useDepositAPY } from "../../hooks/useDepositAPY";
 import { isMobileDevice } from "../../helpers/helpers";
+import { isInvalid } from "../../utils/uiNumber";
 
 import {
   toInternationalCurrencySystem_number,
@@ -310,7 +311,8 @@ function TableRowMobile({
         <div className="grid grid-cols-2 gap-y-5 pt-4">
           <TemplateMobile
             title="Total Supply"
-            value={toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
+            value={toInternationalCurrencySystem_number(row.totalSupply)}
+            subValue={toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
           />
           <TemplateMobile
             title="Supply APY"
@@ -319,6 +321,9 @@ function TableRowMobile({
           <TemplateMobile
             title="Total Borrowed"
             value={row.can_borrow ? toInternationalCurrencySystem_number(row.totalBorrowed) : "-"}
+            subValue={
+              row.can_borrow ? toInternationalCurrencySystem_usd(row.totalBorrowedMoney) : ""
+            }
           />
           <TemplateMobile
             title="Borrow APY"
@@ -327,6 +332,7 @@ function TableRowMobile({
           <TemplateMobile
             title="Liquidity"
             value={toInternationalCurrencySystem_number(row.availableLiquidity)}
+            subValue={toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
           />
           <TemplateMobile title="Price" value={`$${row.price}`} />
         </div>
@@ -342,11 +348,24 @@ function SortButton({ sort }: { sort?: "asc" | "desc" }) {
     </div>
   );
 }
-function TemplateMobile({ title, value }: { title: string; value: string }) {
+function TemplateMobile({
+  title,
+  value,
+  subValue,
+}: {
+  title: string;
+  value: string;
+  subValue?: string;
+}) {
   return (
     <div className="flex flex-col">
       <span className="text-gray-300 text-sm">{title}</span>
-      <span className="text-base font-bold text-white mt-1">{value}</span>
+      <div className="flex items-center mt-1">
+        <span className="text-base font-bold text-white">{value}</span>
+        {!isInvalid(subValue) && (
+          <span className="text-gray-300 text-xs ml-1 relative top-px">{subValue}</span>
+        )}
+      </div>
     </div>
   );
 }

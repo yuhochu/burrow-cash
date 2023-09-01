@@ -211,7 +211,6 @@ function MarketInfo({ className }) {
     </div>
   );
 }
-
 function YourInfo({ className }) {
   const { supplied, borrowed, tokenRow } = useContext(DetailData) as any;
   return (
@@ -560,7 +559,7 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
               </span>
             </div>
           </div>
-          <Label title="APY" content={format_apy(userDepositAPY)} />
+          <Label title="Your APY" content={format_apy(userDepositAPY)} />
           <Label title="Rewards" content={RewardsReactNode} />
           <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />
           <div className="flex items-center justify-between gap-2 mt-[35px]">
