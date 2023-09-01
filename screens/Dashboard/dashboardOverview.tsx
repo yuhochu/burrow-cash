@@ -92,9 +92,11 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
                 })
               : null}
           </div>
-          <div style={{ marginBottom: 4 }}>
-            <ClaimAllRewards Button={ClaimButton} location="dashboard" />
-          </div>
+          {rewardsObj?.data?.totalUnClaimUSD > 0 && (
+            <div style={{ marginBottom: 4 }}>
+              <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center justify-end">

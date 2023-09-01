@@ -153,16 +153,18 @@ const yourSuppliedColumns = [
 type TableRowSelect = {
   data: {
     tokenId: string | null | undefined;
+    canUseAsCollateral: boolean | undefined;
   } | null;
   index: number | null | undefined;
 };
 
 const YourSupplied = ({ suppliedRows, accountId }) => {
   const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
-
+  const { canUseAsCollateral, tokenId } = selected?.data || {};
   const handleRowSelect = (rowData, rowIndex) => {
     setSelected({ data: rowData, index: rowIndex });
   };
+  console.log("canUseAsCollateral", tokenId, canUseAsCollateral);
 
   return (
     <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
@@ -182,7 +184,7 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
         actionRow={
           <div className="flex gap-2 pb-6 table-action-row">
             <WithdrawButton tokenId={selected?.data?.tokenId} />
-            <AdjustButton tokenId={selected?.data?.tokenId} />
+            {canUseAsCollateral && <AdjustButton tokenId={selected?.data?.tokenId} />}
           </div>
         }
       />
@@ -198,6 +200,16 @@ const StyledCustomTable = styled(CustomTable)`
       padding-left: 30px;
       padding-right: 30px;
       cursor: pointer;
+
+      .custom-table-action {
+        display: none;
+      }
+
+      &:hover {
+        .custom-table-action {
+          display: block;
+        }
+      }
 
       &:last-child {
         padding-bottom: 20px;
@@ -244,6 +256,9 @@ const yourBorrowedColumns = [
   {
     header: "Rewards",
     cell: ({ originalData }) => {
+      if (!originalData?.borrowRewards?.length) {
+        return "-";
+      }
       return (
         <>
           <DashboardReward rewardList={originalData.borrowRewards} />
@@ -288,7 +303,11 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
         noDataText={!accountId ? "You borrowed assets will appear here" : ""}
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
-        actionRow={<RepayButton tokenId={selected?.data?.tokenId} />}
+        actionRow={
+          <div className="pb-6 table-action-row">
+            <RepayButton tokenId={selected?.data?.tokenId} />
+          </div>
+        }
       />
     </ContentBox>
   );

@@ -34,18 +34,25 @@ export default function RangeSlider(props: any) {
     }
   }, [navs]);
 
-  function changeValue(v: string) {
+  function changeValue(v: string, isClickValue?: boolean) {
     let matchedValue;
-
-    // get matched value
-    const nearestValue = 100 / (splitList.length - 1);
-    const ratio = Number(v) / nearestValue;
-    const nearest = Math.round(ratio);
-    // console.log("changeValue", splitList.length, nearestValue, Number(v) / nearestValue, nearest);
-    if (!Number.isNaN(nearest)) {
-      matchedValue = splitList[nearest];
-      setMatchValue(matchedValue);
+    const numValue = Number(v);
+    // const toPercent = (100 / splitList.length) * numValue;
+    if (isClickValue) {
+      matchedValue = numValue;
+      if (selectNavValueOnly) {
+        v = String(0);
+      }
+    } else {
+      const nearestValue = 100 / (splitList.length - 1);
+      const ratio = Number(v) / nearestValue;
+      const nearest = Math.round(ratio);
+      // console.log("changeValue", splitList.length, nearestValue, Number(v) / nearestValue, nearest);
+      if (!Number.isNaN(nearest)) {
+        matchedValue = splitList[nearest];
+      }
     }
+    setMatchValue(matchedValue);
     onChange(v, matchedValue);
   }
 
@@ -59,7 +66,7 @@ export default function RangeSlider(props: any) {
               key={p}
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
-                changeValue(p.toString());
+                changeValue(p.toString(), true);
               }}
             >
               <span

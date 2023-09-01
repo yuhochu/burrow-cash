@@ -152,18 +152,13 @@ const CustomTable = ({
           styles.flex = `0 0 ${col.size}px`;
         }
         return (
-          <div
-            className="custom-table-td"
-            key={col.id || col.header}
-            style={styles}
-            onMouseEnter={() => handleRowEnter(d, i)}
-          >
+          <div className="custom-table-td" key={col.id || col.header} style={styles}>
             {content}
           </div>
         );
       });
       return (
-        <div className="custom-table-row" key={i}>
+        <div className="custom-table-row" key={i} onMouseEnter={() => handleRowEnter(d, i)}>
           <div className="custom-table-tr">{tdNode}</div>
           {actionRow && <div className="custom-table-action">{actionRow}</div>}
         </div>
@@ -258,7 +253,8 @@ const StyledTable = styled.div`
     display: none;
     height: 0;
     overflow: hidden;
-    transition: all ease-in-out 0.3ms;
+    transition: all ease-in-out 0.5ms;
+    opacity: 0;
   }
 
   .custom-table-row {
@@ -268,6 +264,7 @@ const StyledTable = styled.div`
       .custom-table-action {
         display: block;
         height: auto;
+        opacity: 1;
       }
     }
   }

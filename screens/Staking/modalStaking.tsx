@@ -137,6 +137,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
       </StyledRow>
       <StyledRow>
         <RangeSlider value={sliderValue} onChange={handleRangeSliderChange} />
+        <br />
       </StyledRow>
 
       <StyledRow>
@@ -158,6 +159,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
             navs={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
           />
         </StyledRow>
+        <br />
       </StyledRow>
 
       <StyledRow>
@@ -221,14 +223,16 @@ const StakingReward = () => {
           ))}
         </div>
       </div>
-      <div className="flex justify-between mb-4">
-        <div className="h5 text-gray-300">Asset Rewards</div>
-        <div className="h5 text-primary">
-          {extra.map(([tokenId, r]) => (
-            <Reward key={tokenId} data={r} />
-          ))}
+      {extra?.length ? (
+        <div className="flex justify-between mb-4">
+          <div className="h5 text-gray-300">Asset Rewards</div>
+          <div className="h5 text-primary">
+            {extra.map(([tokenId, r]) => (
+              <Reward key={tokenId} data={r} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 };
