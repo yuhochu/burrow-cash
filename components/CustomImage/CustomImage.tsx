@@ -14,7 +14,7 @@ const CustomImage = ({ src, alt, width, height, className, style }: Props) => {
   return (
     <StyledImage
       src={src}
-      alt={alt}
+      alt={alt || ""}
       width={width}
       height={height}
       className={className}

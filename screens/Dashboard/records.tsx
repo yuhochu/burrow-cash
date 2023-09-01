@@ -34,7 +34,6 @@ const Records = ({ isShow }) => {
   const fetchData = async ({ page }) => {
     try {
       setIsLoading(true);
-      // return setDocs([]);
       const response = await Datasource.shared.getRecords(accountId, page, 10);
       const list = response?.record_list?.map((d) => {
         let tokenId = d.token_id;
