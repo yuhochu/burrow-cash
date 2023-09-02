@@ -20,7 +20,7 @@ export const WALLET_CONNECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as st
 
 export const missingPriceTokens = [REF_TOKEN, META_TOKEN, BRRR_TOKEN];
 
-const getConfig = (env: string) => {
+const getConfig = (env: string = defaultNetwork) => {
   switch (env) {
     case "production":
     case "mainnet":

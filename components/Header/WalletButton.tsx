@@ -27,11 +27,14 @@ import { useDegenMode } from "../../hooks/hooks";
 import { HamburgerMenu } from "./Menu";
 import Disclaimer from "../Disclaimer";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
-import { NearSolidIcon, ArrowDownIcon, CloseIcon } from "./svg";
+import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon } from "./svg";
 import NearIcon from "../../public/near-icon.svg";
 import ClaimAllRewards from "../ClaimAllRewards";
 import { formatWithCommas_usd } from "../../utils/uiNumber";
 import { isMobileDevice } from "../../helpers/helpers";
+import getConfig from "../../utils/config";
+
+const config = getConfig();
 
 const WalletContext = createContext(null) as any;
 const WalletButton = () => {
@@ -253,13 +256,8 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
           <div className="absolute h-0.5 -left-6 -right-6 bottom-0 bg-dark-700" />
         </div>
       )}
-
-      <span className=" text-white text-lg">{accountTrim(accountId)}</span>
       <div className="flex items-center justify-between">
-        <div className="flex items-center text-xs text-gray-300 -ml-1 xsm:text-sm">
-          <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
-          Near Wallet
-        </div>
+        <span className=" text-white text-lg">{accountTrim(accountId)}</span>
         {isMobile && (
           <div className="flex items-center">
             <span className="text-sm text-white font-bold mr-1.5">
@@ -268,6 +266,21 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
             <NearSolidIcon className="transform scale-75" />
           </div>
         )}
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center text-xs text-gray-300 -ml-1 xsm:text-sm">
+          <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
+          Near Wallet
+        </div>
+        <div
+          onClick={() => {
+            window.open(config.walletUrl);
+          }}
+          className="flex items-center cursor-pointer text-gray-300 xsm:pr-1"
+        >
+          <span className="text-xs underline mr-1">Wallet</span>
+          <ArrowRightTopIcon />
+        </div>
       </div>
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
         <div

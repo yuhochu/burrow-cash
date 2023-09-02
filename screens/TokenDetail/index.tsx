@@ -44,6 +44,7 @@ import {
 import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
+import { OuterLinkConfig } from "./config";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -277,10 +278,10 @@ function TokenOverviewMobile() {
         title="Available Liquidity"
         value={toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
       />
-      <LabelMobile title="# of suppliers" value={formatWithCommas_number(suppliers_number)} />
+      <LabelMobile title="# of suppliers" value={formatWithCommas_number(suppliers_number, 0)} />
       <LabelMobile
         title="# of borrowers"
-        value={!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number)}
+        value={!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number, 0)}
       />
       <LabelMobile title="Price" value={`$${tokenRow?.price}`} />
     </div>
@@ -341,7 +342,7 @@ function TokenOverview() {
           <span className="text-sm text-gray-300"># of suppliers</span>
           <div className="flex items-center">
             <span className="text-lg text-white font-bold">
-              {formatWithCommas_number(suppliers_number)}
+              {formatWithCommas_number(suppliers_number, 0)}
             </span>
           </div>
         </div>
@@ -349,7 +350,7 @@ function TokenOverview() {
           <span className="text-sm text-gray-300"># of borrowers</span>
           <div className="flex items-center">
             <span className="text-lg text-white font-bold">
-              {!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number)}
+              {!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number, 0)}
             </span>
           </div>
         </div>
@@ -664,6 +665,8 @@ function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any 
   );
 }
 function OuterLink() {
+  const { tokenRow } = useContext(DetailData) as any;
+  const { symbol } = tokenRow;
   return (
     <div className="mt-7 outline-none">
       <LabelOuterLink
@@ -680,33 +683,76 @@ function OuterLink() {
           </LabelOuterLinkIcon>
         }
       />
-      <LabelOuterLink
-        title="Deposit from"
-        className="items-start"
-        content={
-          <div className="grid grid-rows-2 gap-1.5">
-            <div className="flex items-center justify-end gap-1.5">
-              <LabelOuterLinkIcon>
-                <CucoinIcon key="2" className="lg:opacity-60 lg:hover:opacity-100" />
-              </LabelOuterLinkIcon>
-              <LabelOuterLinkIcon>
-                <BinanceIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
-              </LabelOuterLinkIcon>
+      {OuterLinkConfig[symbol] && (
+        <LabelOuterLink
+          title="Deposit from"
+          className="items-start"
+          content={
+            <div className="grid grid-rows-2 gap-1.5">
+              <div className="flex items-center justify-end gap-1.5">
+                {OuterLinkConfig[symbol]?.coinbase && (
+                  <LabelOuterLinkIcon>
+                    <CucoinIcon
+                      key="2"
+                      className="lg:opacity-60 lg:hover:opacity-100"
+                      onClick={() => {
+                        window.open(OuterLinkConfig[symbol]?.coinbase);
+                      }}
+                    />
+                  </LabelOuterLinkIcon>
+                )}
+                {OuterLinkConfig[symbol]?.binance && (
+                  <LabelOuterLinkIcon>
+                    <BinanceIcon
+                      key="3"
+                      className="lg:opacity-60 lg:hover:opacity-100"
+                      onClick={() => {
+                        window.open(OuterLinkConfig[symbol]?.binance);
+                      }}
+                    />
+                  </LabelOuterLinkIcon>
+                )}
+              </div>
+              <div className="flex items-center justify-end gap-1.5">
+                {OuterLinkConfig[symbol]?.okx && (
+                  <LabelOuterLinkIcon>
+                    <OKXIon
+                      key="3"
+                      className="lg:opacity-60 lg:hover:opacity-100"
+                      onClick={() => {
+                        window.open(OuterLinkConfig[symbol]?.okx);
+                      }}
+                    />
+                  </LabelOuterLinkIcon>
+                )}
+                {OuterLinkConfig[symbol]?.gateio && (
+                  <LabelOuterLinkIcon>
+                    <GateIcon
+                      key="3"
+                      className="lg:opacity-60 lg:hover:opacity-100"
+                      onClick={() => {
+                        window.open(OuterLinkConfig[symbol]?.gateio);
+                      }}
+                    />
+                  </LabelOuterLinkIcon>
+                )}
+                {OuterLinkConfig[symbol]?.coinbase && (
+                  <LabelOuterLinkIcon>
+                    <CoinbaseIcon
+                      key="3"
+                      className="lg:opacity-60 lg:hover:opacity-100"
+                      onClick={() => {
+                        window.open(OuterLinkConfig[symbol]?.coinbase);
+                      }}
+                    />
+                  </LabelOuterLinkIcon>
+                )}
+              </div>
             </div>
-            <div className="flex items-center justify-end gap-1.5">
-              <LabelOuterLinkIcon>
-                <OKXIon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
-              </LabelOuterLinkIcon>
-              <LabelOuterLinkIcon>
-                <GateIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
-              </LabelOuterLinkIcon>
-              <LabelOuterLinkIcon>
-                <CoinbaseIcon key="3" className="lg:opacity-60 lg:hover:opacity-100" />
-              </LabelOuterLinkIcon>
-            </div>
-          </div>
-        }
-      />
+          }
+        />
+      )}
+
       <LabelOuterLink
         title="Bridge in"
         content={

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MenuButton, CloseIcon, ArrowRightIcon, ArrowTopRightIcon, ArrowDownIcon } from "./svg";
 import { WrapperMenuMobile } from "./style";
 import { bridgeList } from "./Bridge";
-import { mainMenuList, helpMenu } from "./menuData";
+import { mainMenuList, helpMenu, Imenu } from "./menuData";
 
 export default function MenuMobile() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,23 +29,11 @@ export default function MenuMobile() {
           <div className="flex flex-col w-full">
             {mainMenuList.map((item) => {
               return (
-                <MenuItem
-                  key={item.title}
-                  title={item.title}
-                  pathname={item.link}
-                  Icon={item.icon}
-                  onClose={handleClose}
-                />
+                <MenuItem key={item.title} item={item} Icon={item.icon} onClose={handleClose} />
               );
             })}
             <BridgeMenuItem onClose={handleClose} />
-            <MenuItem
-              onClose={handleClose}
-              title={helpMenu.title}
-              pathname={helpMenu.link}
-              isOuterLink
-              isLast
-            />
+            <MenuItem onClose={handleClose} item={helpMenu} isOuterLink isLast />
           </div>
         </WrapperMenuMobile>
       </MUIModal>
@@ -54,21 +42,21 @@ export default function MenuMobile() {
 }
 
 type PropsMenu = {
-  title: string;
-  pathname: string;
+  item: Imenu;
   Icon?: React.ReactElement;
   isOuterLink?: boolean;
   isLast?: boolean;
   onClose: () => void;
 };
-const MenuItem = ({ title, pathname, isOuterLink, Icon, isLast, onClose }: PropsMenu) => {
+const MenuItem = ({ item, isOuterLink, Icon, isLast, onClose }: PropsMenu) => {
+  const { title, link, allLinks } = item;
   const router = useRouter();
-  const isSelected = router.asPath.includes(pathname);
+  const isSelected = allLinks?.includes(router.route);
   function handleUrl() {
     if (isOuterLink) {
-      window.open(pathname);
+      window.open(link);
     } else {
-      router.push(pathname);
+      router.push(link);
     }
     onClose();
   }

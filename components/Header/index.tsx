@@ -10,19 +10,18 @@ import Bridge from "./Bridge";
 import { Wrapper, Logo, Menu, LinkStyled, WrapperMobile, WalletMobile } from "./style";
 import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
-import { helpMenu, mainMenuList } from "./menuData";
+import { helpMenu, mainMenuList, Imenu } from "./menuData";
 import MenuMobile from "./MenuMobile";
 
-const MenuItem = ({ title, pathname, appendPathname, sx = {} }) => {
+const MenuItem = ({ item }: { item: Imenu }) => {
+  const { title, link, allLinks } = item;
   const router = useRouter();
-  const theme = useTheme();
-  const isSelected = router.asPath.includes(pathname) || router.asPath === appendPathname;
-
+  const isSelected = allLinks?.includes(router.route);
   const style = isSelected ? { color: "#D2FF3A" } : {};
 
   return (
-    <Link href={pathname}>
-      <LinkStyled sx={{ ...style, ...sx }}>{title}</LinkStyled>
+    <Link href={link}>
+      <LinkStyled sx={{ ...style }}>{title}</LinkStyled>
     </Link>
   );
 };
@@ -83,14 +82,7 @@ const Header = () => {
           </Logo>
           <Menu>
             {mainMenuList.map((item) => {
-              return (
-                <MenuItem
-                  key={item.title}
-                  title={item.title}
-                  pathname={item.link}
-                  appendPathname={item.appendLink}
-                />
-              );
+              return <MenuItem key={item.title} item={item} />;
             })}
             <HelpMenuItem />
           </Menu>

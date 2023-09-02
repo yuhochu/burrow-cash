@@ -44,6 +44,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           flexDirection: "column",
           mx: "auto",
           maxHeight: "680px",
+          height: "70vh",
           overflow: "hidden",
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
             display: "none",

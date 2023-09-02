@@ -5,12 +5,11 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon } from "./svg"
 import type { UIAsset } from "../../interfaces";
 import { useDepositAPY } from "../../hooks/useDepositAPY";
 import { isMobileDevice } from "../../helpers/helpers";
-import { isInvalid } from "../../utils/uiNumber";
-
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
   format_apy,
+  isInvalid,
 } from "../../utils/uiNumber";
 
 function MarketsTable({ rows, sorting }: TableProps) {
@@ -95,6 +94,7 @@ function HeadMobile({ sorting }) {
     depositApy: "Supply APY",
     totalBorrowed: "Total Borrowed",
     borrowApy: "Borrow APY",
+    price: "Price",
   };
   const { property, order, setSorting } = sorting;
 
