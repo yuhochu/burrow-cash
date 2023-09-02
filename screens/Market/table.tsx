@@ -218,7 +218,9 @@ function TableRow({
     tokenId: row.tokenId,
   });
   depositApyMap[row.tokenId] = depositAPY;
-  setDepositApyMap(depositApyMap);
+  useEffect(() => {
+    setDepositApyMap(depositApyMap);
+  }, [depositApyMap]);
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div
@@ -300,7 +302,9 @@ function TableRowMobile({
     tokenId: row.tokenId,
   });
   depositApyMap[row.tokenId] = depositAPY;
-  setDepositApyMap(depositApyMap);
+  useEffect(() => {
+    setDepositApyMap(depositApyMap);
+  }, [depositApyMap]);
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div className={`bg-gray-800 rounded-xl p-3.5 ${lastRow ? "" : "mb-4"}`}>

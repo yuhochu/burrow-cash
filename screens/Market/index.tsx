@@ -1,8 +1,8 @@
 import MarketsTable from "./table";
 import MarketsOverview from "./overview";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch } from "../../redux/hooks";
 import { showModal } from "../../redux/appSlice";
-import { useAccountId, useAvailableAssets } from "../../hooks/hooks";
+import { useAvailableAssets } from "../../hooks/hooks";
 import { useTableSorting } from "../../hooks/useTableSorting";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
 

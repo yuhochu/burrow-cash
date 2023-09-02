@@ -45,6 +45,7 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
+import SelectToken from "../../components/SelectToken";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -97,7 +98,11 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         borrowers_number,
       }}
     >
-      {isMobile ? <DetailMobile /> : <DetailPc />}
+      <div>
+        {/* <SelectToken assetType="supply" />
+        <SelectToken assetType="borrow" /> */}
+        {isMobile ? <DetailMobile /> : <DetailPc />}
+      </div>
     </DetailData.Provider>
   );
 }
@@ -447,7 +452,7 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
   const handleSupplyClick = useSupplyTrigger(tokenId);
   const handleBorrowClick = useBorrowTrigger(tokenId);
   return (
-    <UserBox className="mb-7 xsm:mb-2.5">
+    <UserBox className="mb-[29px] xsm:mb-2.5">
       <span className="text-lg text-white font-bold">Your Info</span>
       <div className="flex items-center justify-between my-[25px]">
         <span className="text-sm text-gray-300">Available to Supply</span>
@@ -786,7 +791,7 @@ function UserBox({
 }) {
   return (
     <div
-      className={`p-5 pb-6 border border-dark-50 lg:rounded-md xsm:rounded-xl bg-gray-800 ${className}`}
+      className={`p-5 pb-[23px] border border-dark-50 lg:rounded-md xsm:rounded-xl bg-gray-800 ${className}`}
     >
       {children}
     </div>
