@@ -690,13 +690,13 @@ function OuterLink() {
           content={
             <div className="grid grid-rows-2 gap-1.5">
               <div className="flex items-center justify-end gap-1.5">
-                {OuterLinkConfig[symbol]?.coinbase && (
+                {OuterLinkConfig[symbol]?.kucoin && (
                   <LabelOuterLinkIcon>
                     <CucoinIcon
                       key="2"
                       className="lg:opacity-60 lg:hover:opacity-100"
                       onClick={() => {
-                        window.open(OuterLinkConfig[symbol]?.coinbase);
+                        window.open(OuterLinkConfig[symbol]?.kucoin);
                       }}
                     />
                   </LabelOuterLinkIcon>
