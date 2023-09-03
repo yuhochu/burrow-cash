@@ -688,8 +688,14 @@ function OuterLink() {
           title="Deposit from"
           className="items-start"
           content={
-            <div className="grid grid-rows-2 gap-1.5">
-              <div className="flex items-center justify-end gap-1.5">
+            <div className="flex flex-col gap-1.5">
+              <div
+                className={`flex items-center justify-end gap-1.5 ${
+                  !OuterLinkConfig[symbol]?.kucoin && !OuterLinkConfig[symbol]?.binance
+                    ? "hidden"
+                    : ""
+                }`}
+              >
                 {OuterLinkConfig[symbol]?.kucoin && (
                   <LabelOuterLinkIcon>
                     <CucoinIcon
@@ -713,7 +719,15 @@ function OuterLink() {
                   </LabelOuterLinkIcon>
                 )}
               </div>
-              <div className="flex items-center justify-end gap-1.5">
+              <div
+                className={`flex items-center justify-end gap-1.5 ${
+                  !OuterLinkConfig[symbol]?.okx &&
+                  !OuterLinkConfig[symbol]?.gateio &&
+                  !OuterLinkConfig[symbol]?.coinbase
+                    ? "hidden"
+                    : ""
+                }`}
+              >
                 {OuterLinkConfig[symbol]?.okx && (
                   <LabelOuterLinkIcon>
                     <OKXIon
