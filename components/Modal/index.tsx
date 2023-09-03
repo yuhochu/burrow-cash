@@ -105,7 +105,7 @@ const Modal = () => {
           },
         }}
       >
-        <Box sx={{ overflowY: "auto", p: ["20px", "20px"] }}>
+        <Box sx={{ p: ["20px", "20px"] }}>
           {!accountId && <NotConnected />}
           <TokenInfo apy={apy} asset={asset} onClose={handleClose} />
           <Controls
@@ -120,7 +120,11 @@ const Modal = () => {
           <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />
             <Rates rates={rates} />
-            <CollateralSwitch action={action} canUseAsCollateral={canUseAsCollateral} />
+            <CollateralSwitch
+              action={action}
+              canUseAsCollateral={canUseAsCollateral}
+              tokenId={asset.tokenId}
+            />
           </div>
           <Alerts data={alerts} />
           <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />

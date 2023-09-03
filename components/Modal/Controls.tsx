@@ -4,7 +4,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import { trackMaxButton } from "../../utils/telemetry";
 import { formatWithCommas_number } from "../../utils/uiNumber";
 import RangeSlider from "./RangeSlider";
-import SelectToken from "./SelectToken";
+import TokenBox from "./TokenBox";
 
 export default function Controls({
   amount,
@@ -20,13 +20,10 @@ export default function Controls({
   const handleInputChange = (e) => {
     const value = e.target.value || 0;
     if (new Decimal(value).gt(available)) return;
-    // if (Number(e.target.value) > available) return;
     dispatch(updateAmount({ isMax: false, amount: value }));
   };
 
   const handleMaxClick = () => {
-    // trackMaxButton({ amount: Number(available), action, tokenId });
-    // dispatch(updateAmount({ isMax: true, amount: Number(available) }));
     dispatch(updateAmount({ isMax: true, amount: available }));
   };
 
@@ -36,12 +33,9 @@ export default function Controls({
 
   const handleSliderChange = (percent) => {
     const p = percent < 1 ? 0 : percent > 99 ? 100 : percent;
-    // const value = (Number(available) * p) / 100;
     const value = new Decimal(available).mul(p).div(100).toFixed();
     dispatch(
       updateAmount({
-        // isMax: value === Number(available),
-        // amount: value,
         isMax: p === 100,
         amount: new Decimal(value || 0).toFixed(),
       }),
@@ -66,7 +60,7 @@ export default function Controls({
         </span>
       </div>
       {/* input field */}
-      <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5 gap-3">
+      <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5 pr-2 gap-3">
         <div className="flex items-center flex-grow">
           <input
             type="number"
@@ -78,13 +72,7 @@ export default function Controls({
             className="text-white"
           />
         </div>
-        <SelectToken asset={asset} />
-        {/* <div
-          onClick={handleMaxClick}
-          className="flex items-center border border-dark-500 rounded-md px-2 py-1 cursor-pointer text-xs text-gray-300 opacity-60 hover:opacity-100"
-        >
-          Max
-        </div> */}
+        <TokenBox asset={asset} action={action} />
       </div>
       {/* Slider */}
       <RangeSlider value={sliderValue} onChange={handleSliderChange} action={action} />

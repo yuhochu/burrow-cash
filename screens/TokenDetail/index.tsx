@@ -45,7 +45,6 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
-import SelectToken from "../../components/SelectToken";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -98,11 +97,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         borrowers_number,
       }}
     >
-      <div>
-        {/* <SelectToken assetType="supply" />
-        <SelectToken assetType="borrow" /> */}
-        {isMobile ? <DetailMobile /> : <DetailPc />}
-      </div>
+      {isMobile ? <DetailMobile /> : <DetailPc />}
     </DetailData.Provider>
   );
 }

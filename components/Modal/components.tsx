@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Stack,
-  Alert,
-  Link,
-  ButtonGroup,
-  Button,
-  useTheme,
-  // Switch,
-  Tooltip,
-} from "@mui/material";
+import { Box, Typography, Stack, Alert, Link, useTheme } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
@@ -28,25 +17,9 @@ import {
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
-import { TipIcon } from "./svg";
+import { TipIcon, CloseIcon } from "./svg";
+import ReactToolTip from "../ToolTip";
 
-export const CloseIcon = (props) => {
-  return (
-    <svg
-      {...props}
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7.73284 6.00004L11.7359 1.99701C12.0368 1.696 12.0882 1.2593 11.8507 1.0219L10.9779 0.14909C10.7404 -0.0884125 10.3043 -0.0363122 10.0028 0.264491L6.00013 4.26743L1.99719 0.264591C1.69619 -0.036712 1.25948 -0.0884125 1.02198 0.14939L0.149174 1.0223C-0.0882276 1.2594 -0.0368271 1.6961 0.264576 1.99711L4.26761 6.00004L0.264576 10.0033C-0.0363271 10.3041 -0.0884276 10.7405 0.149174 10.978L1.02198 11.8509C1.25948 12.0884 1.69619 12.0369 1.99719 11.736L6.00033 7.73276L10.0029 11.7354C10.3044 12.037 10.7405 12.0884 10.978 11.8509L11.8508 10.978C12.0882 10.7405 12.0368 10.3041 11.736 10.0029L7.73284 6.00004Z"
-        fill="#C0C4E9"
-      />
-    </svg>
-  );
-};
 export const USNInfo = () => (
   <Box mt="1rem">
     <Alert severity="info">
@@ -165,14 +138,23 @@ export const HealthFactor = ({ value }) => {
   );
 };
 
-export const CollateralSwitch = ({ action, canUseAsCollateral }) => {
+export const CollateralSwitch = ({ action, canUseAsCollateral, tokenId }) => {
   const [collateralStatus, setCollateralStatus] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const showToggle = action === "Supply";
-
   useEffect(() => {
     if (!canUseAsCollateral) {
       dispatch(toggleUseAsCollateral({ useAsCollateral: false }));
+      setCollateralStatus(false);
+    } else {
+      dispatch(toggleUseAsCollateral({ useAsCollateral: true }));
+      setCollateralStatus(true);
+    }
+  }, [tokenId]);
+  useEffect(() => {
+    if (!canUseAsCollateral) {
+      dispatch(toggleUseAsCollateral({ useAsCollateral: false }));
+      setCollateralStatus(false);
     } else {
       dispatch(toggleUseAsCollateral({ useAsCollateral: collateralStatus }));
     }
@@ -184,23 +166,21 @@ export const CollateralSwitch = ({ action, canUseAsCollateral }) => {
   return (
     <div className="flex items-center justify-between">
       <span className="text-sm text-gray-300">Use as Collateral</span>
-      {!canUseAsCollateral && (
-        <Tooltip
-          sx={{ ml: "auto", mr: "5px" }}
-          placement="top"
-          title="This asset can't be used as collateral yet"
-        >
-          <Box alignItems="center" display="flex">
-            <FcInfo />
-          </Box>
-        </Tooltip>
-      )}
-      <Switch onChange={handleSwitchToggle} checked={collateralStatus} />
+      <div className="flex items-center">
+        {!canUseAsCollateral && (
+          <ReactToolTip type="warn" content="This asset can't be used as collateral yet" />
+        )}
+        <Switch
+          onChange={handleSwitchToggle}
+          checked={collateralStatus}
+          disabled={!canUseAsCollateral}
+        />
+      </div>
     </div>
   );
 };
 
-const Switch = ({ onChange, checked }) => {
+const Switch = ({ onChange, checked, disabled }) => {
   if (checked) {
     return (
       <div
@@ -216,7 +196,9 @@ const Switch = ({ onChange, checked }) => {
     return (
       <div
         onClick={() => {
-          onChange(true);
+          if (!disabled) {
+            onChange(true);
+          }
         }}
         className="flex items-center w-[36px] h-5 rounded-xl border border-dark-500 bg-dark-600 cursor-pointer p-0.5"
       >

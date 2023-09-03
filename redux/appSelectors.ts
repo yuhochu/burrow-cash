@@ -12,6 +12,10 @@ export const getModalStatus = createSelector(
   (state: RootState) => state.app,
   (app) => app.showModal,
 );
+export const getModalData = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.selected,
+);
 
 export const getDisplayAsTokenValue = createSelector(
   (state: RootState) => state.app,
