@@ -49,6 +49,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
     amount,
     maxWithdrawAmount,
     isRepayFromDeposits,
+    canUseAsCollateral,
   } = asset;
   const data: any = {
     apy: borrowApy,
@@ -65,13 +66,14 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
   }
 
   const getAvailableWithdrawOrAdjust = toDecimal(Number(supplied + collateral));
-
   const isWrappedNear = symbol === "NEAR";
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
       data.totalTitle = `Total Supply`;
-      data.rates = [{ label: "Collateral Factor", value: collateralFactor }];
+      data.rates = [
+        ...(canUseAsCollateral ? [{ label: "Collateral Factor", value: collateralFactor }] : []),
+      ];
       data.available = toDecimal(available);
       if (isWrappedNear) {
         data.available = toDecimal(

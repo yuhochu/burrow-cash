@@ -21,14 +21,12 @@ import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {
   NotConnected,
-  CloseButton,
   TokenInfo,
-  Available,
   HealthFactor,
   Rates,
   Alerts,
-  USNInfo,
   CollateralSwitch,
+  CollateralTip,
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
@@ -120,11 +118,15 @@ const Modal = () => {
           <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />
             <Rates rates={rates} />
-            <CollateralSwitch
-              action={action}
-              canUseAsCollateral={canUseAsCollateral}
-              tokenId={asset.tokenId}
-            />
+            {!canUseAsCollateral ? (
+              <CollateralTip />
+            ) : (
+              <CollateralSwitch
+                action={action}
+                canUseAsCollateral={canUseAsCollateral}
+                tokenId={asset.tokenId}
+              />
+            )}
           </div>
           <Alerts data={alerts} />
           <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />

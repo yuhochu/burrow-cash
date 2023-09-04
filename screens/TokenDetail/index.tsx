@@ -477,13 +477,15 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
             >
               Supply
             </YellowSolidButton>
-            <RedSolidButton
-              disabled={!+borrowBalance}
-              className="w-1 flex-grow"
-              onClick={handleBorrowClick}
-            >
-              Borrow
-            </RedSolidButton>
+            {tokenRow?.can_borrow && (
+              <RedSolidButton
+                disabled={!+borrowBalance}
+                className="w-1 flex-grow"
+                onClick={handleBorrowClick}
+              >
+                Borrow
+              </RedSolidButton>
+            )}
           </>
         ) : (
           <ConnectWalletButton accountId={accountId} className="w-full" />
@@ -571,13 +573,15 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
             >
               Withdraw
             </YellowLineButton>
-            <YellowSolidButton
-              disabled={adjust_disabled}
-              className="w-1 flex-grow"
-              onClick={handleAdjustClick}
-            >
-              Adjust
-            </YellowSolidButton>
+            {tokenRow.canUseAsCollateral && (
+              <YellowSolidButton
+                disabled={adjust_disabled}
+                className="w-1 flex-grow"
+                onClick={handleAdjustClick}
+              >
+                Adjust
+              </YellowSolidButton>
+            )}
           </div>
         </UserBox>
       )}

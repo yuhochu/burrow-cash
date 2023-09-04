@@ -618,3 +618,11 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-color: #14162b;
   opacity: 0.8 !important;
 }
+::-webkit-scrollbar {
+  width: 4px;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: #626486;
+  border-radius: 2px;
+}

@@ -1,7 +1,6 @@
-import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
-import { QuestionIcon } from "./svg";
+import { QuestionIcon, WarnIcon } from "./svg";
 
 type ITipType = "warn" | "question" | undefined;
 export default function ToolTip({ content, type }: { content: string; type?: ITipType }) {
@@ -12,18 +11,7 @@ export default function ToolTip({ content, type }: { content: string; type?: ITi
         data-tooltip-id="my-tooltip"
         data-tooltip-content={content}
       >
-        {type === "warn" ? (
-          <MdInfoOutline
-            style={{
-              marginLeft: "3px",
-              color: "white",
-              position: "relative",
-              top: "0px",
-            }}
-          />
-        ) : (
-          <QuestionIcon />
-        )}
+        {type === "warn" ? <WarnIcon /> : <QuestionIcon />}
       </span>
       <Tooltip id="my-tooltip" />
     </TipWrap>

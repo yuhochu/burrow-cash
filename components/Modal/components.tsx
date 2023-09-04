@@ -17,7 +17,7 @@ import {
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
-import { TipIcon, CloseIcon } from "./svg";
+import { TipIcon, CloseIcon, WarnIcon } from "./svg";
 import ReactToolTip from "../ToolTip";
 
 export const USNInfo = () => (
@@ -180,6 +180,15 @@ export const CollateralSwitch = ({ action, canUseAsCollateral, tokenId }) => {
   );
 };
 
+export const CollateralTip = () => {
+  return (
+    <div className="flex items-center gap-2.5">
+      <WarnIcon />
+      <span className="text-gray-300 text-sm">This asset cannot be use as collateral yet</span>
+    </div>
+  );
+};
+
 const Switch = ({ onChange, checked, disabled }) => {
   if (checked) {
     return (
@@ -246,7 +255,7 @@ export const Alerts = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 my-5">
+    <div className={`flex flex-col gap-4 ${Object.entries(data).length ? "my-5" : "my-2"}`}>
       {Object.entries(data)
         .sort(sort)
         .map(([alert]) => {
