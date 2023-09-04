@@ -29,7 +29,11 @@ function TableHead({ sorting }) {
     return "";
   }
   function dispatch_sort_action(p: string) {
-    setSorting("market", p, order === "desc" ? "asc" : "desc");
+    if (property !== p) {
+      setSorting("market", p, "desc");
+    } else {
+      setSorting("market", p, order === "desc" ? "asc" : "desc");
+    }
   }
   if (isMobile) return <HeadMobile sorting={sorting} />;
   return (
