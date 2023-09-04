@@ -1,14 +1,15 @@
 import { Box, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import styled from "styled-components";
 
 function TermsPage({ content }) {
   const plugins = [remarkGfm];
   const theme = useTheme();
   return (
-    <Box mx={{ xs: "2rem", md: "4rem", color: theme.palette.secondary.main }}>
+    <StyledDocument>
       <ReactMarkdown remarkPlugins={plugins}>{content}</ReactMarkdown>
-    </Box>
+    </StyledDocument>
   );
 }
 
@@ -21,4 +22,7 @@ export async function getStaticProps() {
   };
 }
 
+const StyledDocument = styled.div`
+  color: "#C0C4E9";
+`;
 export default TermsPage;
