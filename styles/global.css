@@ -4,7 +4,11 @@
 @import "../node_modules/@near-wallet-selector/modal-ui/styles.css";
 @font-face {
   font-family: "work-sans";
-  src: url("./work-sans//WorkSans-Regular.otf");
+  src: url("./work-sans/WorkSans-Regular.otf");
+}
+@font-face {
+  font-family: "work-sans-bold";
+  src: url("./work-sans/WorkSans-Bold.otf");
 }
 
 body {
@@ -15,6 +19,9 @@ body {
   pointer-events: all !important;
   background: #14162b;
   color: #fff;
+}
+.sans-bold {
+  font-family: "work-sans-bold";
 }
 
 html {

@@ -12,6 +12,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { helpMenu, mainMenuList, Imenu } from "./menuData";
 import MenuMobile from "./MenuMobile";
+import { RefreshIcon } from "./svg";
 
 const MenuItem = ({ item }: { item: Imenu }) => {
   const { title, link, allLinks } = item;
@@ -96,7 +97,10 @@ const Header = () => {
             onClose={handleClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           >
-            <Alert severity="info">Refreshing assets data...</Alert>
+            <div className="flex items-center justify-center border border-dark-300 text-sm text-white rounded-md bg-dark-100 px-4 py-3.5">
+              <RefreshIcon className="mr-2.5 flex-shrink-0 animate-spin h-5 w-5" /> Refreshing
+              assets data...
+            </div>
           </Snackbar>
         </Wrapper>
       </div>
