@@ -63,6 +63,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const [progress, setProgress] = useState(0);
   const router = useRouter();
   useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setProgress(30);
+    });
     router.events.on("routeChangeComplete", () => {
       setProgress(100);
     });
