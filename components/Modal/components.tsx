@@ -124,11 +124,11 @@ export const HealthFactor = ({ value }) => {
   const healthFactorColor =
     value === -1
       ? "text-gray-300"
-      : value < 180
-      ? "text-red-100"
-      : value < 200
-      ? "text-primary"
-      : "text-white";
+      : value <= 100
+      ? "text-red-50"
+      : value <= 180
+      ? "text-warning"
+      : "text-primary";
   const healthFactorDisplayValue = value === -1 ? "N/A" : `${value?.toFixed(2)}%`;
 
   return (
