@@ -80,14 +80,16 @@ const Links = () => {
 export const Declaration = () => {
   const isMobile = isMobileDevice();
   return (
-    <>
-      {/* <Divider orientation="vertical" flexItem color={theme.palette.background.paper} /> */}
-      <NextLink href="/declaration" passHref>
-        <Link href="/declaration" underline="none" color={isMobile ? "#6F7188" : "#C0C4E9"}>
-          Declaration and Disclaimers
-        </Link>
-      </NextLink>
-    </>
+    <NextLink href="/declaration" passHref>
+      <Link
+        href="/declaration"
+        target="_blank"
+        underline="none"
+        color={isMobile ? "#6F7188" : "#C0C4E9"}
+      >
+        Declaration and Disclaimers
+      </Link>
+    </NextLink>
   );
 };
 
