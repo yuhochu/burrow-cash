@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Stack, Alert, Link, useTheme } from "@mui/material";
 import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
+import { BeatLoader } from "react-spinners";
 import TokenIcon from "../TokenIcon";
 import { actionMapTitle } from "./utils";
 import APYCell from "../Table/common/apy-cell";
@@ -232,17 +233,17 @@ export const Rates = ({ rates }) => {
   ));
 };
 
-export const SubmitButton = ({ action, disabled, onClick }) => {
+export const SubmitButton = ({ action, disabled, onClick, loading }) => {
   if (action === "Borrow" || action === "Repay")
     return (
-      <RedSolidSubmitButton disabled={disabled} onClick={onClick}>
-        {action}
+      <RedSolidSubmitButton disabled={disabled || loading} onClick={onClick}>
+        {loading ? <BeatLoader size={5} color="#14162B" /> : action}
       </RedSolidSubmitButton>
     );
 
   return (
-    <YellowSolidSubmitButton disabled={disabled} onClick={onClick}>
-      {action === "Adjust" ? "Confirm" : action}
+    <YellowSolidSubmitButton disabled={disabled || loading} onClick={onClick}>
+      {loading ? <BeatLoader size={5} color="#14162B" /> : action === "Adjust" ? "Confirm" : action}
     </YellowSolidSubmitButton>
   );
 };

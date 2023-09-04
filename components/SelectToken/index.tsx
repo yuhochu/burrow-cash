@@ -80,7 +80,7 @@ export default function SelectToken({
         </MUIModal>
       ) : (
         <div
-          className={`absolute right-0 top-12 shadow-100 z-50 w-[368px] bg-dark-250 py-5 rounded-md max-h-[420px] overflow-y-auto ${
+          className={`absolute -right-2 top-12 shadow-100 z-50 w-[378px] bg-dark-250 py-5 rounded-md max-h-[420px] overflow-y-auto ${
             open ? "" : "hidden"
           }`}
           ref={selectRef}

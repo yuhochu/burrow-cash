@@ -53,8 +53,6 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       sliderValue: Math.round((+amount * 100) / available) || 0,
       isRepayFromDeposits,
     });
-    dispatch(hideModal());
-
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {
@@ -109,6 +107,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       default:
         break;
     }
+    dispatch(hideModal());
   };
   const actionDisabled = useMemo(() => {
     if (action === "Supply" && +amount > 0) return false;
@@ -125,7 +124,12 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
 
   return (
     <>
-      <SubmitButton action={action} disabled={actionDisabled} onClick={handleActionButtonClick} />
+      <SubmitButton
+        action={action}
+        disabled={actionDisabled}
+        loading={loading}
+        onClick={handleActionButtonClick}
+      />
       {action === "Repay" && isRepayFromDeposits && (
         <AlertWarning
           className="mt-5"
