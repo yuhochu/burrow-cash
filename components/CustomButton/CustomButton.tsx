@@ -107,7 +107,8 @@ const StyledButton = styled.button`
 
 const btnColor = {
   primary: "border-primary bg-primary hover:opacity-80 text-black",
-  secondary: "border border-gray-300 hover:border-gray-200 text-gray-300",
+  secondary: "border border-gray-500 hover:border-gray-400 text-gray-300",
+  secondary2: "border border-pink-400 hover:border-pink-400 text-pink-400",
   third: "rounded-full border border-1 border-black text-black font-bold",
   info: "border-yellow-50 bg-yellow-50 hover:opacity-80 text-black",
   custom: "",

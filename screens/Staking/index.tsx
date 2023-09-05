@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Stack, Typography, Box, useTheme } from "@mui/material";
 import { DateTime } from "luxon";
 import styled from "styled-components";
+import { twMerge } from "tailwind-merge";
 import { BrrrLogo, StakingPill, StakingCard, LiveUnclaimedAmount } from "./components";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
@@ -31,9 +32,8 @@ const Staking = () => {
   const accountId = useAccountId();
   const theme = useTheme();
   const isMobile = isMobileDevice();
-
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
-  const disabledUnstake = DateTime.now() < unstakeDate;
+  const disabledUnstake = !BRRR || DateTime.now() < unstakeDate;
 
   const handleUnstake = async () => {
     try {
@@ -84,8 +84,9 @@ const Staking = () => {
 
           <StakingBox
             logoIcon={<LockIcon />}
+            disabled={BRRR === 0}
             text1="🔒 Staking"
-            value1={BRRR.toLocaleString(undefined, TOKEN_FORMAT)}
+            value1={BRRR ? BRRR.toLocaleString(undefined, TOKEN_FORMAT) : 0}
             text2={BRRR ? "Due to" : ""}
             value2={BRRR ? unstakeDate.toFormat("yyyy-MM-dd / HH:mm") : ""}
           >
@@ -140,13 +141,22 @@ type StakingBoxProps = {
   text2?: string;
   value2?: string;
   children?: string | React.ReactNode;
+  disabled?: boolean;
 };
-const StakingBox = ({ logoIcon, text1, value1, text2, value2, children }: StakingBoxProps) => {
+const StakingBox = ({
+  logoIcon,
+  text1,
+  value1,
+  text2,
+  value2,
+  children,
+  disabled,
+}: StakingBoxProps) => {
   return (
     <ContentBox className="mb-4 md:w-[363px]" padding="26px">
       <div className="flex justify-between flex-col h-full">
         <div className="flex justify-end lg:justify-between mb-2">
-          <div className="hidden lg:block relative">
+          <div className={twMerge("hidden lg:block relative", disabled && "opacity-60")}>
             <BrrrLogo color="#D2FF3A" />
             {logoIcon && (
               <div className="absolute" style={{ bottom: 8, right: -8 }}>

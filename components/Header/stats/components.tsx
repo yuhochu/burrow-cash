@@ -116,7 +116,7 @@ export const Stat = ({
         </Tooltip>
       </Stack>
       <Tooltip title={tooltip} placement="top" arrow>
-        <div className="h2">{amount}</div>
+        <div className="h2 my-1">{amount}</div>
       </Tooltip>
       {labels && (
         <Stack direction="row" gap="4px" flexWrap="wrap">

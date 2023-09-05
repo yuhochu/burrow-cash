@@ -17,6 +17,19 @@ export const CloseIcon = ({ fill, stroke = "#fff", className }: Props) => {
   );
 };
 
+export const RecordsIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <rect x="0.5" y="0.5" width="35" height="35" rx="5.5" stroke="#565874" />
+      <circle cx="21" cy="20" r="5" stroke="#C0C4E9" strokeWidth="1.4" />
+      <path d="M21 17V20H23" stroke="#C0C4E9" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M11 11H22" stroke="#C0C4E9" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M11 16H14" stroke="#C0C4E9" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M11 21H14" stroke="#C0C4E9" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+};
+
 export const LockIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">

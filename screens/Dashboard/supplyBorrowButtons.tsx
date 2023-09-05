@@ -10,7 +10,8 @@ import { ArrowUpIcon } from "../../components/Icons/Icons";
 export const MarketButton = ({ tokenId }) => {
   const router = useRouter();
   const handleMarketClick = () => {
-    router.push(`/tokenDetail/${tokenId}`);
+    window.open(`/tokenDetail/${tokenId}`);
+    // router.push(`/tokenDetail/${tokenId}`);
   };
   return (
     <CustomButton color="secondary" onClick={handleMarketClick}>

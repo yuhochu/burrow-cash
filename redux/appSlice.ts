@@ -65,7 +65,7 @@ export const initialState: AppState = {
   isBlocked: {},
   theme: "light",
   unreadLiquidation: {
-    count: 70,
+    count: 0,
     unreadIds: [],
   },
   disclaimerAgreed: false,

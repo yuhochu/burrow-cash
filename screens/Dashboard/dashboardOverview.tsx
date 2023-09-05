@@ -11,7 +11,7 @@ import { useRewards } from "../../hooks/useRewards";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
 import ModalHistoryInfo from "./modalHistoryInfo";
 import { modalProps } from "../../interfaces/common";
-import { DangerIcon, QuestionIcon } from "../../components/Icons/Icons";
+import { DangerIcon, QuestionIcon, RecordsIcon } from "../../components/Icons/Icons";
 import CustomTooltips from "../../components/CustomTooltips/CustomTooltips";
 import { useAccountId, useNonFarmedAssets, useUnreadLiquidation } from "../../hooks/hooks";
 import { ProtocolDailyRewards, UserDailyRewards } from "../../components/Header/stats/rewards";
@@ -66,59 +66,62 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
           <div className="gap-6 flex flex-col">
             <APY />
-            <div className="flex gap-2 md:items-end flex-col md:flex-row">
-              <OverviewItem
-                title="Unclaimed Rewards"
-                value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}
-              />
-              <div className="hidden md:flex" style={{ marginBottom: 9, marginRight: 20 }}>
-                {rewardsObj?.brrr?.icon ? (
-                  <img
-                    src={rewardsObj?.brrr?.icon}
-                    width={26}
-                    height={26}
-                    alt="token"
-                    className="rounded-full"
-                    style={{ margin: -3 }}
-                  />
-                ) : null}
+            <div className="flex flex-col">
+              {/* <OverviewItem */}
+              {/*  title="Unclaimed Rewards" */}
+              {/*  value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"} */}
+              {/* /> */}
+              <div className="h6 text-gray-300">Unclaimed Rewards</div>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                <div className="flex items-center gap-4 my-1">
+                  <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
+                  <div className="flex" style={{ marginRight: 20 }}>
+                    {rewardsObj?.brrr?.icon ? (
+                      <img
+                        src={rewardsObj?.brrr?.icon}
+                        width={26}
+                        height={26}
+                        alt="token"
+                        className="rounded-full"
+                        style={{ margin: -3 }}
+                      />
+                    ) : null}
 
-                {rewardsObj?.extra?.length
-                  ? rewardsObj.extra.map((d, i) => {
-                      const extraData = d?.[1];
-                      return (
-                        <img
-                          src={extraData?.icon}
-                          width={26}
-                          key={(extraData?.tokenId || "0") + i}
-                          height={26}
-                          alt="token"
-                          className="rounded-full"
-                          style={{ margin: -3 }}
-                        />
-                      );
-                    })
-                  : null}
-              </div>
-              {rewardsObj?.data?.totalUnClaimUSD > 0 && (
-                <div style={{ marginBottom: 4 }}>
-                  <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                    {rewardsObj?.extra?.length
+                      ? rewardsObj.extra.map((d, i) => {
+                          const extraData = d?.[1];
+                          return (
+                            <img
+                              src={extraData?.icon}
+                              width={26}
+                              key={(extraData?.tokenId || "0") + i}
+                              height={26}
+                              alt="token"
+                              className="rounded-full"
+                              style={{ margin: -3 }}
+                            />
+                          );
+                        })
+                      : null}
+                  </div>
                 </div>
-              )}
+
+                {rewardsObj?.data?.totalUnClaimUSD > 0 && (
+                  <div style={{ marginBottom: 4 }}>
+                    <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end">
-        <div className="relative mr-6">
-          <HealthFactor userHealth={userHealth} />
-        </div>
-
-        <div className="flex flex-col">
+      <div className="flex flex-col items-end justify-between lg:ml-10">
+        <div className="flex items-center gap-2">
           <CustomButton
             onClick={() => handleModalOpen("history", { tabIndex: 1 })}
-            className="mb-2 relative"
-            color="secondary"
+            className="relative"
+            color={unreadLiquidation?.count ? "secondary2" : "secondary"}
             size={isMobile ? "sm" : "md"}
           >
             {unreadLiquidation?.count ? (
@@ -131,13 +134,16 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             ) : null}
             Liquidation
           </CustomButton>
-          <CustomButton
-            size={isMobile ? "sm" : "md"}
-            color="secondary"
+          <div
+            className="cursor-pointer"
             onClick={() => handleModalOpen("history", { tabIndex: 0 })}
           >
-            Records
-          </CustomButton>
+            <RecordsIcon />
+          </div>
+        </div>
+
+        <div className="relative mr-6">
+          <HealthFactor userHealth={userHealth} />
         </div>
       </div>
 
