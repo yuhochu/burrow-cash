@@ -131,7 +131,7 @@ export const Stat = ({
                   }
                   return (
                     <div
-                      key={d.text}
+                      key={`${d.text}${d.value}`}
                       className="flex items-center gap-2 h5 rounded-[21px] bg-dark-100 truncate"
                       style={{ padding: "3px 8px 5px" }}
                     >

@@ -91,24 +91,25 @@ export function useDarkMode() {
 }
 
 export function useUnreadLiquidation() {
-  const unreadCount = useAppSelector(getUnreadLiquidation);
+  const unreadLiquidation = useAppSelector(getUnreadLiquidation);
   const accountId = useAccountId();
   const dispatch = useAppDispatch();
 
   const fetchUnreadLiquidation = async () => {
     try {
-      const response = await getLiquidations(accountId);
-      if (response?.unread) {
-        setCount(response?.unread);
+      const { liquidationData } = await getLiquidations(accountId, 1, 1);
+      if (liquidationData?.unread !== undefined) {
+        dispatch(
+          setUnreadLiquidation({
+            count: liquidationData.unread,
+            unreadIds: unreadLiquidation?.unreadIds || [],
+          }),
+        );
       }
     } catch (e) {
       console.error(e);
     }
   };
 
-  const setCount = (count) => {
-    dispatch(setUnreadLiquidation(count));
-  };
-
-  return { setCount, unreadCount, fetchUnreadLiquidation };
+  return { unreadLiquidation, fetchUnreadLiquidation };
 }

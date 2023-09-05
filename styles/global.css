@@ -91,9 +91,13 @@ body,
   height: 20px;
   overflow: hidden;
   font-size: 10px;
-  display: block;
-  padding: 0 3px;
+  /*display: block;*/
+  /*padding: 0 3px;*/
   text-overflow: ellipsis;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
 }
 
 /*modal style*/

@@ -14,13 +14,14 @@ class DataSource {
   // eslint-disable-next-line class-methods-use-this,default-param-last
   async callAPI(endPoint, method = "GET", queryObject, requestBody, host) {
     const url = URLForEndpoint(endPoint, queryObject, host);
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("pragma", "no-cache");
+    headers.append("cache-control", "no-cache");
+
     const request = {
       headers,
       method,
-      cache: "no-store",
     };
     if (method !== "GET" && requestBody) {
       request.body = JSON.stringify(requestBody);

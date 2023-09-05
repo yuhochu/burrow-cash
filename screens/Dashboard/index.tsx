@@ -128,7 +128,7 @@ const yourSuppliedColumns = [
 
       return (
         <>
-          <DashboardReward rewardList={originalData?.depositRewards} price={originalData.price} />
+          <DashboardReward rewardList={originalData?.rewards} price={originalData.price} />
           {/* <div className="h6 text-gray-300 mt-1">{originalData.price}</div> */}
         </>
       );

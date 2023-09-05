@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import CustomTable from "../../components/CustomTable/CustomTable";
-import Datasource from "../../data/datasource";
 import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { getLiquidations } from "../../api/get-liquidations";
+import { setUnreadLiquidation } from "../../redux/appSlice";
 
 const Liquidations = ({ isShow }) => {
-  const { setCount } = useUnreadLiquidation();
+  const dispatch = useAppDispatch();
   const accountId = useAccountId();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,6 @@ const Liquidations = ({ isShow }) => {
   });
 
   useEffect(() => {
-    console.info("Liquidations useDidUpdateEffect", isShow, pagination?.page);
     if (isShow) {
       fetchData({
         page: pagination?.page,
@@ -34,18 +33,23 @@ const Liquidations = ({ isShow }) => {
   const fetchData = async ({ page }) => {
     try {
       setIsLoading(true);
-      const response = await getLiquidations(accountId, page, 10, assets);
+      const { liquidationData, unreadIds } = await getLiquidations(accountId, page, 10, assets);
       let newUnreadCount = 0;
-      response?.record_list?.forEach((d) => {
+      liquidationData?.record_list?.forEach((d) => {
         if (d.isRead === false) newUnreadCount++;
       });
-      setCount(newUnreadCount);
-      setDocs(response?.record_list);
+      dispatch(
+        setUnreadLiquidation({
+          count: liquidationData?.unread,
+          unreadIds,
+        }),
+      );
+      setDocs(liquidationData?.record_list);
       setPagination((d) => {
         return {
           ...d,
-          totalPages: response?.total_page,
-          totalItems: response?.total_size,
+          totalPages: liquidationData?.total_page,
+          totalItems: liquidationData?.total_size,
         };
       });
     } catch (e) {
@@ -73,14 +77,18 @@ const columns = [
     header: "Time",
     cell: ({ originalData }) => {
       const { createdAt } = originalData || {};
-      return <div className="text-gray-300 truncate">{getDateString(createdAt)}</div>;
+      return <div className="text-gray-300 truncate">{getDateString(createdAt * 1000)}</div>;
     },
   },
   {
-    header: () => <div style={{ whiteSpace: "normal" }}>Health Factor before Liquidate</div>,
+    header: () => (
+      <div style={{ whiteSpace: "normal" }}>
+        Health Factor<div>before Liquidate</div>
+      </div>
+    ),
     cell: ({ originalData }) => {
-      const { healhFactor_before } = originalData || {};
-      return <div>{(healhFactor_before * 100).toFixed(2)}%</div>;
+      const { healthFactor_before } = originalData || {};
+      return <div>{(Number(healthFactor_before) * 100).toFixed(2)}%</div>;
     },
   },
   {
@@ -90,12 +98,13 @@ const columns = [
       const node = RepaidAssets?.map((d) => {
         const { metadata, config } = d.data || {};
         const { extra_decimals } = config || {};
+        const tokenSymbol = metadata?.symbol || d.token_id;
         const tokenAmount = Number(
           shrinkToken(d.amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
         );
         return (
           <div key={d.token_id}>
-            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {d.token_id}
+            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
           </div>
         );
       });
@@ -110,12 +119,13 @@ const columns = [
       const node = LiquidatedAssets?.map((d) => {
         const { metadata, config } = d.data || {};
         const { extra_decimals } = config || {};
+        const tokenSymbol = metadata?.symbol || d.token_id;
         const tokenAmount = Number(
           shrinkToken(d.amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
         );
         return (
           <div key={d.token_id}>
-            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {d.token_id}
+            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
           </div>
         );
       });
@@ -124,10 +134,14 @@ const columns = [
     },
   },
   {
-    header: () => <div style={{ whiteSpace: "normal" }}>Health Factor after Liquidate</div>,
+    header: () => (
+      <div style={{ whiteSpace: "normal" }}>
+        Health Factor<div>after Liquidate</div>
+      </div>
+    ),
     cell: ({ originalData }) => {
-      const { healhFactor_after } = originalData || {};
-      return <div>{(healhFactor_after * 100).toFixed(2)}%</div>;
+      const { healthFactor_after } = originalData || {};
+      return <div>{(Number(healthFactor_after) * 100).toFixed(2)}%</div>;
     },
   },
 ];

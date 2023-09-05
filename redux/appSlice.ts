@@ -55,13 +55,19 @@ export interface AppState {
     portfolioBorrowed: ITableSorting;
   };
   config: IConfig;
-  unreadLiquidation: number;
+  unreadLiquidation: {
+    count: number;
+    unreadIds: [];
+  };
 }
 
 export const initialState: AppState = {
   isBlocked: {},
   theme: "light",
-  unreadLiquidation: 0,
+  unreadLiquidation: {
+    count: 70,
+    unreadIds: [],
+  },
   disclaimerAgreed: false,
   degenMode: {
     enabled: true,

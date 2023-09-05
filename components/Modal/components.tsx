@@ -9,12 +9,7 @@ import { TOKEN_FORMAT, USD_FORMAT } from "../../store";
 import { useDegenMode } from "../../hooks/hooks";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
-import {
-  toggleUseAsCollateral,
-  hideModal,
-  showModal,
-  setUnreadLiquidation,
-} from "../../redux/appSlice";
+import { toggleUseAsCollateral, hideModal, showModal } from "../../redux/appSlice";
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";

@@ -5,10 +5,11 @@ import Liquidations from "./liquidations";
 import { CloseIcon } from "../../components/Icons/Icons";
 import Records from "./records";
 import { useUnreadLiquidation } from "../../hooks/hooks";
+import Datasource from "../../data/datasource";
 
 const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
   const [tabIndex, setTabIndex] = useState(tab);
-  const { unreadCount, fetchUnreadLiquidation } = useUnreadLiquidation();
+  const { unreadLiquidation, fetchUnreadLiquidation } = useUnreadLiquidation();
 
   useEffect(() => {
     setTabIndex(tab);
@@ -16,6 +17,25 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
 
   const handleTabChange = (i) => {
     setTabIndex(i);
+    if (i === 0 && unreadLiquidation?.unreadIds?.length) {
+      markReads(unreadLiquidation?.unreadIds).then();
+    }
+  };
+
+  const markReads = async (ids) => {
+    try {
+      await Promise.allSettled(ids.map((d) => Datasource.shared.markLiquidationRead(d)));
+      await fetchUnreadLiquidation();
+    } catch (e) {
+      console.error("markReadsErr", e);
+    }
+  };
+
+  const handleModelClose = () => {
+    if (unreadLiquidation?.unreadIds?.length) {
+      markReads(unreadLiquidation?.unreadIds).then();
+    }
+    onClose();
   };
 
   let node;
@@ -29,7 +49,12 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
   }
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} onOutsideClick={onClose} size="lg">
+    <CustomModal
+      isOpen={isOpen}
+      onClose={handleModelClose}
+      onOutsideClick={handleModelClose}
+      size="lg"
+    >
       <div
         className="flex justify-between"
         style={{ background: "#3A3D56", margin: "-1rem -1rem 0", padding: "0 1rem" }}
@@ -40,10 +65,10 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
             text="Liquidation"
             onClick={() => handleTabChange(1)}
             active={tabIndex === 1}
-            unreadCount={unreadCount}
+            unreadCount={unreadLiquidation?.count}
           />
         </div>
-        <div onClick={onClose} style={{ marginTop: 28, cursor: "pointer" }}>
+        <div onClick={handleModelClose} style={{ marginTop: 28, cursor: "pointer" }}>
           <CloseIcon />
         </div>
       </div>
@@ -72,7 +97,7 @@ const TabItem = ({ text, onClick, active, unreadCount }: Props) => {
         {unreadCount ? (
           <span
             className="unread-count absolute rounded-full bg-pink-400 text-black"
-            style={{ top: -8, right: -8 }}
+            style={{ top: 2, right: -27 }}
           >
             {unreadCount}
           </span>

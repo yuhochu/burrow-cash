@@ -25,8 +25,12 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   });
   const userHealth = useUserHealth();
   const rewardsObj = useRewards();
-  const { unreadCount, fetchUnreadLiquidation } = useUnreadLiquidation();
+  const { unreadLiquidation, fetchUnreadLiquidation } = useUnreadLiquidation();
   const isMobile = isMobileDevice();
+
+  useEffect(() => {
+    fetchUnreadLiquidation().then();
+  }, []);
 
   let totalSuppliedUSD = 0;
   suppliedRows?.forEach((d) => {
@@ -117,12 +121,12 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
             color="secondary"
             size={isMobile ? "sm" : "md"}
           >
-            {unreadCount ? (
+            {unreadLiquidation?.count ? (
               <span
                 className="unread-count absolute rounded-full bg-pink-400 text-black"
                 style={{ top: -8, right: -8 }}
               >
-                {unreadCount}
+                {unreadLiquidation.count}
               </span>
             ) : null}
             Liquidation
