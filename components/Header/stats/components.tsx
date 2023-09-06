@@ -1,7 +1,6 @@
 import { isValidElement } from "react";
 import { Box, Stack, ButtonGroup, Button, Typography, Tooltip, useTheme } from "@mui/material";
-import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
-
+import ReactToolTip from "../../ToolTip";
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
 import TokenIcon from "../../TokenIcon";
@@ -80,7 +79,7 @@ export const Stat = ({
   onClick,
 }: {
   title: string | React.ReactElement;
-  titleTooltip?: string | React.ReactElement;
+  titleTooltip?: string;
   amount: string;
   tooltip?: string;
   labels?: any;
@@ -88,33 +87,10 @@ export const Stat = ({
 }) => {
   return (
     <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
-      <Stack justifyContent="end">
-        <Tooltip
-          title={titleTooltip}
-          placement="top"
-          arrow
-          componentsProps={
-            {
-              // tooltip: { style: { backgroundColor: "rgba(255,255,255,0.1)" } },
-              // arrow: { style: { color: "rgba(255,255,255,0.1)" } },
-            }
-          }
-        >
-          <Stack direction="row" alignItems="end" width="max-content">
-            {typeof title === "string" ? <div className="h6 text-gray-300">{title}</div> : title}
-            {titleTooltip && (
-              <MdInfoOutline
-                style={{
-                  marginLeft: "3px",
-                  color: "white",
-                  position: "relative",
-                  top: "0px",
-                }}
-              />
-            )}
-          </Stack>
-        </Tooltip>
-      </Stack>
+      <div className="flex items-center gap-1">
+        {typeof title === "string" ? <div className="h6 text-gray-300">{title}</div> : title}
+        {titleTooltip && <ReactToolTip content={titleTooltip} />}
+      </div>
       <Tooltip title={tooltip} placement="top" arrow>
         <div className="h2 my-1">{amount}</div>
       </Tooltip>

@@ -47,17 +47,15 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
         </div>
       );
     });
-  } else {
-    node = "-";
   }
 
   const usdNode =
     totalUsd !== 0 && totalUsd < 0.01 ? `<${formatUSDValue(0.01)}` : formatUSDValue(totalUsd);
 
   return (
-    <div>
+    <div className="flex gap-2 md:gap-0 md:flex-col">
       <div className="flex items-center mb-1">{node}</div>
-      <div className="h6 text-gray-300">{usdNode}</div>
+      <div className="md:h6 md:text-gray-300">{usdNode}</div>
     </div>
   );
 };

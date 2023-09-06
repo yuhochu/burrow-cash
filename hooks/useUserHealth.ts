@@ -29,7 +29,10 @@ export function useUserHealth() {
   const toggleDigits = () => {
     setDigits({ dailyReturns: !fullDigits.dailyReturns });
   };
-  const valueLocale = Math.floor(Number(healthFactor) * 100) / 100;
+  const valueLocale =
+    healthFactor && healthFactor <= 100
+      ? Math.floor(Number(healthFactor) * 100) / 100
+      : Math.trunc(Number(healthFactor));
   // const valueLocale = healthFactor?.toLocaleString(undefined, {
   //   maximumFractionDigits: healthFactor <= 105 ? 2 : 0,
   // });

@@ -33,7 +33,7 @@ export const APY = () => {
 
   return (
     <Stat
-      title="APY"
+      title="Net APY"
       titleTooltip="Net APY of all supply and borrow positions, including base APYs and incentives"
       amount={amount}
       tooltip={tooltip}

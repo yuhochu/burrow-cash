@@ -5,7 +5,7 @@ import { ContentBox } from "../../components/ContentBox/ContentBox";
 import DashboardApy from "./dashboardApy";
 import DashboardReward from "./dashboardReward";
 import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
-import { AdjustButton, RepayButton, WithdrawButton } from "./supplyBorrowButtons";
+import { AdjustButton, MarketButton, RepayButton, WithdrawButton } from "./supplyBorrowButtons";
 import { NoDataMascot } from "../../components/Icons/Icons";
 
 const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
@@ -127,8 +127,19 @@ const SupplyItem = ({ data }) => {
       >
         <div className="flex gap-2 items-center">
           <img src={data?.icon} width={26} height={26} alt="token" className="rounded-full" />
-          <div className="truncate h4b">{data?.symbol}</div>
+          <div className="flex flex-col">
+            <div className="truncate h4b">{data?.symbol}</div>
+            <MarketButton
+              tokenId={data?.tokenId}
+              style={{
+                border: 0,
+                padding: 0,
+                fontSize: 12,
+              }}
+            />
+          </div>
         </div>
+
         <div className="text-right">
           <div>{formatTokenValue(data?.supplied)}</div>
           <div className="h6 text-gray-300">{formatUSDValue(data.supplied * data.price)}</div>
@@ -169,7 +180,17 @@ const BorrowItem = ({ data }) => {
       >
         <div className="flex gap-2 items-center">
           <img src={data?.icon} width={26} height={26} alt="token" className="rounded-full" />
-          <div className="truncate h4b">{data?.symbol}</div>
+          <div className="flex flex-col">
+            <div className="truncate h4b">{data?.symbol}</div>
+            <MarketButton
+              tokenId={data?.tokenId}
+              style={{
+                border: 0,
+                padding: 0,
+                fontSize: 12,
+              }}
+            />
+          </div>
         </div>
         <div className="text-right">
           <div>{formatTokenValue(data?.borrowed)}</div>
@@ -188,7 +209,7 @@ const BorrowItem = ({ data }) => {
         <ItemRow label="Rewards">
           <div className="flex gap-2 items-center">
             <DashboardReward rewardList={data.borrowRewards} />
-            <div className="h6 text-gray-300">{data.price}</div>
+            {/* <div className="h6 text-gray-300">{data.price}</div> */}
           </div>
         </ItemRow>
 

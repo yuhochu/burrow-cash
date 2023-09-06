@@ -72,7 +72,7 @@ export const UserLiquidity = () => {
     [
       {
         value: userDepositedValue,
-        text: "Deposited",
+        text: "Supplied",
         valueStyle: {
           color: "#D2FF3A",
         },

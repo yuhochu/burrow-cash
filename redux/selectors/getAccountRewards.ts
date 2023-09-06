@@ -35,6 +35,7 @@ export interface IAccountRewards {
   sumRewards: {
     [tokenId: string]: IPortfolioReward;
   };
+  totalUnClaimUSD: number;
 }
 
 export const getGains = (
@@ -193,6 +194,7 @@ export const getAccountRewards = createSelector(
             newDailyAmount,
             multiplier,
             price: rewardAsset.price?.usd || 0,
+            unclaimedAmountUsd: unclaimedAmount * (rewardAsset.price?.usd || 0),
           };
         });
       };
@@ -222,6 +224,7 @@ export const getAccountRewards = createSelector(
         newDailyAmount,
         multiplier,
         price: rewardAsset.price?.usd || 0,
+        unclaimedAmountUsd: unclaimedAmount * (rewardAsset.price?.usd || 0),
       };
     };
 
@@ -237,15 +240,14 @@ export const getAccountRewards = createSelector(
           .map(computeNetLiquidityRewards)
       : [];
 
+    let totalUnClaimUSD = 0;
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
+      totalUnClaimUSD += asset.unclaimedAmountUsd;
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
-
       const updatedAsset = rewards[asset.tokenId];
-
       updatedAsset.unclaimedAmount += asset.unclaimedAmount;
       updatedAsset.dailyAmount += asset.dailyAmount;
       updatedAsset.newDailyAmount += asset.newDailyAmount;
-
       return { ...rewards, [asset.tokenId]: updatedAsset };
     }, {});
 
@@ -257,6 +259,7 @@ export const getAccountRewards = createSelector(
         {},
       ),
       sumRewards,
+      totalUnClaimUSD,
     } as IAccountRewards;
   },
 );

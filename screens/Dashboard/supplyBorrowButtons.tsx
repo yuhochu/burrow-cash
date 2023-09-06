@@ -7,14 +7,20 @@ import {
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { ArrowUpIcon } from "../../components/Icons/Icons";
 
-export const MarketButton = ({ tokenId }) => {
+export const MarketButton = ({
+  tokenId,
+  style,
+}: {
+  tokenId: string | null | undefined;
+  style?: object;
+}) => {
   const router = useRouter();
   const handleMarketClick = () => {
     window.open(`/tokenDetail/${tokenId}`);
     // router.push(`/tokenDetail/${tokenId}`);
   };
   return (
-    <CustomButton color="secondary" onClick={handleMarketClick}>
+    <CustomButton color="secondary" onClick={handleMarketClick} style={style}>
       <div className="flex items-center gap-2">
         Market <ArrowUpIcon />
       </div>

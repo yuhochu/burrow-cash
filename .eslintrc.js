@@ -63,6 +63,7 @@ module.exports = {
     "no-empty": "off",
     "react/jsx-no-bind": "off",
     "jsx-a11y/no-noninteractive-tabindex": "off",
+    "@typescript-eslint/no-explicit-any": ["off"],
   },
   settings: {
     react: {

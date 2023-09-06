@@ -8,15 +8,12 @@ import { APY_FORMAT, USD_FORMAT } from "../store";
 export function useRewards() {
   const assetRewards = useAppSelector(getAccountRewards);
   const protocol = useAppSelector(getProtocolRewards);
-
-  const { brrr } = assetRewards || {};
+  const { brrr, totalUnClaimUSD } = assetRewards || {};
   const extra = Object.entries(assetRewards.extra);
   const net = Object.entries(assetRewards.net);
 
-  let totalUnClaimUSD = 0;
   let totalUnClaimUSDDisplay;
-  if (brrr?.unclaimedAmount !== undefined) {
-    totalUnClaimUSD += brrr.unclaimedAmount * brrr.price;
+  if (totalUnClaimUSD !== undefined) {
     const IGNORE_AMOUNT = 0.01;
     if (totalUnClaimUSD < IGNORE_AMOUNT) {
       totalUnClaimUSDDisplay = `<${IGNORE_AMOUNT.toLocaleString(undefined, USD_FORMAT)}`;
