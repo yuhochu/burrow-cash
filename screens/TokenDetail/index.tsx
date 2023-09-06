@@ -45,7 +45,7 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
-import APYCell from "../Market/APYCell";
+import { APYCell } from "../Market/APYCell";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -509,20 +509,13 @@ function TokenUserInfo() {
 function YouSupplied() {
   const { tokenRow, supplied } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
-  const userDepositAPY = useAPY({
-    baseAPY: tokenRow.supplyApy,
-    rewards: tokenRow.depositRewards,
-    tokenId: tokenRow.tokenId,
-    page: "deposit",
-  });
   const [icons, totalDailyRewardsMoney] = supplied?.rewards?.reduce(
     (acc, cur) => {
-      const { rewards, metadata, config } = cur;
+      const { rewards, metadata, config, price } = cur;
       const { icon, decimals } = metadata;
       const dailyRewards = Number(
         shrinkToken(rewards.reward_per_day || 0, decimals + config.extra_decimals),
       );
-      const price = supplied.price || 0;
       acc[1] = new Decimal(acc[1]).plus(dailyRewards * price).toNumber();
       acc[0].push(icon);
       return acc;
@@ -547,7 +540,6 @@ function YouSupplied() {
   return (
     <div className=" relative overflow-hidden">
       {is_empty ? (
-        // bg-linear_gradient_yellow
         <UserBox className="mb-2.5">
           <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
             <span className="text-lg text-white font-bold">You Supplied</span>
@@ -616,20 +608,13 @@ function YouSupplied() {
 function YouBorrowed() {
   const { tokenRow, borrowed } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
-  const userDepositAPY = useAPY({
-    baseAPY: tokenRow.borrowApy,
-    rewards: tokenRow.borrowRewards,
-    tokenId: tokenRow.tokenId,
-    page: "borrow",
-  });
   const [icons, totalDailyRewardsMoney] = borrowed?.rewards?.reduce(
     (acc, cur) => {
-      const { rewards, metadata, config } = cur;
+      const { rewards, metadata, config, price } = cur;
       const { icon, decimals } = metadata;
       const dailyRewards = Number(
         shrinkToken(rewards.reward_per_day || 0, decimals + config.extra_decimals),
       );
-      const price = borrowed.price || 0;
       acc[1] = new Decimal(acc[1]).plus(dailyRewards * price).toNumber();
       acc[0].push(icon);
       return acc;
@@ -651,7 +636,6 @@ function YouBorrowed() {
   return (
     <div className="relative overflow-hidden">
       {is_empty ? (
-        // bg-linear_gradient_yellow
         <UserBox className="mb-2.5">
           <div className="flex items-start justify-between border-b border-dark-50 pb-2.5 -mx-5 px-5">
             <span className="text-lg text-white font-bold">You Borrowed</span>

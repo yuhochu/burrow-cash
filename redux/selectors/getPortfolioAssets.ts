@@ -37,6 +37,7 @@ export const getPortfolioRewards = (
       metadata: assets[tokenId].metadata,
       config: assets[tokenId].config,
       type: "portfolio",
+      price: assets[tokenId].price?.usd ?? 0,
     };
   });
 };
