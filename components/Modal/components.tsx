@@ -99,7 +99,7 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
               isRepayFromDeposits ? "text-white bg-gray-300 bg-opacity-30" : "text-gray-300"
             }`}
           >
-            From Deposits
+            From Supplied
           </span>
         </div>
       )}

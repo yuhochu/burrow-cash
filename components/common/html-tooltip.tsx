@@ -4,13 +4,12 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip placement="top-start" {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.background.default,
-    boxShadow: "0px 2px 4px rgba(0, 7, 65, 0.2)",
-    borderColor: "rgba(0, 7, 65, 0.2)",
-    color: theme.palette.secondary.main,
-    borderWidth: 0.5,
-    borderStyle: "solid",
-    padding: "1rem",
+    backgroundColor: "#2E304B",
+    boxShadow: "0px 0px 10px 4px #00000026",
+    color: "#C0C4E9",
+    border: "1px solid #4F5178",
+    borderRadius: "6px",
+    padding: "12px 10px",
   },
 }));
 

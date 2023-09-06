@@ -123,19 +123,11 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   }, [amount, healthFactor, disabled]);
 
   return (
-    <>
-      <SubmitButton
-        action={action}
-        disabled={actionDisabled}
-        loading={loading}
-        onClick={handleActionButtonClick}
-      />
-      {action === "Repay" && isRepayFromDeposits && (
-        <AlertWarning
-          className="mt-5"
-          title="This is an advanced feature. Please Do Your Own Research before using it."
-        />
-      )}
-    </>
+    <SubmitButton
+      action={action}
+      disabled={actionDisabled}
+      loading={loading}
+      onClick={handleActionButtonClick}
+    />
   );
 }

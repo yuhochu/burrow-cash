@@ -138,7 +138,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
       ];
       if (isRepayFromDeposits) {
         data.rates.push({
-          label: "Remaining Deposit Amount",
+          label: "Remaining Supplied Amount",
           value: (supplied + collateral - amount).toFixed(PERCENT_DIGITS),
         });
       }

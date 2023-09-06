@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import { TableProps } from "../../components/Table";
 import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon } from "./svg";
 import type { UIAsset } from "../../interfaces";
-import { useDepositAPY } from "../../hooks/useDepositAPY";
 import { isMobileDevice } from "../../helpers/helpers";
+import { useAPY } from "../../hooks/useAPY";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
   format_apy,
   isInvalid,
 } from "../../utils/uiNumber";
+import { APYCell } from "./APYCell";
 
 function MarketsTable({ rows, sorting }: TableProps) {
   return (
@@ -159,18 +160,28 @@ function HeadMobile({ sorting }) {
 }
 function TableBody({ rows, sorting }: TableProps) {
   const [depositApyMap, setDepositApyMap] = useState<Record<string, number>>({});
+  const [borrowApyMap, setBorrowApyMap] = useState<Record<string, number>>({});
   const { property, order } = sorting;
-  const isMobile = isMobileDevice();
   if (!rows?.length) return null;
   function comparator(b: UIAsset, a: UIAsset) {
-    let a_comparator_value = property === "depositApy" ? depositApyMap[a.tokenId] : a[property];
-    let b_comparator_value = property === "depositApy" ? depositApyMap[b.tokenId] : b[property];
+    let a_comparator_value;
+    let b_comparator_value;
+    if (property === "depositApy") {
+      a_comparator_value = depositApyMap[a.tokenId];
+      b_comparator_value = depositApyMap[b.tokenId];
+    } else if (property === "borrowApy") {
+      a_comparator_value = borrowApyMap[a.tokenId];
+      b_comparator_value = borrowApyMap[b.tokenId];
+    } else {
+      a_comparator_value = a[property];
+      b_comparator_value = b[property];
+    }
     if (["borrowApy", "totalBorrowed"].includes(property)) {
       if (!b.can_borrow) {
-        b_comparator_value = 0;
+        b_comparator_value = -9999999999;
       }
       if (!a.can_borrow) {
-        a_comparator_value = 0;
+        a_comparator_value = -9999999999;
       }
     }
     if (order === "desc") {
@@ -182,16 +193,6 @@ function TableBody({ rows, sorting }: TableProps) {
   return (
     <>
       {rows.sort(comparator).map((row: UIAsset, index: number) => {
-        if (isMobile)
-          return (
-            <TableRowMobile
-              key={row.tokenId}
-              row={row}
-              lastRow={index === rows.length - 1}
-              depositApyMap={depositApyMap}
-              setDepositApyMap={setDepositApyMap}
-            />
-          );
         return (
           <TableRow
             key={row.tokenId}
@@ -199,32 +200,71 @@ function TableBody({ rows, sorting }: TableProps) {
             lastRow={index === rows.length - 1}
             depositApyMap={depositApyMap}
             setDepositApyMap={setDepositApyMap}
+            borrowApyMap={borrowApyMap}
+            setBorrowApyMap={setBorrowApyMap}
           />
         );
       })}
     </>
   );
 }
+
 function TableRow({
   row,
   lastRow,
   depositApyMap,
   setDepositApyMap,
+  borrowApyMap,
+  setBorrowApyMap,
 }: {
   row: UIAsset;
   lastRow: boolean;
   depositApyMap: Record<string, number>;
   setDepositApyMap: any;
+  borrowApyMap: Record<string, number>;
+  setBorrowApyMap: any;
 }) {
-  const depositAPY = useDepositAPY({
+  const isMobile = isMobileDevice();
+  const depositAPY = useAPY({
     baseAPY: row.supplyApy,
-    rewardList: row.depositRewards,
+    rewards: row.depositRewards,
     tokenId: row.tokenId,
+    page: "deposit",
+    onlyMarket: true,
+  });
+  const borrowAPY = useAPY({
+    baseAPY: row.borrowApy,
+    rewards: row.borrowRewards,
+    tokenId: row.tokenId,
+    page: "borrow",
+    onlyMarket: true,
   });
   depositApyMap[row.tokenId] = depositAPY;
+  borrowApyMap[row.tokenId] = borrowAPY;
   useEffect(() => {
     setDepositApyMap(depositApyMap);
-  }, [depositApyMap]);
+  }, [Object.keys(depositApyMap).length]);
+  useEffect(() => {
+    setBorrowApyMap(borrowApyMap);
+  }, [Object.keys(borrowApyMap).length]);
+  return (
+    <div>
+      {isMobile ? (
+        <TableRowMobile
+          key={row.tokenId}
+          row={row}
+          lastRow={lastRow}
+          depositAPY={depositAPY}
+          borrowAPY={borrowAPY}
+        />
+      ) : (
+        <TableRowPc key={row.tokenId} row={row} lastRow={lastRow} />
+      )}
+    </div>
+  );
+}
+
+function TableRowPc({ row, lastRow }: { row: UIAsset; lastRow: boolean }) {
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div
@@ -255,7 +295,17 @@ function TableRow({
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
           <span className="text-sm text-white">
-            {row.can_deposit ? format_apy(depositAPY || "") : "-"}
+            {row.can_deposit ? (
+              <APYCell
+                rewards={row.depositRewards}
+                baseAPY={row.supplyApy}
+                page="deposit"
+                tokenId={row.tokenId}
+                onlyMarket
+              />
+            ) : (
+              "-"
+            )}
           </span>
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
@@ -274,7 +324,17 @@ function TableRow({
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
           <span className="text-sm text-white">
-            {row.can_borrow ? format_apy(row.borrowApy) : "-"}
+            {row.can_borrow ? (
+              <APYCell
+                rewards={row.borrowRewards}
+                baseAPY={row.borrowApy}
+                page="borrow"
+                tokenId={row.tokenId}
+                onlyMarket
+              />
+            ) : (
+              "-"
+            )}
           </span>
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
@@ -292,23 +352,14 @@ function TableRow({
 function TableRowMobile({
   row,
   lastRow,
-  depositApyMap,
-  setDepositApyMap,
+  depositAPY,
+  borrowAPY,
 }: {
   row: UIAsset;
   lastRow: boolean;
-  depositApyMap: Record<string, number>;
-  setDepositApyMap: any;
+  depositAPY: number;
+  borrowAPY: number;
 }) {
-  const depositAPY = useDepositAPY({
-    baseAPY: row.supplyApy,
-    rewardList: row.depositRewards,
-    tokenId: row.tokenId,
-  });
-  depositApyMap[row.tokenId] = depositAPY;
-  useEffect(() => {
-    setDepositApyMap(depositApyMap);
-  }, [depositApyMap]);
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div className={`bg-gray-800 rounded-xl p-3.5 ${lastRow ? "" : "mb-4"}`}>
@@ -333,10 +384,7 @@ function TableRowMobile({
               row.can_borrow ? toInternationalCurrencySystem_usd(row.totalBorrowedMoney) : ""
             }
           />
-          <TemplateMobile
-            title="Borrow APY"
-            value={row.can_borrow ? format_apy(row.borrowApy) : "-"}
-          />
+          <TemplateMobile title="Borrow APY" value={row.can_borrow ? format_apy(borrowAPY) : "-"} />
           <TemplateMobile
             title="Liquidity"
             value={toInternationalCurrencySystem_number(row.availableLiquidity)}

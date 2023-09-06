@@ -31,7 +31,7 @@ import {
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
-import { useDepositAPY, useUserPortfolioAPY } from "../../hooks/useDepositAPY";
+import { useAPY } from "../../hooks/useAPY";
 import { useUserBalance } from "../../hooks/useUserBalance";
 import { shrinkToken } from "../../store/helper";
 import {
@@ -45,6 +45,7 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
+import APYCell from "../Market/APYCell";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -62,10 +63,19 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const [borrowers_number, set_borrowers_number] = useState<number>();
   const isMobile = isMobileDevice();
   const router = useRouter();
-  const depositAPY = useDepositAPY({
+  const depositAPY = useAPY({
     baseAPY: tokenRow.supplyApy,
-    rewardList: tokenRow.depositRewards,
+    rewards: tokenRow.depositRewards,
     tokenId: tokenRow.tokenId,
+    page: "deposit",
+    onlyMarket: true,
+  });
+  const borrowAPY = useAPY({
+    baseAPY: tokenRow.borrowApy,
+    rewards: tokenRow.borrowRewards,
+    tokenId: tokenRow.tokenId,
+    page: "borrow",
+    onlyMarket: true,
   });
   const [suppliedRows, borrowedRows] = usePortfolioAssets() as [any[], any[]];
   const supplied = suppliedRows?.find((row) => {
@@ -90,6 +100,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       value={{
         router,
         depositAPY,
+        borrowAPY,
         supplied,
         borrowed,
         tokenRow,
@@ -216,9 +227,9 @@ function YourInfo({ className }) {
   const { supplied, borrowed, tokenRow } = useContext(DetailData) as any;
   return (
     <div className={`${className}`}>
-      <TokenUserInfo tokenRow={tokenRow} />
-      <YouSupplied tokenRow={tokenRow} supplied={supplied} />
-      {tokenRow.can_borrow && <YouBorrowed tokenRow={tokenRow} borrowed={borrowed} />}
+      <TokenUserInfo />
+      <YouSupplied />
+      {tokenRow.can_borrow && <YouBorrowed />}
     </div>
   );
 }
@@ -247,9 +258,9 @@ function DetailPc() {
           )}
         </div>
         <div>
-          <TokenUserInfo tokenRow={tokenRow} />
-          <YouSupplied tokenRow={tokenRow} supplied={supplied} />
-          {tokenRow.can_borrow && <YouBorrowed tokenRow={tokenRow} borrowed={borrowed} />}
+          <TokenUserInfo />
+          <YouSupplied />
+          {tokenRow.can_borrow && <YouBorrowed />}
           <OuterLink />
         </div>
       </div>
@@ -288,7 +299,7 @@ function TokenOverviewMobile() {
   );
 }
 function TokenOverview() {
-  const { suppliers_number, borrowers_number, tokenRow, depositAPY } = useContext(
+  const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY } = useContext(
     DetailData,
   ) as any;
   return (
@@ -318,7 +329,7 @@ function TokenOverview() {
               )}
             </span>
             <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apy(!tokenRow?.can_borrow ? "" : tokenRow?.borrowApy)}
+              /{format_apy(!tokenRow?.can_borrow ? "" : borrowAPY)}
             </span>
           </div>
         </div>
@@ -393,10 +404,10 @@ function TokenSupplyChart() {
   );
 }
 function TokenBorrowChart() {
-  const { tokenRow } = useContext(DetailData) as any;
+  const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
-  const apy = format_apy(tokenRow?.borrowApy);
+  const apy = format_apy(borrowAPY);
   return (
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
       <div className="font-bold text-lg text-white mb-5">Borrow Info</div>
@@ -413,9 +424,9 @@ function TokenBorrowChart() {
             </span>
           </div>
         </div>
-        <div className="flex flex-col ml-10 lg:hidden">
+        <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{format_apy(tokenRow?.borrowApy)}</span>
+          <span className="font-bold text-lg text-white">{apy}</span>
         </div>
       </div>
       {/* only mobile */}
@@ -439,7 +450,8 @@ function TokenRateModeChart() {
     </div>
   );
 }
-function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
+function TokenUserInfo() {
+  const { tokenRow } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
   const accountId = useAccountId();
   const isWrappedNear = tokenRow.symbol === "NEAR";
@@ -494,12 +506,14 @@ function TokenUserInfo({ tokenRow }: { tokenRow: UIAsset }) {
     </UserBox>
   );
 }
-function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any }) {
+function YouSupplied() {
+  const { tokenRow, supplied } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
-  const userDepositAPY = useUserPortfolioAPY({
+  const userDepositAPY = useAPY({
     baseAPY: tokenRow.supplyApy,
-    rewardList: tokenRow.depositRewards,
+    rewards: tokenRow.depositRewards,
     tokenId: tokenRow.tokenId,
+    page: "deposit",
   });
   const [icons, totalDailyRewardsMoney] = supplied?.rewards?.reduce(
     (acc, cur) => {
@@ -562,7 +576,17 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
               </span>
             </div>
           </div>
-          <Label title="Your APY" content={format_apy(userDepositAPY)} />
+          <Label
+            title="Your APY"
+            content={
+              <APYCell
+                rewards={tokenRow.depositRewards}
+                baseAPY={tokenRow.supplyApy}
+                page="deposit"
+                tokenId={tokenRow.tokenId}
+              />
+            }
+          />
           <Label title="Rewards" content={RewardsReactNode} />
           <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />
           <div className="flex items-center justify-between gap-2 mt-[35px]">
@@ -589,11 +613,12 @@ function YouSupplied({ tokenRow, supplied }: { tokenRow: UIAsset; supplied: any 
     </div>
   );
 }
-function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any }) {
+function YouBorrowed() {
+  const { tokenRow, borrowed } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
-  const userDepositAPY = useUserPortfolioAPY({
+  const userDepositAPY = useAPY({
     baseAPY: tokenRow.borrowApy,
-    rewardList: tokenRow.borrowRewards,
+    rewards: tokenRow.borrowRewards,
     tokenId: tokenRow.tokenId,
     page: "borrow",
   });
@@ -655,7 +680,17 @@ function YouBorrowed({ tokenRow, borrowed }: { tokenRow: UIAsset; borrowed: any 
               </span>
             </div>
           </div>
-          <Label title="APY" content={format_apy(userDepositAPY)} />
+          <Label
+            title="Your APY"
+            content={
+              <APYCell
+                rewards={tokenRow.borrowRewards}
+                baseAPY={tokenRow.borrowApy}
+                page="borrow"
+                tokenId={tokenRow.tokenId}
+              />
+            }
+          />
           <Label title="Rewards" content={RewardsReactNode} />
           <div className="flex items-center justify-between gap-2 mt-[35px]">
             <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>

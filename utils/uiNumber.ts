@@ -54,7 +54,7 @@ export const format_apy = (v) => {
   const decimal = new Decimal(v);
   if (decimal.eq(0)) {
     return "0%";
-  } else if (decimal.lt(0.01)) {
+  } else if (decimal.lt(0.01) && decimal.gt(0)) {
     return "<0.01%";
   } else {
     return `${decimal.toFixed(2, Decimal.ROUND_HALF_UP)}%`;
