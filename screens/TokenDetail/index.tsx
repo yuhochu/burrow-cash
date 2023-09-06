@@ -391,6 +391,10 @@ function TokenSupplyChart() {
           <span className="text-sm text-gray-300">APY</span>
           <span className="font-bold text-lg text-white">{apy}</span>
         </div>
+        <div className="flex flex-col ml-10">
+          <span className="text-sm text-gray-300">Supply Rewards</span>
+          <span className="font-bold text-lg text-white">-</span>
+        </div>
       </div>
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
@@ -579,7 +583,7 @@ function YouSupplied() {
               />
             }
           />
-          <Label title="Rewards" content={RewardsReactNode} />
+          <Label title="Daily rewards" content={RewardsReactNode} />
           <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />
           <div className="flex items-center justify-between gap-2 mt-[35px]">
             <YellowLineButton
@@ -675,7 +679,7 @@ function YouBorrowed() {
               />
             }
           />
-          <Label title="Rewards" content={RewardsReactNode} />
+          <Label title="Daily rewards" content={RewardsReactNode} />
           <div className="flex items-center justify-between gap-2 mt-[35px]">
             <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
               Repay
