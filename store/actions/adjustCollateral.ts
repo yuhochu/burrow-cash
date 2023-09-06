@@ -38,16 +38,39 @@ export async function adjustCollateral({
     : decimalMin(totalBalance, expandTokenDecimal(amount, decimals + extraDecimals));
 
   if (expandedAmount.gt(collateralBalance)) {
-    await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], {
-      actions: [
-        {
-          IncreaseCollateral: {
-            token_id: tokenId,
-            max_amount: !isMax ? expandedAmount.sub(collateralBalance).toFixed(0) : undefined,
+    // await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], {
+    //   actions: [
+    //     {
+    //       IncreaseCollateral: {
+    //         token_id: tokenId,
+    //         max_amount: !isMax ? expandedAmount.sub(collateralBalance).toFixed(0) : undefined,
+    //       },
+    //     },
+    //   ],
+    // });
+    await prepareAndExecuteTransactions([
+      {
+        receiverId: logicContract.contractId,
+        functionCalls: [
+          {
+            methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
+            gas: new BN("100000000000000"),
+            args: {
+              actions: [
+                {
+                  IncreaseCollateral: {
+                    token_id: tokenId,
+                    max_amount: !isMax
+                      ? expandedAmount.sub(collateralBalance).toFixed(0)
+                      : undefined,
+                  },
+                },
+              ],
+            },
           },
-        },
-      ],
-    });
+        ],
+      } as Transaction,
+    ]);
   } else if (expandedAmount.lt(collateralBalance)) {
     await prepareAndExecuteTransactions([
       {

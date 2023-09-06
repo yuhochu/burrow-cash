@@ -121,6 +121,7 @@ const WalletButton = () => {
         handleSignOut,
         getUnClaimRewards,
         isMobile,
+        rewards,
       }}
     >
       <Box
@@ -245,8 +246,15 @@ function Account() {
 }
 
 function AccountDetail({ onClose }: { onClose?: () => void }) {
-  const { balance, accountId, handleSwitchWallet, handleSignOut, getUnClaimRewards, isMobile } =
-    useContext(WalletContext) as any;
+  const {
+    balance,
+    accountId,
+    handleSwitchWallet,
+    handleSignOut,
+    getUnClaimRewards,
+    isMobile,
+    rewards,
+  } = useContext(WalletContext) as any;
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
@@ -306,7 +314,9 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
             {getUnClaimRewards()}
           </span>
         </div>
-        <ClaimAllRewards Button={ClaimButtonInAccount} location="menu" />
+        {Object.keys(rewards?.sumRewards || {}).length ? (
+          <ClaimAllRewards Button={ClaimButtonInAccount} location="menu" />
+        ) : null}
       </div>
     </div>
   );

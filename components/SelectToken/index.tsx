@@ -7,10 +7,11 @@ import { formatWithCommas_number } from "../../utils/uiNumber";
 
 import { useSupplyTrigger, useBorrowTrigger } from "../Modal/components";
 import { CheckedIcon } from "./svg";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getModalData } from "../../redux/appSelectors";
 import { isMobileDevice } from "../../helpers/helpers";
 import { CloseIcon } from "../Modal/svg";
+import { toggleUseAsCollateral } from "../../redux/appSlice";
 
 export type IAssetType = "borrow" | "supply";
 type IBalance = { supply_balance?: string; borrow_balance?: string };
@@ -107,10 +108,11 @@ function TokenRow({
   onClose: any;
   selectRef: any;
 }) {
-  const { symbol, supply_balance, borrow_balance, icon, tokenId } = asset;
+  const { symbol, supply_balance, borrow_balance, icon, tokenId, canUseAsCollateral } = asset;
   const handleSupplyClick = useSupplyTrigger(tokenId);
   const handleBorrowClick = useBorrowTrigger(tokenId);
   const selected = useAppSelector(getModalData);
+  const dispatch = useAppDispatch();
   function selectToken() {
     if (assetType === "supply") {
       handleSupplyClick();
@@ -119,6 +121,7 @@ function TokenRow({
       handleBorrowClick();
       selectRef.current.scrollTop = 0;
     }
+    dispatch(toggleUseAsCollateral({ useAsCollateral: canUseAsCollateral }));
     onClose();
   }
   const is_checked = selected?.tokenId === asset.tokenId;

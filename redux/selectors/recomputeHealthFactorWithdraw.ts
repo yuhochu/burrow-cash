@@ -6,7 +6,7 @@ import { MAX_RATIO, expandTokenDecimal } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getAdjustedSum } from "./getWithdrawMaxAmount";
-import { decimalMin } from "../../utils";
+import { decimalMax, decimalMin } from "../../utils";
 
 export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =>
   createSelector(
@@ -36,14 +36,13 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
           apr: "0",
         };
       }
-
       const collateralBalance = new Decimal(clonedAccount.portfolio.collateral[tokenId].balance);
       const suppliedBalance = new Decimal(clonedAccount.portfolio.supplied[tokenId].balance);
       const amountDecimal = expandTokenDecimal(amount, decimals);
 
-      const newBalance = decimalMin(
-        collateralBalance,
-        collateralBalance.plus(suppliedBalance).minus(amountDecimal),
+      const newBalance = decimalMax(
+        0,
+        decimalMin(collateralBalance, collateralBalance.plus(suppliedBalance).minus(amountDecimal)),
       );
 
       clonedAccount.portfolio.collateral[tokenId].balance = newBalance.toFixed();

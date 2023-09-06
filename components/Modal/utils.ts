@@ -3,6 +3,7 @@ import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, NEAR_STORAGE_DEPOSIT } from "
 import type { UIAsset } from "../../interfaces";
 import { formatWithCommas_number, toDecimal } from "../../utils/uiNumber";
 import { expandToken } from "../../store/helper";
+import { decimalMax } from "../../utils";
 
 interface Alert {
   [key: string]: {
@@ -139,7 +140,9 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
       if (isRepayFromDeposits) {
         data.rates.push({
           label: "Remaining Supplied Amount",
-          value: (supplied + collateral - amount).toFixed(PERCENT_DIGITS),
+          value: decimalMax(0, (supplied + collateral - amount).toFixed(PERCENT_DIGITS)).toFixed(
+            PERCENT_DIGITS,
+          ),
         });
       }
       break;
