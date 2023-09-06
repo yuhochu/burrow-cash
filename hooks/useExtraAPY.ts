@@ -16,7 +16,7 @@ export function useExtraAPY({
   onlyMarket,
 }: {
   tokenId: string;
-  isBorrow: boolean;
+  isBorrow: boolean | undefined;
   onlyMarket?: boolean;
 }) {
   const [totalSupplyUSD, totalBorrowUSD] = useAppSelector(getTotalSupplyAndBorrowUSD(assetId));
