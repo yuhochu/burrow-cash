@@ -95,16 +95,19 @@ const columns = [
     header: () => <div style={{ whiteSpace: "normal" }}>Repaid Assets Amount</div>,
     cell: ({ originalData }) => {
       const { RepaidAssets } = originalData || {};
-      const node = RepaidAssets?.map((d) => {
+      const node = RepaidAssets?.map((d, i) => {
+        const isLast = RepaidAssets.length === i + 1;
         const { metadata, config } = d.data || {};
         const { extra_decimals } = config || {};
         const tokenSymbol = metadata?.symbol || d.token_id;
+
         const tokenAmount = Number(
           shrinkToken(d.amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
         );
         return (
-          <div key={d.token_id}>
+          <div key={d.token_id} className="whitespace-normal">
             {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
+            {!isLast && ","}
           </div>
         );
       });

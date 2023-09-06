@@ -60,6 +60,8 @@ const Staking = () => {
     );
   }
 
+  const totalAmount = Number(BRRR) + Number(total);
+  console.info("totalAmount", totalAmount);
   return (
     <LayoutContainer>
       <div>
@@ -70,7 +72,7 @@ const Staking = () => {
           <div className="h2 flex items-center gap-3 mb-4 md:mb-0">
             <BrrrLogo color="#D2FF3A" className="brrr-logo" />
             <div className="brrr-amount flex flex-col md:flex-row md:gap-4 md:items-center">
-              <LiveUnclaimedAmount addAmount={BRRR + total} />{" "}
+              {totalAmount.toLocaleString(undefined, TOKEN_FORMAT)}
               <div className="text-gray-300 brrr-token">BRRR</div>
             </div>
           </div>

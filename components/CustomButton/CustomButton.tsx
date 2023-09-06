@@ -46,7 +46,9 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
     }
     setIsAsyncLoading(true);
     try {
-      typeof onClick === "function" && (await onClick(e));
+      if (typeof onClick === "function") {
+        await onClick(e);
+      }
     } catch (err) {
       throw e;
     } finally {
@@ -57,11 +59,15 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
   };
 
   const handleMouseEnter = (e: any) => {
-    typeof onMouseEnter === "function" && onMouseEnter(e);
+    if (typeof onMouseEnter === "function") {
+      onMouseEnter(e);
+    }
   };
 
   const handleMouseLeave = (e: any) => {
-    typeof onMouseLeave === "function" && onMouseLeave(e);
+    if (typeof onMouseLeave === "function") {
+      onMouseLeave(e);
+    }
   };
   const isDisabled = disabled || isAsyncLoading;
   const isLoading2 = isLoading !== undefined ? isLoading : isAsyncLoading;

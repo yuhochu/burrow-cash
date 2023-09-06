@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { twMerge } from "tailwind-merge";
+import ToolTip from "../ToolTip";
+import CustomTooltips from "../CustomTooltips/CustomTooltips";
 
 const MAX_DEGREE = 225;
 const SemiCircleProgressBar = ({
@@ -49,12 +51,25 @@ const SemiCircleProgressBar = ({
           <div
             className={twMerge("bg-primary bar-divider hidden", dividerPercent === 75 && "block")}
           />
+          <StyledHiddenTooltip>
+            <ToolTip content="100% health factor warning line" />
+          </StyledHiddenTooltip>
         </div>
         {node}
       </div>
     </StyledWrapper>
   );
 };
+
+const StyledHiddenTooltip = styled.div`
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  z-index: 99;
+  top: 27px;
+  right: 21px;
+  opacity: 0;
+`;
 
 const StyledWrapper = styled.div`
   position: relative;

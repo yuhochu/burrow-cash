@@ -91,7 +91,6 @@ const ModalStaking = ({ isOpen, onClose }) => {
 
   const handleStake = async () => {
     try {
-      // console.log("amountamount", amount, months, (amount / total) * 100);
       setLoadingStake(true);
       trackStaking({ amount, months, percent: (amount / total) * 100 });
       await stake({ amount, months });

@@ -55,7 +55,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
   return (
     <div className="lg:flex md:justify-between lg:justify-between">
-      <div className="mb-4 md:mb-0">
+      <div className="mb-4 md:mb-0" style={{ maxWidth: 640 }}>
         <div className="flex gap-2 md:gap-6 lg:gap-8">
           <div className="gap-6 flex flex-col">
             <UserLiquidity />
@@ -114,7 +114,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-end justify-between lg:ml-10">
+      <div className="flex flex-col items-end md:gap-6 lg:ml-10">
         <div className="flex items-center gap-2">
           <CustomButton
             onClick={() => handleModalOpen("history", { tabIndex: 1 })}
@@ -140,7 +140,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
           </div>
         </div>
 
-        <div className="relative mr-6">
+        <div className="relative mr-10">
           <HealthFactor userHealth={userHealth} />
         </div>
       </div>

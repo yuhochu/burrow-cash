@@ -21,10 +21,11 @@ export async function getLiquidations(
   liquidationData?.record_list?.forEach((d) => {
     d.RepaidAssets?.forEach((a) => {
       const tokenId = a.token_id;
-      let asset = assets?.data?.[tokenId];
-      if (!asset && nearTokens.includes(tokenId)) {
-        asset = assets?.data?.[nearTokenId];
-      }
+      const asset = assets?.data?.[tokenId];
+      // if (!asset && nearTokens.includes(tokenId)) {
+      //   asset = assets?.data?.[nearTokenId];
+      // }
+
       // if (asset?.metadata) {
       //   standardizeAsset({ ...asset.metadata });
       // }
@@ -33,10 +34,10 @@ export async function getLiquidations(
 
     d.LiquidatedAssets?.forEach((a) => {
       const tokenId = a.token_id;
-      let asset = assets?.data?.[tokenId];
-      if (!asset && nearTokens.includes(tokenId)) {
-        asset = assets?.data?.[nearTokenId];
-      }
+      const asset = assets?.data?.[tokenId];
+      // if (!asset && nearTokens.includes(tokenId)) {
+      //   asset = assets?.data?.[nearTokenId];
+      // }
       a.data = asset;
     });
     if (d.isRead === false) {

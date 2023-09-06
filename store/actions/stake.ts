@@ -13,7 +13,12 @@ export async function stake({ amount, months }: { amount: number; months: number
     months === 12
       ? config.maximum_staking_duration_sec
       : months * config.minimum_staking_duration_sec;
-
+  console.info(
+    "stake",
+    amount,
+    config.booster_decimals,
+    expandToken(amount, config.booster_decimals),
+  );
   transactions.push({
     receiverId: logicContract.contractId,
     functionCalls: [

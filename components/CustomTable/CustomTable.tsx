@@ -174,7 +174,7 @@ const CustomTable = ({
 
   return (
     <StyledTable className={twMerge("custom-table", className)}>
-      <StyledLoading active={isLoading}>Loading</StyledLoading>
+      <StyledLoading active={!!isLoading}>Loading</StyledLoading>
       <div className="custom-table-thead">{headerNode}</div>
       <div className="custom-table-tbody">{bodyNodes}</div>
       {pagination?.totalPages && pagination?.page ? (
