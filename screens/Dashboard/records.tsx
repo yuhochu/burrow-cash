@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import Datasource from "../../data/datasource";
-import { useAccountId } from "../../hooks/hooks";
+import { useAccountId, useToastMessage } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
 import { nearNativeTokens, nearTokenId } from "../../utils";
+import { CopyIcon } from "../../components/Icons/Icons";
 
 const Records = ({ isShow }) => {
   const accountId = useAccountId();
+  const { toastMessage, showToast } = useToastMessage();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
   const [docs, setDocs] = useState([]);
@@ -57,6 +60,7 @@ const Records = ({ isShow }) => {
     }
   };
 
+  const columns = getColumns({ showToast });
   return (
     <CustomTable
       data={docs}
@@ -68,7 +72,7 @@ const Records = ({ isShow }) => {
   );
 };
 
-const columns = [
+const getColumns = ({ showToast }) => [
   {
     header: "Assets",
     cell: ({ originalData }) => {
@@ -87,7 +91,7 @@ const columns = [
               />
             )}
           </div>
-          <div className="truncate">{data?.metadata?.name}</div>
+          <div className="truncate">{data?.metadata?.symbol}</div>
         </div>
       );
     },
@@ -119,7 +123,23 @@ const columns = [
     header: () => <div className="text-right">View in NEAR explorer</div>,
     cell: ({ originalData }) => {
       const { tx_id } = originalData || {};
-      return <div className="text-gray-300 text-right">{maskMiddleString(tx_id, 4, 34)}</div>;
+      if (!tx_id) {
+        return null;
+      }
+      return (
+        <div className="flex items-center gap-2 justify-end">
+          <CopyToClipboard text={tx_id} onCopy={() => showToast("Copied")}>
+            <div className="text-gray-300 text-right cursor-pointer underline transform hover:opacity-80">
+              {maskMiddleString(tx_id, 4, 34)}
+            </div>
+          </CopyToClipboard>
+          <CopyToClipboard text={tx_id} onCopy={() => showToast("Copied")}>
+            <div className="cursor-pointer">
+              <CopyIcon />
+            </div>
+          </CopyToClipboard>
+        </div>
+      );
     },
     size: 180,
   },

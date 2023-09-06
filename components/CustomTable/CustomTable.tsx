@@ -158,7 +158,11 @@ const CustomTable = ({
         );
       });
       return (
-        <div className="custom-table-row" key={i} onMouseEnter={() => handleRowEnter(d, i)}>
+        <div
+          className={twMerge("custom-table-row", actionRow && "table-row-hover")}
+          key={i}
+          onMouseEnter={() => handleRowEnter(d, i)}
+        >
           <div className="custom-table-tr">{tdNode}</div>
           {actionRow && <div className="custom-table-action">{actionRow}</div>}
         </div>
@@ -258,9 +262,10 @@ const StyledTable = styled.div`
   }
 
   .custom-table-row {
-    &:hover {
+    &.table-row-hover:hover {
       background: #33344c;
-
+    }
+    &:hover {
       .custom-table-action {
         display: block;
         height: auto;

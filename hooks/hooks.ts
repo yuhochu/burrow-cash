@@ -9,8 +9,15 @@ import {
   getDegenMode,
   getTheme,
   getUnreadLiquidation,
+  getToastMessage,
 } from "../redux/appSelectors";
-import { setRepayFrom, toggleDegenMode, setTheme, setUnreadLiquidation } from "../redux/appSlice";
+import {
+  setRepayFrom,
+  toggleDegenMode,
+  setTheme,
+  setUnreadLiquidation,
+  setToastMessage,
+} from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
 import { getLiquidations } from "../api/get-liquidations";
@@ -112,4 +119,15 @@ export function useUnreadLiquidation() {
   };
 
   return { unreadLiquidation, fetchUnreadLiquidation };
+}
+
+export function useToastMessage() {
+  const toastMessage = useAppSelector(getToastMessage);
+  const dispatch = useAppDispatch();
+
+  const showToast = (message) => {
+    dispatch(setToastMessage(message));
+  };
+
+  return { toastMessage, showToast };
 }

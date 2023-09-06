@@ -24,6 +24,7 @@ export interface AppState {
     enabled: boolean;
     repayFromDeposits: boolean;
   };
+  toastMessage: string;
   showModal: boolean;
   showInfo: boolean;
   protocolStats: boolean;
@@ -68,6 +69,7 @@ export const initialState: AppState = {
     count: 0,
     unreadIds: [],
   },
+  toastMessage: "",
   disclaimerAgreed: false,
   degenMode: {
     enabled: true,
@@ -210,6 +212,9 @@ export const appSlice = createSlice({
     setUnreadLiquidation(state, action) {
       state.unreadLiquidation = action.payload;
     },
+    setToastMessage(state, action) {
+      state.toastMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConfig.fulfilled, (state, action) => {
@@ -239,6 +244,7 @@ export const {
   setBlocked,
   setTheme,
   setUnreadLiquidation,
+  setToastMessage,
 } = appSlice.actions;
 
 export default appSlice.reducer;

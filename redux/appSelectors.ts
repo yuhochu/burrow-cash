@@ -120,3 +120,8 @@ export const getUnreadLiquidation = createSelector(
   (state: RootState) => state.app,
   (app) => app.unreadLiquidation,
 );
+
+export const getToastMessage = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.toastMessage,
+);

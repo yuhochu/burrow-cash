@@ -18,6 +18,7 @@ import { useAppDispatch } from "../redux/hooks";
 import { fetchAssets, fetchRefPrices } from "../redux/assetsSlice";
 import { fetchAccount } from "../redux/accountSlice";
 import { fetchConfig } from "../redux/appSlice";
+import { ToastMessage } from "../components/ToastMessage";
 
 const SENTRY_ORG = process.env.NEXT_PUBLIC_SENTRY_ORG as string;
 const SENTRY_PID = process.env.NEXT_PUBLIC_SENTRY_PID as unknown as number;
@@ -87,6 +88,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <Layout>
             <Init />
             <Modal />
+            <ToastMessage />
             <Component {...pageProps} />
           </Layout>
         </PersistGate>

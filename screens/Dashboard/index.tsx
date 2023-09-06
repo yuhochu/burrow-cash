@@ -139,9 +139,11 @@ const yourSuppliedColumns = [
     cell: ({ originalData }) => {
       return (
         <>
-          <div>{formatTokenValue(originalData?.collateral)}</div>
+          <div>{originalData?.collateral ? formatTokenValue(originalData?.collateral) : "-"}</div>
           <div className="h6 text-gray-300">
-            {formatUSDValue(originalData.collateral * originalData.price)}
+            {originalData?.collateral
+              ? formatUSDValue(originalData.collateral * originalData.price)
+              : ""}
           </div>
         </>
       );

@@ -67,7 +67,7 @@ export const getDateString = (date) => {
   const yyyy = today.getFullYear();
 
   let dd = String(ddNum);
-  let mm = String(ddNum);
+  let mm = String(mmNum);
   let hh = String(hourNum);
   let min = String(minNum);
   let sec = String(secNum);
