@@ -39,7 +39,7 @@ export const LayoutBox = ({ children, className = "" }: Props) => {
     <div
       className={`mx-auto lg:min-w-[800px] xl:max-w-[1200px] xsm:w-full xsm:overflow-x-hidden ${className}`}
     >
-      <div className="xsm:mx-4">
+      <div className="xsm:mx-4 lg:w-full">
         <NonFarmedAssets />
       </div>
       {children}

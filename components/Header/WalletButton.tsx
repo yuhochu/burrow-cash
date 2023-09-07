@@ -106,7 +106,10 @@ const WalletButton = () => {
   const getUnClaimRewards = () => {
     const sumRewards = rewards.sumRewards || {};
     const sumRewards$ = Object.values(sumRewards).reduce((_sum, cur) => {
-      return new Decimal(cur.unclaimedAmount || 0).mul(cur.price || 0).toFixed();
+      return new Decimal(cur.unclaimedAmount || 0)
+        .mul(cur.price || 0)
+        .plus(_sum)
+        .toFixed();
     }, "0");
     return formatWithCommas_usd(sumRewards$);
   };

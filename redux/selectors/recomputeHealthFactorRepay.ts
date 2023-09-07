@@ -14,12 +14,14 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number) =>
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
       if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
-
       const { metadata, config } = assets.data[tokenId];
       const decimals = metadata.decimals + config.extra_decimals;
 
       const borrowedBalance = new Decimal(account.portfolio.borrowed[tokenId].balance);
-      const newBalance = borrowedBalance.minus(expandTokenDecimal(amount, decimals));
+      const newBalance = Decimal.max(
+        0,
+        borrowedBalance.minus(expandTokenDecimal(amount, decimals)),
+      );
 
       const clonedAccount = clone(account);
       clonedAccount.portfolio.borrowed[tokenId].balance = newBalance.toFixed();

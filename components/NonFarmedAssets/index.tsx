@@ -4,7 +4,7 @@ import ClaimAllRewards from "../ClaimAllRewards";
 
 function NonFarmedAssets() {
   const { hasNonFarmedAssets, hasNegativeNetLiquidity } = useNonFarmedAssets();
-  if (!hasNonFarmedAssets || hasNegativeNetLiquidity) return null;
+  // if (!hasNonFarmedAssets || hasNegativeNetLiquidity) return null;
   return (
     <div className="flex xsm:flex-col xsm:gap-3 items-center justify-between mb-5 border border-primary border-opacity-60 bg-primary bg-opacity-5 rounded-xl p-3 pl-5">
       <div className="flex items-start">
