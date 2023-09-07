@@ -73,7 +73,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
               <div className="flex flex-col md:flex-row md:items-center md:gap-4">
                 <div className="flex items-center gap-4 my-1">
                   <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
-                  <div className="flex" style={{ marginRight: 20 }}>
+                  <div className="flex" style={{ marginRight: 5 }}>
                     {rewardsObj?.brrr?.icon ? (
                       <img
                         src={rewardsObj?.brrr?.icon}

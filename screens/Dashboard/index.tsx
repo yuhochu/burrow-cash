@@ -26,7 +26,7 @@ import { ArrowUpIcon } from "../../components/Icons/Icons";
 
 const Index = () => {
   const accountId = useAccountId();
-  const [suppliedRows, borrowedRows] = usePortfolioAssets();
+  const [suppliedRows, borrowedRows, totalSuppliedUSD, totalBorrowedUSD] = usePortfolioAssets();
   const isMobile = isMobileDevice();
 
   let overviewNode;
@@ -67,8 +67,8 @@ const Index = () => {
   } else {
     supplyBorrowNode = (
       <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
-        <YourSupplied suppliedRows={suppliedRows} accountId={accountId} />
-        <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} />
+        <YourSupplied suppliedRows={suppliedRows} accountId={accountId} total={totalSuppliedUSD} />
+        <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} total={totalBorrowedUSD} />
       </StyledSupplyBorrow>
     );
   }
@@ -172,7 +172,7 @@ type TableRowSelect = {
   index: number | null | undefined;
 };
 
-const YourSupplied = ({ suppliedRows, accountId }) => {
+const YourSupplied = ({ suppliedRows, accountId, total }) => {
   const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
   const { canUseAsCollateral, tokenId } = selected?.data || {};
 
@@ -190,7 +190,7 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
           <SupplyTokenSvg className="mr-10" />
           <div className="h3">You Supplied</div>
         </div>
-        <div className="h3">0</div>
+        <div className="h3">{total > 0 ? formatUSDValue(total) : 0}</div>
       </div>
       <StyledCustomTable
         data={suppliedRows}
@@ -299,7 +299,7 @@ const yourBorrowedColumns = [
     },
   },
 ];
-const YourBorrowed = ({ borrowedRows, accountId }) => {
+const YourBorrowed = ({ borrowedRows, accountId, total }) => {
   const [selected, setSelected] = useState<TableRowSelect>({ data: null, index: null });
 
   const handleRowSelect = (rowData, rowIndex) => {
@@ -308,13 +308,17 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
 
   return (
     <ContentBox>
-      <div className="flex items-center mb-4">
-        <div className="absolute" style={{ left: 0, top: 0 }}>
-          {assets.svg.borrowBg}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <div className="absolute" style={{ left: 0, top: 0 }}>
+            {assets.svg.borrowBg}
+          </div>
+          <BorrowTokenSvg className="mr-10" />
+          <div className="h3">You Borrowed</div>
         </div>
-        <BorrowTokenSvg className="mr-10" />
-        <div className="h3">You Borrowed</div>
+        <div className="h3">{total > 0 ? formatUSDValue(total) : 0}</div>
       </div>
+
       <StyledCustomTable
         data={borrowedRows}
         columns={yourBorrowedColumns}

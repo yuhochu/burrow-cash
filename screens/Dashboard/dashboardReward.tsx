@@ -35,9 +35,9 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
       //   ? millify(Number(dailyRewards), { precision: PERCENT_DIGITS })
       //   : formatPortfolioRewardAmount(Number(dailyRewards));
 
-      if (Number(dailyRewards) < 0.001) {
-        return "-";
-      }
+      // if (Number(dailyRewards) < 0.001) {
+      //   return "-";
+      // }
       const usdPrice = price ? Number(dailyRewards) * price : 0;
       totalUsd += usdPrice;
       const cloned = metadata && standardizeAsset({ ...metadata });

@@ -86,7 +86,7 @@ export const Stat = ({
   onClick?: () => void;
 }) => {
   return (
-    <div onClick={() => onClick && onClick()} style={{ minHeight: 81 }} className="md:w-[282px]">
+    <div onClick={() => onClick && onClick()} style={{ minHeight: 81 }} className="md:w-[351px]">
       <div className="flex items-center gap-1">
         {typeof title === "string" ? <div className="h6 text-gray-300">{title}</div> : title}
         {titleTooltip && <ReactToolTip content={titleTooltip} />}
@@ -100,7 +100,7 @@ export const Stat = ({
             <Label>{labels}</Label>
           ) : (
             labels?.map((row, i) => (
-              <div className="flex gap-1 items-start flex-col md:flex-row" key={i}>
+              <div className="flex gap-1 items-start flex-col md:flex-row md:flex-wrap" key={i}>
                 {row?.map((d) => {
                   if (!d.value) {
                     return null;

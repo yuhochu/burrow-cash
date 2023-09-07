@@ -11,7 +11,6 @@ import { useStaking } from "../../hooks/useStaking";
 import { useClaimAllRewards } from "../../hooks/useClaimAllRewards";
 import { trackUnstake } from "../../utils/telemetry";
 import { unstake } from "../../store/actions/unstake";
-import { StakingModal } from "./modal";
 import { useAccountId } from "../../hooks/hooks";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -19,13 +18,12 @@ import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import ModalStaking from "./modalStaking";
 import { modalProps } from "../../interfaces/common";
 import { LockIcon, Mascot, UnlockIcon } from "../../components/Icons/Icons";
-import GiftIcon from "../../public/svg/Group 24710.svg";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 
 const Staking = () => {
-  const [total, totalUnclaim] = useAppSelector(getTotalBRRR);
-  const { BRRR, stakingTimestamp } = useStaking();
+  const [total, totalUnclaim, totalToken] = useAppSelector(getTotalBRRR);
+  const { BRRR, stakingTimestamp, stakingNetAPY, stakingNetTvlAPY } = useStaking();
   const { handleClaimAll, isLoading } = useClaimAllRewards("staking");
   const [loadingUnstake, setLoadingUnstake] = useState(false);
   const [isModalOpen, openModal] = useState(false);
@@ -60,9 +58,8 @@ const Staking = () => {
   //     </div>
   //   );
   // }
-
   const totalAmount = Number(BRRR) + Number(total);
-  console.info("totalAmount", totalAmount);
+
   return (
     <LayoutContainer>
       <div>
@@ -82,8 +79,8 @@ const Staking = () => {
           <StakingBox
             text1="💰 Available"
             value1={total > 0 ? total.toLocaleString(undefined, TOKEN_FORMAT) : 0}
-            text2="Your APY"
-            value2="0%"
+            // text2="Your APY"
+            // value2="0%"
             value2ClassName="text-primary"
           >
             {accountId ? (

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import pluralize from "pluralize";
 import { Alert, Box, Stack, Typography } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import styled from "styled-components";
-import Slider from "../../components/Slider";
 import RangeSlider from "../../components/Modal/RangeSlider";
 import { useAppSelector } from "../../redux/hooks";
 import { getTotalBRRR } from "../../redux/selectors/getTotalBRRR";
@@ -13,18 +11,12 @@ import { trackMaxStaking, trackStaking } from "../../utils/telemetry";
 import { stake } from "../../store/actions/stake";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { APY_FORMAT, TOKEN_FORMAT } from "../../store";
-import { Input } from "../../components";
-import MonthSlider from "../../components/Slider/staking";
-import { Separator } from "./components";
-import { StakingRewards } from "./rewards";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import MaxIcon from "../../components/Input/max.svg";
-import { updateAmount } from "../../redux/appSlice";
 import { useRewards } from "../../hooks/useRewards";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 
 const ModalStaking = ({ isOpen, onClose }) => {
-  const [total] = useAppSelector(getTotalBRRR);
+  const [total, totalUnclaim, totalToken] = useAppSelector(getTotalBRRR);
   const [monthPercent, setMonthPercent] = useState(0);
   const [loadingStake, setLoadingStake] = useState(false);
   const {
@@ -38,7 +30,6 @@ const ModalStaking = ({ isOpen, onClose }) => {
   } = useStaking();
   const unstakeDate = DateTime.fromMillis(stakingTimestamp / 1e6);
   const selectedMonths = stakingTimestamp ? Math.round(unstakeDate.diffNow().as("months")) : months;
-
   const invalidAmount = amount > total;
   const invalidMonths = months < selectedMonths;
   const disabledStake = !amount || invalidAmount || invalidMonths;
@@ -48,15 +39,15 @@ const ModalStaking = ({ isOpen, onClose }) => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const sliderValue = Math.round((amount * 100) / total) || 0;
+  const sliderValue = Math.round((amount * 100) / Number(total)) || 0;
 
   useEffect(() => {
     setMonths(selectedMonths);
   }, [stakingTimestamp]);
 
   const handleMaxClick = () => {
-    trackMaxStaking({ total });
-    setAmount(total);
+    trackMaxStaking({ total: totalToken });
+    setAmount(totalToken);
   };
 
   const handleInputChange = (e) => {
@@ -73,7 +64,11 @@ const ModalStaking = ({ isOpen, onClose }) => {
   };
 
   const handleRangeSliderChange = (percent) => {
-    setAmount((Number(total) * percent) / 100);
+    if (Number(percent) >= 99.7) {
+      setAmount(totalToken);
+    } else {
+      setAmount((Number(total) * percent) / 100);
+    }
   };
 
   const handleMonthChange = (percent, v) => {
@@ -92,7 +87,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
   const handleStake = async () => {
     try {
       setLoadingStake(true);
-      trackStaking({ amount, months, percent: (amount / total) * 100 });
+      trackStaking({ amount, months, percent: (amount / Number(total)) * 100 });
       await stake({ amount, months });
       setAmount(0);
       setLoadingStake(false);

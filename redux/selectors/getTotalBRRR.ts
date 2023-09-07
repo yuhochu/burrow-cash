@@ -22,10 +22,11 @@ export const getTotalBRRR = createSelector(
       .map((token) => Number(shrinkToken(token, decimals)))
       .reduce(sumReducer, 0);
 
-    const totalBrrr = Number(
-      shrinkToken(account.portfolio.supplied[brrrTokenId]?.balance || "0", decimals),
+    const totalToken = shrinkToken(
+      account.portfolio.supplied[brrrTokenId]?.balance || "0",
+      decimals,
     );
-
-    return [totalBrrr, unclaimedSupplied + unclaimedBorrowed];
+    const totalBrrr = Number(totalToken);
+    return [totalBrrr, unclaimedSupplied + unclaimedBorrowed, totalToken];
   },
 );
