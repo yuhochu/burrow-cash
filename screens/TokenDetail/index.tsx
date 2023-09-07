@@ -125,73 +125,77 @@ function DetailMobile() {
   const isMarket = activeTab === "market";
   const isYour = activeTab === "your";
   return (
-    <div className="p-4">
-      {/* Back */}
-      <div
-        className="inline-flex items-center cursor-pointer mb-8"
-        onClick={() => {
-          router.push("/markets");
-        }}
-      >
-        <ArrowLeft />
-        <span className="text-sm text-gray-300 ml-3"> Markets</span>
-      </div>
-      {/* Token head */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <img src={tokenRow?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
-          <span className="ml-2 text-xl text-white font-bold">{tokenRow?.symbol}</span>
-        </div>
-        <span
-          onClick={openGetTokenModal}
-          className="flex items-center h-6 px-2.5 bg-gray-800 rounded-md text-sm text-primary"
+    <LayoutBox>
+      <div className="p-4">
+        {/* Back */}
+        <div
+          className="inline-flex items-center cursor-pointer mb-8"
+          onClick={() => {
+            router.push("/markets");
+          }}
         >
-          Get {tokenRow?.symbol}
-        </span>
-      </div>
-      {/* Tab */}
-      <div className="grid grid-cols-2 bg-gray-800 rounded-xl h-[42px] text-white text-base items-center justify-items-stretch mt-6 mb-6">
-        <div className="relative flex items-center justify-center border-r border-dark-1000">
+          <ArrowLeft />
+          <span className="text-sm text-gray-300 ml-3"> Markets</span>
+        </div>
+        {/* Token head */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <img src={tokenRow?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
+            <span className="ml-2 text-xl text-white font-bold">{tokenRow?.symbol}</span>
+          </div>
           <span
-            onClick={() => {
-              switchTab("market");
-            }}
-            className={`relative z-10 text-center ${isMarket ? "text-primary" : ""}`}
+            onClick={openGetTokenModal}
+            className="flex items-center h-6 px-2.5 bg-gray-800 rounded-md text-sm text-primary"
           >
-            Market Info
+            Get {tokenRow?.symbol}
           </span>
-          <div
-            className={`absolute top-1 flex items-center justify-center ${
-              isMarket ? "" : "hidden"
-            }`}
-          >
-            <span className="flex w-10 h-10 bg-gray-800" style={{ borderRadius: "50%" }} />
-            <YellowBallIcon className="absolute top-6" />
+        </div>
+        {/* Tab */}
+        <div className="grid grid-cols-2 bg-gray-800 rounded-xl h-[42px] text-white text-base items-center justify-items-stretch mt-6 mb-6">
+          <div className="relative flex items-center justify-center border-r border-dark-1000">
+            <span
+              onClick={() => {
+                switchTab("market");
+              }}
+              className={`relative z-10 text-center ${isMarket ? "text-primary" : ""}`}
+            >
+              Market Info
+            </span>
+            <div
+              className={`absolute top-1 flex items-center justify-center ${
+                isMarket ? "" : "hidden"
+              }`}
+            >
+              <span className="flex w-10 h-10 bg-gray-800" style={{ borderRadius: "50%" }} />
+              <YellowBallIcon className="absolute top-6" />
+            </div>
+          </div>
+          <div className="relative flex items-center justify-center">
+            <span
+              onClick={() => {
+                switchTab("your");
+              }}
+              className={`relative z-10 text-center ${isYour ? "text-primary" : ""}`}
+            >
+              Your Info
+            </span>
+            <div
+              className={`absolute top-1 flex items-center justify-center ${
+                isYour ? "" : "hidden"
+              }`}
+            >
+              <span className="flex w-10 h-10 bg-gray-800" style={{ borderRadius: "50%" }} />
+              <YellowBallIcon className="absolute top-6" />
+            </div>
           </div>
         </div>
-        <div className="relative flex items-center justify-center">
-          <span
-            onClick={() => {
-              switchTab("your");
-            }}
-            className={`relative z-10 text-center ${isYour ? "text-primary" : ""}`}
-          >
-            Your Info
-          </span>
-          <div
-            className={`absolute top-1 flex items-center justify-center ${isYour ? "" : "hidden"}`}
-          >
-            <span className="flex w-10 h-10 bg-gray-800" style={{ borderRadius: "50%" }} />
-            <YellowBallIcon className="absolute top-6" />
-          </div>
-        </div>
+        {/* Tab content */}
+        <MarketInfo className={`${isMarket ? "" : "hidden"}`} />
+        <YourInfo className={`${isYour ? "" : "hidden"}`} />
+        {/* Get token  modal */}
+        <TokenFetchModal open={open} setOpen={setOpen} />
       </div>
-      {/* Tab content */}
-      <MarketInfo className={`${isMarket ? "" : "hidden"}`} />
-      <YourInfo className={`${isYour ? "" : "hidden"}`} />
-      {/* Get token  modal */}
-      <TokenFetchModal open={open} setOpen={setOpen} />
-    </div>
+    </LayoutBox>
   );
 }
 function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {

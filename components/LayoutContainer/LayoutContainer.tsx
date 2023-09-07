@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { useRouter } from "next/router";
+import NonFarmedAssets from "../NonFarmedAssets";
 
 type Props = {
   children: string | React.ReactNode;
@@ -7,7 +9,14 @@ type Props = {
 };
 
 const LayoutContainer = ({ children, className = "" }: Props) => {
-  return <StyledWrapper className={className}>{children}</StyledWrapper>;
+  const router = useRouter();
+  const isStakPage = router.route.includes("staking");
+  return (
+    <StyledWrapper className={className}>
+      {!isStakPage && <NonFarmedAssets />}
+      {children}
+    </StyledWrapper>
+  );
 };
 
 const StyledWrapper = styled.div`
@@ -30,6 +39,9 @@ export const LayoutBox = ({ children, className = "" }: Props) => {
     <div
       className={`mx-auto lg:min-w-[800px] xl:max-w-[1200px] xsm:w-full xsm:overflow-x-hidden ${className}`}
     >
+      <div className="xsm:mx-4">
+        <NonFarmedAssets />
+      </div>
       {children}
     </div>
   );
