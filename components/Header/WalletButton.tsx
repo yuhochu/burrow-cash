@@ -332,7 +332,7 @@ const ClaimButtonInAccount = (props) => {
       {...props}
       className="flex items-center justify-center bg-primary rounded-md cursor-pointer text-sm font-bold text-dark-200 hover:opacity-80 w-20 h-8"
     >
-      {loading ? <BeatLoader size={5} color="#14162B" /> : <>Claim all</>}
+      {loading ? <BeatLoader size={5} color="#14162B" /> : <>Claim</>}
     </div>
   );
 };

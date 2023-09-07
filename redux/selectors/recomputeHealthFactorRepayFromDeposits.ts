@@ -15,7 +15,6 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
       if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
-
       const { metadata, config } = assets.data[tokenId];
       const decimals = metadata.decimals + config.extra_decimals;
 
@@ -30,7 +29,7 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
       );
 
       const borrowedBalance = new Decimal(account.portfolio.borrowed[tokenId].balance);
-      const newBorrowedBalance = borrowedBalance.minus(amountDecimal);
+      const newBorrowedBalance = decimalMax(0, borrowedBalance.minus(amountDecimal));
 
       const clonedAccount = clone(account);
 

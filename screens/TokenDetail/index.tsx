@@ -251,8 +251,8 @@ function DetailPc() {
         <ArrowLeft />
         <span className="text-sm text-gray-300 ml-3">Burrow Markets</span>
       </div>
-      <div className="grid grid-cols-3/5 gap-x-6">
-        <div>
+      <div className="grid grid-cols-3/5">
+        <div className="mr-6">
           <TokenOverview />
           <TokenSupplyChart />
           {tokenRow.can_borrow && (
