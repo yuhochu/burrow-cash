@@ -46,6 +46,7 @@ import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
+import { RewardsV2 } from "../../components/Rewards";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -395,15 +396,33 @@ function TokenSupplyChart() {
           <span className="text-sm text-gray-300">APY</span>
           <span className="font-bold text-lg text-white">{apy}</span>
         </div>
-        <div className="flex flex-col ml-10">
-          <span className="text-sm text-gray-300">Supply Rewards</span>
-          <span className="font-bold text-lg text-white">-</span>
+        <div className="flex flex-col justify-between ml-10">
+          <span className="text-sm text-gray-300">Rewards</span>
+          <span className="font-bold text-lg text-white">
+            <RewardsV2
+              rewards={tokenRow.depositRewards}
+              layout="horizontal"
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+            />
+          </span>
         </div>
       </div>
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
         <LabelMobile title="Total Supply" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
+        <LabelMobile
+          title="Rewards"
+          value={
+            <RewardsV2
+              rewards={tokenRow.depositRewards}
+              layout="horizontal"
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+            />
+          }
+        />
       </div>
       <div className="flex items-center justify-center h-[300px]">
         <span className="text-sm text-gray-300">Suppling chart is coming soon</span>
@@ -875,7 +894,7 @@ function LabelMobile({
   subMode,
 }: {
   title: string;
-  value: string;
+  value: string | React.ReactNode;
   subValue?: string;
   subMode?: "line" | "space";
 }) {
