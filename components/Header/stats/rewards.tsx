@@ -31,7 +31,7 @@ export const UserDailyRewards = () => {
     <Stat
       title="Daily Rewards"
       titleTooltip="Estimated daily reward from incentives"
-      amount={amount.toLocaleString(undefined, USD_FORMAT)}
+      amount={amount > 0 ? amount.toLocaleString(undefined, USD_FORMAT) : "$0"}
       labels={labels}
     />
   );

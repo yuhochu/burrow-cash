@@ -18,9 +18,10 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import ModalStaking from "./modalStaking";
 import { modalProps } from "../../interfaces/common";
-import { LockIcon, Mascot } from "../../components/Icons/Icons";
+import { LockIcon, Mascot, UnlockIcon } from "../../components/Icons/Icons";
 import GiftIcon from "../../public/svg/Group 24710.svg";
 import { isMobileDevice } from "../../helpers/helpers";
+import { ConnectWalletButton } from "../../components/Header/WalletButton";
 
 const Staking = () => {
   const [total, totalUnclaim] = useAppSelector(getTotalBRRR);
@@ -45,47 +46,61 @@ const Staking = () => {
     }
   };
 
-  if (!accountId) {
-    return (
-      <div>
-        <div className="flex justify-center">
-          <div className="mb-10">
-            <div className="flex justify-center">
-              <Mascot />
-            </div>
-          </div>
-        </div>
-        <div className="h2 flex justify-center">Please connect your wallet.</div>
-      </div>
-    );
-  }
+  // if (!accountId) {
+  //   return (
+  //     <div>
+  //       <div className="flex justify-center">
+  //         <div className="mb-10">
+  //           <div className="flex justify-center">
+  //             <Mascot />
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <div className="h2 flex justify-center">Please connect your wallet.</div>
+  //     </div>
+  //   );
+  // }
 
   const totalAmount = Number(BRRR) + Number(total);
   console.info("totalAmount", totalAmount);
   return (
     <LayoutContainer>
       <div>
-        <StyledStakingHeader className="flex justify-between md:justify-center flex-row-reverse items-end gap-4 mb-2 md:mb-10 md:flex-col md:items-center">
+        <StyledStakingHeader className="flex md:justify-center flex-row items-end gap-4 mb-2 md:mb-12 md:flex-col md:items-center">
           <div className="flex justify-center mascot">
             <Mascot width={isMobile ? 122 : 158} height={isMobile ? 114 : 147} />
           </div>
           <div className="h2 flex items-center gap-3 mb-4 md:mb-0">
             <BrrrLogo color="#D2FF3A" className="brrr-logo" />
             <div className="brrr-amount flex flex-col md:flex-row md:gap-4 md:items-center">
-              {totalAmount.toLocaleString(undefined, TOKEN_FORMAT)}
+              {totalAmount > 0 ? totalAmount.toLocaleString(undefined, TOKEN_FORMAT) : 0}
               <div className="text-gray-300 brrr-token">BRRR</div>
             </div>
           </div>
         </StyledStakingHeader>
         <div className="md:flex justify-center gap-4 md:gap-6">
-          <StakingBox text1="💰 Available" value1={total.toLocaleString(undefined, TOKEN_FORMAT)}>
-            <CustomButton onClick={() => setModal({ name: "staking" })} className="w-full">
-              Stake
-            </CustomButton>
+          <StakingBox
+            text1="💰 Available"
+            value1={total > 0 ? total.toLocaleString(undefined, TOKEN_FORMAT) : 0}
+            text2="Your APY"
+            value2="0%"
+            value2ClassName="text-primary"
+          >
+            {accountId ? (
+              <CustomButton
+                onClick={() => setModal({ name: "staking" })}
+                className="w-full"
+                disabled={!total}
+              >
+                Stake
+              </CustomButton>
+            ) : (
+              <ConnectWalletButton accountId={accountId} className="w-full" />
+            )}
           </StakingBox>
 
           <StakingBox
-            logoIcon={<LockIcon />}
+            logoIcon={disabledUnstake ? <LockIcon /> : <UnlockIcon />}
             disabled={BRRR === 0}
             text1="🔒 Staking"
             value1={BRRR ? BRRR.toLocaleString(undefined, TOKEN_FORMAT) : 0}
@@ -142,6 +157,7 @@ type StakingBoxProps = {
   value1?: string | React.ReactNode;
   text2?: string;
   value2?: string;
+  value2ClassName?: string;
   children?: string | React.ReactNode;
   disabled?: boolean;
 };
@@ -151,14 +167,15 @@ const StakingBox = ({
   value1,
   text2,
   value2,
+  value2ClassName,
   children,
   disabled,
 }: StakingBoxProps) => {
   return (
     <ContentBox className="mb-4 md:w-[363px]" padding="26px">
       <div className="flex justify-between flex-col h-full">
-        <div className="flex justify-end lg:justify-between mb-2">
-          <div className={twMerge("hidden lg:block relative", disabled && "opacity-60")}>
+        <div className="flex justify-end lg:justify-between mb-3">
+          <div className={twMerge("hidden md:block relative", disabled && "opacity-60")}>
             <BrrrLogo color="#D2FF3A" />
             {logoIcon && (
               <div className="absolute" style={{ bottom: 8, right: -8 }}>
@@ -176,7 +193,7 @@ const StakingBox = ({
         <div>
           <div className="flex justify-between text-gray-380 h5 mb-2" style={{ minHeight: 20 }}>
             <div>{text2}</div>
-            <div>{value2}</div>
+            <div className={value2ClassName}>{value2}</div>
           </div>
           {children}
         </div>

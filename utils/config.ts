@@ -49,8 +49,7 @@ const getConfig = (env: string = defaultNetwork) => {
         liquidationUrl:
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://dev.data-service.ref-finance.com",
-        recordsUrl:
-          process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://mainnet-indexer.ref-finance.com",
+        recordsUrl: "https://testnet-indexer.ref-finance.com",
       } as unknown as ConnectConfig;
     case "betanet":
       return {

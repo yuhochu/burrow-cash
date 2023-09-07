@@ -107,7 +107,6 @@ const columns = [
         return (
           <div key={d.token_id} className="whitespace-normal">
             {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
-            {!isLast && ","}
           </div>
         );
       });

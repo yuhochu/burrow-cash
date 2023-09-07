@@ -86,7 +86,7 @@ export const Stat = ({
   onClick?: () => void;
 }) => {
   return (
-    <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
+    <div onClick={() => onClick && onClick()} style={{ minHeight: 81 }} className="md:w-[282px]">
       <div className="flex items-center gap-1">
         {typeof title === "string" ? <div className="h6 text-gray-300">{title}</div> : title}
         {titleTooltip && <ReactToolTip content={titleTooltip} />}
@@ -130,7 +130,7 @@ export const Stat = ({
           )}
         </Stack>
       )}
-    </Stack>
+    </div>
   );
 };
 

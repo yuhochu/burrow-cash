@@ -8,7 +8,7 @@ import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
 import { getDateString, maskMiddleString } from "../../helpers/helpers";
-import { nearNativeTokens, nearTokenId } from "../../utils";
+import { nearNativeTokens, nearTokenId, standardizeAsset } from "../../utils";
 import { CopyIcon } from "../../components/Icons/Icons";
 
 const Records = ({ isShow }) => {
@@ -43,6 +43,9 @@ const Records = ({ isShow }) => {
           tokenId = nearTokenId;
         }
         d.data = assets?.data[tokenId];
+        const cloned = { ...d.data };
+        cloned.metadata = standardizeAsset({ ...cloned.metadata });
+        d.data = cloned;
         return d;
       });
       setDocs(list);
@@ -60,7 +63,11 @@ const Records = ({ isShow }) => {
     }
   };
 
-  const columns = getColumns({ showToast });
+  const handleTxClick = (tx) => {
+    window.open(tx);
+  };
+
+  const columns = getColumns({ showToast, handleTxClick });
   return (
     <CustomTable
       data={docs}
@@ -72,7 +79,7 @@ const Records = ({ isShow }) => {
   );
 };
 
-const getColumns = ({ showToast }) => [
+const getColumns = ({ showToast, handleTxClick }) => [
   {
     header: "Assets",
     cell: ({ originalData }) => {
@@ -128,11 +135,13 @@ const getColumns = ({ showToast }) => [
       }
       return (
         <div className="flex items-center gap-2 justify-end">
-          <CopyToClipboard text={tx_id} onCopy={() => showToast("Copied")}>
-            <div className="text-gray-300 text-right cursor-pointer underline transform hover:opacity-80">
-              {maskMiddleString(tx_id, 4, 34)}
-            </div>
-          </CopyToClipboard>
+          <div
+            className="text-gray-300 text-right cursor-pointer hover:underline transform hover:opacity-80"
+            onClick={() => handleTxClick(tx_id)}
+          >
+            {maskMiddleString(tx_id, 4, 34)}
+          </div>
+
           <CopyToClipboard text={tx_id} onCopy={() => showToast("Copied")}>
             <div className="cursor-pointer">
               <CopyIcon />

@@ -11,7 +11,8 @@ export const APY = () => {
 
   const globalValue = `${netAPY.toLocaleString(undefined, APY_FORMAT)}%`;
   const netLiquidityValue = `${netLiquidityAPY.toLocaleString(undefined, APY_FORMAT)}%`;
-  const amount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
+  const totalApy = netAPY + netLiquidityAPY;
+  const amount = totalApy > 0 ? `${totalApy.toLocaleString(undefined, APY_FORMAT)}%` : "0%";
 
   const netLiquidityTooltip = hasNegativeNetLiquidity ? (
     <NotFarmingNetLiquidity assets={assets} liquidity={weightedNetLiquidity} />
@@ -37,7 +38,7 @@ export const APY = () => {
       titleTooltip="Net APY of all supply and borrow positions, including base APYs and incentives"
       amount={amount}
       tooltip={tooltip}
-      labels={apyLabels}
+      labels={totalApy > 0 ? apyLabels : []}
     />
   );
 };

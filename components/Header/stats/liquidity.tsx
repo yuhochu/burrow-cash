@@ -56,17 +56,12 @@ export const UserLiquidity = () => {
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(userNetLiquidity)}`;
 
-  const userWeightedNetLiquidityValue = fullDigits?.user
-    ? weightedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(weightedNetLiquidity)}`;
+  const userWeightedNetLiquidityValue =
+    weightedNetLiquidity > 0 ? `$${m(weightedNetLiquidity)}` : "$0";
 
-  const userDepositedValue = fullDigits?.user
-    ? userDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(userDeposited)}`;
+  const userDepositedValue = userDeposited > 0 ? `$${m(userDeposited)}` : `$0`;
 
-  const userBorrowedValue = fullDigits?.user
-    ? userBorrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(userBorrowed)}`;
+  const userBorrowedValue = userBorrowed > 0 ? `$${m(userBorrowed)}` : "$0";
 
   const netLiquidityLabels = [
     [
@@ -98,7 +93,7 @@ export const UserLiquidity = () => {
       title="Weighted Net Liquidity"
       titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
-      labels={netLiquidityLabels}
+      labels={weightedNetLiquidity > 0 ? netLiquidityLabels : []}
       onClick={toggleValues}
     />
   );

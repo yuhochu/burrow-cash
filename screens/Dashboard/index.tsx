@@ -182,17 +182,20 @@ const YourSupplied = ({ suppliedRows, accountId }) => {
 
   return (
     <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
-      <div className="flex items-center mb-4">
-        <div className="absolute" style={{ left: 0, top: 0 }}>
-          {assets.svg.suppliedBg}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <div className="absolute" style={{ left: 0, top: 0 }}>
+            {assets.svg.suppliedBg}
+          </div>
+          <SupplyTokenSvg className="mr-10" />
+          <div className="h3">You Supplied</div>
         </div>
-        <SupplyTokenSvg className="mr-10" />
-        <div className="h3">You Supplied</div>
+        <div className="h3">0</div>
       </div>
       <StyledCustomTable
         data={suppliedRows}
         columns={yourSuppliedColumns}
-        noDataText={!accountId ? "Your supplied assets will appear here" : ""}
+        noDataText="Your supplied assets will appear here"
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
         actionRow={
@@ -315,7 +318,7 @@ const YourBorrowed = ({ borrowedRows, accountId }) => {
       <StyledCustomTable
         data={borrowedRows}
         columns={yourBorrowedColumns}
-        noDataText={!accountId ? "You borrowed assets will appear here" : ""}
+        noDataText="You borrowed assets will appear here"
         onSelectRow={handleRowSelect}
         selectedRowIndex={selected?.index}
         actionRow={

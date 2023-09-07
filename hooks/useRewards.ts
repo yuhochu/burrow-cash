@@ -15,7 +15,9 @@ export function useRewards() {
   let totalUnClaimUSDDisplay;
   if (totalUnClaimUSD !== undefined) {
     const IGNORE_AMOUNT = 0.01;
-    if (totalUnClaimUSD < IGNORE_AMOUNT) {
+    if (!totalUnClaimUSD) {
+      totalUnClaimUSDDisplay = 0;
+    } else if (totalUnClaimUSD > 0 && totalUnClaimUSD < IGNORE_AMOUNT) {
       totalUnClaimUSDDisplay = `<${IGNORE_AMOUNT.toLocaleString(undefined, USD_FORMAT)}`;
     } else {
       totalUnClaimUSDDisplay = totalUnClaimUSD.toLocaleString(undefined, USD_FORMAT);
