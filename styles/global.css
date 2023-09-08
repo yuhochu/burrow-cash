@@ -640,6 +640,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   --wallet-selector-close-button-bg-color: transparent;
   --wallet-selector-sidebar-border-color: rgba(79, 81, 120, 0.5);
   --wallet-selector-selected-wallet-bg: #3f4162;
+  --wallet-selector-mobile-bottom-section: #2e304b;
 }
 #near-wallet-selector-modal {
   --gradient-dark-icon: #ffffff;
@@ -650,12 +651,17 @@ input[type="range"]::-webkit-slider-runnable-track {
 .nws-modal-wrapper .nws-modal {
   border: 1px solid #4f5178;
 }
-.nws-modal-wrapper .nws-modal .modal-left::-webkit-scrollbar {
+.nws-modal-wrapper .nws-modal .modal-left::-webkit-scrollbar,
+options-list::-webkit-scrollbar {
   width: 4px;
   border-radius: 2px;
 }
 .nws-modal-wrapper .nws-modal .modal-left::-webkit-scrollbar-thumb {
   background: transparent;
+  border-radius: 2px;
+}
+.wallet-options-wrapper .options-list::-webkit-scrollbar-thumb {
+  background: #626486;
   border-radius: 2px;
 }
 .nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton {
