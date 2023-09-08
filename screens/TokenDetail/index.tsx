@@ -499,9 +499,9 @@ function TokenUserInfo() {
       </div>
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-300">Available to Borrow</span>
-        <div className="flex items-center]">
+        <div className="flex items-center">
           <span className="text-sm text-white mr-2.5">
-            {accountId ? formatWithCommas_number(borrowBalance) : "-"}
+            {accountId && tokenRow?.can_borrow ? formatWithCommas_number(borrowBalance) : "-"}
           </span>
           <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
         </div>
