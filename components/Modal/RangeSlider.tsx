@@ -3,6 +3,22 @@ import { twMerge } from "tailwind-merge";
 import Decimal from "decimal.js";
 import { toPrecision } from "../../utils/number";
 
+// temp
+const MONTH_PX = {
+  1: 0,
+  2: 7.43,
+  3: 16.5,
+  4: 25.2,
+  5: 34.9,
+  6: 44,
+  7: 53,
+  8: 62.6,
+  9: 71.4,
+  10: 82,
+  11: 91.3,
+  12: 100,
+};
+
 export default function RangeSlider(props: any) {
   const {
     value,
@@ -12,6 +28,7 @@ export default function RangeSlider(props: any) {
     navs,
     selectNavValueOnly,
     isWidthAuto,
+    isMonth,
   } = props;
   const [splitList, setSplitList] = useState([0, 25, 50, 75, 100]);
   const [matchValue, setMatchValue] = useState();
@@ -40,8 +57,8 @@ export default function RangeSlider(props: any) {
     // const toPercent = (100 / splitList.length) * numValue;
     if (isClickValue) {
       matchedValue = numValue;
-      if (selectNavValueOnly) {
-        v = String(0);
+      if (isMonth) {
+        v = String(MONTH_PX[Number(v)]);
       }
     } else {
       const nearestValue = 100 / (splitList.length - 1);
@@ -84,6 +101,7 @@ export default function RangeSlider(props: any) {
           );
         })}
       </div>
+
       <div className="relative flex flex-col z-10">
         <input
           ref={valueRef}

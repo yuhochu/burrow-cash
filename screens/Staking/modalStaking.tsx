@@ -132,16 +132,14 @@ const ModalStaking = ({ isOpen, onClose }) => {
       <StyledRow>
         <RangeSlider value={sliderValue} onChange={handleRangeSliderChange} />
         <br />
+        <br />
       </StyledRow>
 
       <StyledRow>
-        <div className="flex justify-between mb-2 h5 text-gray-300">Duration</div>
-        <StyledRow className="custom-input-wrap relative">
-          <input value={pluralize("month", months, true)} readOnly />
-          <div className="btn-sm cursor-pointer" onClick={() => handleMonthChange(100, "12")}>
-            Max
-          </div>
-        </StyledRow>
+        <div className="flex justify-between items-center -mb-2">
+          <div className="flex h5 text-gray-300">Duration</div>
+          <div>{months} months</div>
+        </div>
 
         <StyledRow>
           <RangeSlider
@@ -150,6 +148,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
             selectNavValueOnly
             isWidthAuto
             valueSymbol=""
+            isMonth
             navs={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
           />
         </StyledRow>
@@ -183,7 +182,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
         isLoading={loadingStake}
         className="w-full mt-2 mb-4"
       >
-        Confirm
+        Stake
       </CustomButton>
 
       <div className="text-primary h5 mb-4 text-center">
