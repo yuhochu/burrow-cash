@@ -672,3 +672,6 @@ input[type="range"]::-webkit-slider-runnable-track {
 .nws-modal-wrapper .nws-modal .wallet-options-wrapper .options-list .single-wallet.sidebar:hover {
   background-color: #3f4162;
 }
+.nws-modal-wrapper .nws-modal .connecting-details span {
+  color: #fff;
+}
