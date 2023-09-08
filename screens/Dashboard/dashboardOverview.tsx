@@ -15,6 +15,7 @@ import { useAccountId, useNonFarmedAssets, useUnreadLiquidation } from "../../ho
 import { ProtocolDailyRewards, UserDailyRewards } from "../../components/Header/stats/rewards";
 import { UserLiquidity } from "../../components/Header/stats/liquidity";
 import { APY } from "../../components/Header/stats/apy";
+import { ContentBox } from "../../components/ContentBox/ContentBox";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
@@ -53,104 +54,120 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
     });
   };
 
+  const liquidationButton = (
+    <CustomButton
+      onClick={() => handleModalOpen("history", { tabIndex: 1 })}
+      className="relative"
+      color={unreadLiquidation?.count ? "secondary2" : "secondary"}
+      size={isMobile ? "sm" : "md"}
+    >
+      {unreadLiquidation?.count ? (
+        <span
+          className="unread-count absolute rounded-full bg-pink-400 text-black"
+          style={{ top: -8, right: -8 }}
+        >
+          {unreadLiquidation.count}
+        </span>
+      ) : null}
+      Liquidation
+    </CustomButton>
+  );
+
+  const recordsButton = (
+    <div className="cursor-pointer" onClick={() => handleModalOpen("history", { tabIndex: 0 })}>
+      <RecordsIcon />
+    </div>
+  );
+
   return (
-    <div className="lg:flex md:justify-between lg:justify-between">
-      <div className="mb-4 md:mb-0" style={{ maxWidth: 640 }}>
-        <div className="flex gap-2 md:gap-6 lg:gap-8">
-          <div className="gap-6 flex flex-col">
-            <UserLiquidity />
-            <UserDailyRewards />
-          </div>
+    <>
+      <div className="flex gap-2 justify-between items-center mb-4 md:hidden">
+        <div className="h2">Dashboard</div>
+        <div className="flex gap-2">
+          {liquidationButton}
+          {recordsButton}
+        </div>
+      </div>
+      <ContentBox className="mb-8">
+        <div className="lg:flex md:justify-between lg:justify-between">
+          <div className="mb-4 md:mb-0" style={{ maxWidth: 640 }}>
+            <div className="flex gap-2 md:gap-6 lg:gap-8">
+              <div className="gap-6 flex flex-col">
+                <UserLiquidity />
+                <UserDailyRewards />
+              </div>
 
-          <div className="gap-6 flex flex-col">
-            <APY />
-            <div className="flex flex-col">
-              {/* <OverviewItem */}
-              {/*  title="Unclaimed Rewards" */}
-              {/*  value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"} */}
-              {/* /> */}
-              <div className="h6 text-gray-300">Unclaimed Rewards</div>
-              <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-                <div className="flex items-center gap-4 my-1">
-                  <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
-                  <div className="flex" style={{ marginRight: 5 }}>
-                    {rewardsObj?.brrr?.icon ? (
-                      <img
-                        src={rewardsObj?.brrr?.icon}
-                        width={26}
-                        height={26}
-                        alt="token"
-                        className="rounded-full"
-                        style={{ margin: -3 }}
-                      />
-                    ) : null}
+              <div className="gap-6 flex flex-col">
+                <APY />
+                <div className="flex flex-col">
+                  {/* <OverviewItem */}
+                  {/*  title="Unclaimed Rewards" */}
+                  {/*  value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"} */}
+                  {/* /> */}
+                  <div className="h6 text-gray-300">Unclaimed Rewards</div>
+                  <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                    <div className="flex items-center gap-4 my-1">
+                      <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
+                      <div className="flex" style={{ marginRight: 5 }}>
+                        {rewardsObj?.brrr?.icon ? (
+                          <img
+                            src={rewardsObj?.brrr?.icon}
+                            width={26}
+                            height={26}
+                            alt="token"
+                            className="rounded-full"
+                            style={{ margin: -3 }}
+                          />
+                        ) : null}
 
-                    {rewardsObj?.extra?.length
-                      ? rewardsObj.extra.map((d, i) => {
-                          const extraData = d?.[1];
-                          return (
-                            <img
-                              src={extraData?.icon}
-                              width={26}
-                              key={(extraData?.tokenId || "0") + i}
-                              height={26}
-                              alt="token"
-                              className="rounded-full"
-                              style={{ margin: -3 }}
-                            />
-                          );
-                        })
-                      : null}
+                        {rewardsObj?.extra?.length
+                          ? rewardsObj.extra.map((d, i) => {
+                              const extraData = d?.[1];
+                              return (
+                                <img
+                                  src={extraData?.icon}
+                                  width={26}
+                                  key={(extraData?.tokenId || "0") + i}
+                                  height={26}
+                                  alt="token"
+                                  className="rounded-full"
+                                  style={{ margin: -3 }}
+                                />
+                              );
+                            })
+                          : null}
+                      </div>
+                    </div>
+
+                    {rewardsObj?.data?.totalUnClaimUSD > 0 && (
+                      <div style={{ marginBottom: 4 }}>
+                        <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                {rewardsObj?.data?.totalUnClaimUSD > 0 && (
-                  <div style={{ marginBottom: 4 }}>
-                    <ClaimAllRewards Button={ClaimButton} location="dashboard" />
-                  </div>
-                )}
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="flex flex-col items-end md:gap-6 lg:ml-10">
-        <div className="flex items-center gap-2">
-          <CustomButton
-            onClick={() => handleModalOpen("history", { tabIndex: 1 })}
-            className="relative"
-            color={unreadLiquidation?.count ? "secondary2" : "secondary"}
-            size={isMobile ? "sm" : "md"}
-          >
-            {unreadLiquidation?.count ? (
-              <span
-                className="unread-count absolute rounded-full bg-pink-400 text-black"
-                style={{ top: -8, right: -8 }}
-              >
-                {unreadLiquidation.count}
-              </span>
-            ) : null}
-            Liquidation
-          </CustomButton>
-          <div
-            className="cursor-pointer"
-            onClick={() => handleModalOpen("history", { tabIndex: 0 })}
-          >
-            <RecordsIcon />
+          <div className="flex flex-col items-end md:gap-6 lg:ml-10">
+            <div className="items-center gap-2 hidden md:flex">
+              {liquidationButton}
+              {recordsButton}
+            </div>
+
+            <div className="relative mr-10">
+              <HealthFactor userHealth={userHealth} />
+            </div>
           </div>
         </div>
-
-        <div className="relative mr-10">
-          <HealthFactor userHealth={userHealth} />
-        </div>
-      </div>
+      </ContentBox>
 
       <ModalHistoryInfo
         isOpen={modal?.name === "history"}
         onClose={handleModalClose}
         tab={modal?.data?.tabIndex}
       />
-    </div>
+    </>
   );
 };
 
@@ -167,8 +184,9 @@ const HealthFactor = ({ userHealth }) => {
       left: -133,
     };
     dangerTooltipStyles = {
-      left: "100%",
-      bottom: 0,
+      width: 186,
+      left: -103,
+      bottom: "100%",
     };
   }
 
@@ -189,7 +207,7 @@ const HealthFactor = ({ userHealth }) => {
         >
           {isDanger && (
             <CustomTooltips
-              alwaysShow={!isMobile}
+              alwaysShow
               style={dangerTooltipStyles}
               text={`Your health factor is dangerously low and you're at risk of liquidation`}
               width={186}
@@ -197,7 +215,7 @@ const HealthFactor = ({ userHealth }) => {
               <DangerIcon />
             </CustomTooltips>
           )}
-          {data?.valueLabel}
+          {data.valueLabel}
         </div>
         <div className="h5 text-gray-300 flex gap-1 items-center justify-center">
           Health Factor

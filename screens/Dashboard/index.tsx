@@ -21,8 +21,6 @@ import DashboardOverview from "./dashboardOverview";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import SupplyBorrowListMobile from "./supplyBorrowListMobile";
 import { AdjustButton, WithdrawButton, RepayButton, MarketButton } from "./supplyBorrowButtons";
-import CustomButton from "../../components/CustomButton/CustomButton";
-import { ArrowUpIcon } from "../../components/Icons/Icons";
 
 const Index = () => {
   const accountId = useAccountId();
@@ -31,11 +29,7 @@ const Index = () => {
 
   let overviewNode;
   if (accountId) {
-    overviewNode = (
-      <ContentBox className="mb-8">
-        <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />
-      </ContentBox>
-    );
+    overviewNode = <DashboardOverview suppliedRows={suppliedRows} borrowedRows={borrowedRows} />;
   } else {
     overviewNode = (
       <div className="bg-gray-800 p-4 mb-4 rounded md:bg-transparent md:p-0 md:mb-0 md:flex justify-between items-center">
@@ -190,7 +184,7 @@ const YourSupplied = ({ suppliedRows, accountId, total }) => {
           <SupplyTokenSvg className="mr-10" />
           <div className="h3">You Supplied</div>
         </div>
-        <div className="h3">{total > 0 ? formatUSDValue(total) : 0}</div>
+        <div className="h3">{total > 0 ? formatUSDValue(total) : "$0"}</div>
       </div>
       <StyledCustomTable
         data={suppliedRows}
@@ -316,7 +310,7 @@ const YourBorrowed = ({ borrowedRows, accountId, total }) => {
           <BorrowTokenSvg className="mr-10" />
           <div className="h3">You Borrowed</div>
         </div>
-        <div className="h3">{total > 0 ? formatUSDValue(total) : 0}</div>
+        <div className="h3">{total > 0 ? formatUSDValue(total) : "$0"}</div>
       </div>
 
       <StyledCustomTable

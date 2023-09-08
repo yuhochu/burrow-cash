@@ -19,15 +19,15 @@ const SemiCircleProgressBar = ({
   if (value < 0) {
     value = 0;
   }
-  if (value !== undefined && dividerValue && dividerPercent) {
-    const base = dividerPercent / dividerValue;
-    percent = value * base;
-    // console.log("percent", percent, value, base);
+  if (value !== undefined && dividerValue) {
+    // const base = MAX_DEGREE - rotateDegree;
+    // percent = value * base;
     if (value < dividerValue) {
       isUnderDivider = true;
     }
   }
-  rotateDegree = (180 / 100) * percent + rotateDegree;
+  // temp
+  rotateDegree = value + rotateDegree;
   rotateDegree = Math.min(rotateDegree, MAX_DEGREE);
   let node;
   if (children) {
@@ -48,9 +48,7 @@ const SemiCircleProgressBar = ({
             className={twMerge("bar", isWarning && "bar-warning", isUnderDivider && "bar-danger")}
             style={{ transform: `rotate(${rotateDegree}deg)` }}
           />
-          <div
-            className={twMerge("bg-primary bar-divider hidden", dividerPercent === 75 && "block")}
-          />
+          <div className={twMerge("bg-primary bar-divider hidden", "block")} />
           <StyledHiddenTooltip>
             <ToolTip content="100% health factor warning line" />
           </StyledHiddenTooltip>
@@ -66,8 +64,10 @@ const StyledHiddenTooltip = styled.div`
   height: 30px;
   position: absolute;
   z-index: 99;
-  top: 27px;
-  right: 21px;
+  //top: 27px;
+  //right: 21px;
+  top: -6px;
+  right: 82px;
   opacity: 0;
 `;
 
@@ -96,7 +96,7 @@ const StyledWrapper = styled.div`
 
     .bar {
       position: absolute;
-      top: 0;
+      top: 3px;
       left: 0;
       //width: 180px;
       //height: 180px;
@@ -124,35 +124,38 @@ const StyledWrapper = styled.div`
       height: 21px;
       width: 6px;
       background: #979abe;
-      transform: rotate(45deg);
       position: absolute;
-      top: 26px;
-      right: 37px;
       border-radius: 4px;
+      //top: 26px;
+      //right: 37px;
+      //transform: rotate(45deg);
+      top: 0;
+      right: 95px;
+      transform: rotate(11deg);
     }
   }
 
   @media (max-width: 767px) {
-    .bar-wrapper,
-    .bar-container,
-    .bar {
-      width: 160px !important;
-      height: 160px !important;
-    }
-
-    .bar-wrapper,
-    .bar-container {
-      height: 80px !important;
-    }
-
-    .bar {
-      border-width: 6px !important;
-    }
-
-    .bar-divider {
-      top: 21px !important;
-      right: 19px !important;
-    }
+    //.bar-wrapper,
+    //.bar-container,
+    //.bar {
+    //  width: 160px !important;
+    //  height: 160px !important;
+    //}
+    //
+    //.bar-wrapper,
+    //.bar-container {
+    //  height: 80px !important;
+    //}
+    //
+    //.bar {
+    //  border-width: 6px !important;
+    //}
+    //
+    //.bar-divider {
+    //  top: 21px !important;
+    //  right: 19px !important;
+    //}
   }
 `;
 
