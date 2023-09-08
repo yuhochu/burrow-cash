@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 import type { WalletSelector } from "@near-wallet-selector/core";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import { BeatLoader } from "react-spinners";
 import Decimal from "decimal.js";
@@ -27,7 +28,7 @@ import { useDegenMode } from "../../hooks/hooks";
 import { HamburgerMenu } from "./Menu";
 import Disclaimer from "../Disclaimer";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
-import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon } from "./svg";
+import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon, CopyIcon } from "./svg";
 import NearIcon from "../../public/near-icon.svg";
 import ClaimAllRewards from "../ClaimAllRewards";
 import { formatWithCommas_usd } from "../../utils/uiNumber";
@@ -268,7 +269,15 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
         </div>
       )}
       <div className="flex items-center justify-between">
-        <span className=" text-white text-lg">{accountTrim(accountId)}</span>
+        {/* onCopy={() => showToast("Copied")} */}
+        <div className="flex items-center">
+          <span className=" text-white text-lg">{accountTrim(accountId)}</span>
+          <CopyToClipboard text={accountId}>
+            <div className="cursor-pointer ml-2">
+              <CopyIcon />
+            </div>
+          </CopyToClipboard>
+        </div>
         {isMobile && (
           <div className="flex items-center">
             <span className="text-sm text-white font-bold mr-1.5">

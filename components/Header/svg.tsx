@@ -294,3 +294,22 @@ export function RefreshIcon(props) {
     </svg>
   );
 }
+
+export function CopyIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="11"
+      height="12"
+      viewBox="0 0 11 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="1" y="3" width="7" height="8" rx="2" stroke="#5285DF" />
+      <path
+        d="M2.72754 3.27246L2.72754 3C2.72754 1.89543 3.62297 1 4.72754 1H7.99941C9.10398 1 9.99941 1.89543 9.99941 3V7.36288C9.99941 8.36692 9.18548 9.18085 8.18144 9.18085V9.18085"
+        stroke="#5285DF"
+      />
+    </svg>
+  );
+}

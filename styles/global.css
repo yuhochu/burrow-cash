@@ -668,9 +668,9 @@ options-list::-webkit-scrollbar {
   color: #000;
   background-color: #d2ff3a;
   border: none;
-  &:hover {
-    opacity: 0.8;
-  }
+}
+.nws-modal-wrapper .nws-modal .nws-modal-body button.middleButton:hover {
+  opacity: 0.8;
 }
 .nws-modal-wrapper .nws-modal .nws-modal-header .close-button svg {
   fill: #fff;
