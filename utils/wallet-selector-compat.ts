@@ -124,12 +124,6 @@ export const getNear = () => {
 
 export const getAccount = async (viewAsAccountId?: string | null) => {
   near = getNear();
-  console.log(
-    "88888888-viewAsAccountId || accountId || window.accountId",
-    viewAsAccountId,
-    accountId,
-    window.accountId,
-  );
   return new Account(near.connection, viewAsAccountId || accountId || window.accountId);
 };
 
