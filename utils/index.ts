@@ -61,7 +61,6 @@ export const getBurrow = async ({
     });
     return getBurrowInternal();
   };
-
   if (!resetBurrow) return getBurrowInternal();
   resetBurrow = false;
 
@@ -74,7 +73,6 @@ export const getBurrow = async ({
       onAccountChange: changeAccount,
     });
   }
-
   const account = await getAccount(getViewAs());
 
   if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
@@ -82,12 +80,12 @@ export const getBurrow = async ({
   if (!signOutCached && !!signOut)
     signOutCached = async () => {
       if (!selector) return;
+      signOut(); // position
       const wallet = await selector.wallet();
       await wallet.signOut().catch((err) => {
         console.error("Failed to sign out", err);
       });
       if (hideModal) hideModal();
-      signOut();
     };
   const signIn = () => selector.signIn();
 

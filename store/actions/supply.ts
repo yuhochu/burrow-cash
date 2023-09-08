@@ -22,7 +22,7 @@ export async function supply({
   const { account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
   const tokenContract = await getTokenContract(tokenId);
-
+  console.log("000000000-account", account);
   const tokenBalance = new Decimal(await getBalance(tokenId, account.accountId));
 
   const expandedAmount = isMax
