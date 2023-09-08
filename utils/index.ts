@@ -31,7 +31,7 @@ interface GetBurrowArgs {
 
 let selector;
 let burrow: IBurrow;
-let resetBurrow = true;
+// let resetBurrow = true;
 let fetchDataCached;
 let hideModalCached;
 let signOutCached;
@@ -61,8 +61,8 @@ export const getBurrow = async ({
     });
     return getBurrowInternal();
   };
-  if (!resetBurrow) return getBurrowInternal();
-  resetBurrow = false;
+  // if (!resetBurrow) return getBurrowInternal();
+  // resetBurrow = false;
 
   const changeAccount = async (accountId) => {
     if (fetchData) fetchData(accountId);
