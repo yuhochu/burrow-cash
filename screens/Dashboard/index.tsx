@@ -60,7 +60,7 @@ const Index = () => {
     );
   } else {
     supplyBorrowNode = (
-      <StyledSupplyBorrow className="gap-6 md:flex lg:flex mb-10">
+      <StyledSupplyBorrow className="gap-6 lg:flex mb-10">
         <YourSupplied suppliedRows={suppliedRows} accountId={accountId} total={totalSuppliedUSD} />
         <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} total={totalBorrowedUSD} />
       </StyledSupplyBorrow>
@@ -175,7 +175,7 @@ const YourSupplied = ({ suppliedRows, accountId, total }) => {
   };
 
   return (
-    <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }}>
+    <ContentBox style={{ paddingBottom: 0, overflow: "hidden" }} className="mb-4 lg:mb-0">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <div className="absolute" style={{ left: 0, top: 0 }}>

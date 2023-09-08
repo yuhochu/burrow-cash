@@ -9,7 +9,7 @@ import { ArrowUpIcon } from "../../components/Icons/Icons";
 
 export const MarketButton = ({
   tokenId,
-  style,
+  style = {},
 }: {
   tokenId: string | null | undefined;
   style?: object;
@@ -20,9 +20,9 @@ export const MarketButton = ({
     // router.push(`/tokenDetail/${tokenId}`);
   };
   return (
-    <CustomButton color="secondary" onClick={handleMarketClick} style={style}>
+    <CustomButton color="secondary" onClick={handleMarketClick} style={{ minHeight: 0, ...style }}>
       <div className="flex items-center gap-2">
-        Market <ArrowUpIcon />
+        Market info <ArrowUpIcon />
       </div>
     </CustomButton>
   );

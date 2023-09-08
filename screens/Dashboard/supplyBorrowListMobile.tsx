@@ -142,7 +142,9 @@ const SupplyItem = ({ data }) => {
 
         <div className="text-right">
           <div>{formatTokenValue(data?.supplied)}</div>
-          <div className="h6 text-gray-300">{formatUSDValue(data.supplied * data.price)}</div>
+          <div className="h6 text-gray-300">
+            {data.supplied > 0 ? formatUSDValue(data.supplied * data.price) : "-"}
+          </div>
         </div>
       </div>
 
@@ -159,7 +161,7 @@ const SupplyItem = ({ data }) => {
         </ItemRow>
         <ItemRow label="Collateral">
           {/* <div>{formatTokenValue(data?.collateral)}</div> */}
-          <div>{formatUSDValue(data.collateral * data.price)}</div>
+          <div>{data.collateral > 0 ? formatUSDValue(data.collateral * data.price) : "-"}</div>
         </ItemRow>
 
         <div className="flex gap-2">

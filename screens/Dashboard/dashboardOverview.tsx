@@ -3,7 +3,7 @@ import { BeatLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
 import SemiCircleProgressBar from "../../components/SemiCircleProgressBar/SemiCircleProgressBar";
 import { useUserHealth } from "../../hooks/useUserHealth";
-import { formatUSDValue, isMobileDevice } from "../../helpers/helpers";
+import { formatTokenValue, formatUSDValue, isMobileDevice } from "../../helpers/helpers";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useRewards } from "../../hooks/useRewards";
 import ClaimAllRewards from "../../components/ClaimAllRewards";
@@ -16,6 +16,7 @@ import { ProtocolDailyRewards, UserDailyRewards } from "../../components/Header/
 import { UserLiquidity } from "../../components/Header/stats/liquidity";
 import { APY } from "../../components/Header/stats/apy";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
+import ToolTip from "../../components/ToolTip";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
@@ -79,6 +80,18 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
     </div>
   );
 
+  const unclaimNodes = rewardsObj?.data?.array.map(({ data, tokenId }) => {
+    return (
+      <div className="flex justify-between mb-1 items-center" key={tokenId}>
+        <div className="flex items-center gap-1.5">
+          <img src={data?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
+          <span>{data?.symbol}</span>
+        </div>
+        <div>{formatTokenValue(data?.unclaimedAmount)}</div>
+      </div>
+    );
+  });
+
   return (
     <>
       <div className="flex gap-2 justify-between items-center mb-4 md:hidden">
@@ -141,7 +154,14 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
                     {rewardsObj?.data?.totalUnClaimUSD > 0 && (
                       <div style={{ marginBottom: 4 }}>
-                        <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                        <CustomTooltips
+                          text={unclaimNodes}
+                          style={{
+                            width: 170,
+                          }}
+                        >
+                          <ClaimAllRewards Button={ClaimButton} location="dashboard" />
+                        </CustomTooltips>
                       </div>
                     )}
                   </div>

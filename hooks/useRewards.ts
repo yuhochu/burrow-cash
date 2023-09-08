@@ -23,6 +23,13 @@ export function useRewards() {
       totalUnClaimUSDDisplay = totalUnClaimUSD.toLocaleString(undefined, USD_FORMAT);
     }
   }
+  const array = extra.map(([key, value]) => {
+    return {
+      tokenId: key,
+      data: value,
+    };
+  });
+  array.push({ tokenId: "brrr", data: brrr });
 
   return {
     brrr,
@@ -30,6 +37,7 @@ export function useRewards() {
     net,
     protocol,
     data: {
+      array,
       totalUnClaimUSD,
       totalUnClaimUSDDisplay,
     },

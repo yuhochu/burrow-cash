@@ -1,19 +1,32 @@
+import React from "react";
 import { Tooltip } from "react-tooltip";
 import { styled } from "styled-components";
 import { QuestionIcon, WarnIcon } from "./svg";
 
 type ITipType = "warn" | "question" | undefined;
-export default function ToolTip({ content, type }: { content: string; type?: ITipType }) {
+export default function ToolTip({
+  content,
+  type,
+  children,
+  id = "my-tooltip",
+}: {
+  content: string;
+  type?: ITipType;
+  children?: string | React.ReactNode;
+  id?: string;
+}) {
   return (
     <TipWrap className="cursor-pointer inline-flex mr-2">
-      <span
-        className="text-base text-white"
-        data-tooltip-id="my-tooltip"
-        data-tooltip-content={content}
-      >
-        {type === "warn" ? <WarnIcon /> : <QuestionIcon />}
-      </span>
-      <Tooltip id="my-tooltip" />
+      {children || (
+        <span
+          className="text-base text-white"
+          data-tooltip-id="my-tooltip"
+          data-tooltip-content={content}
+        >
+          {type === "warn" ? <WarnIcon /> : <QuestionIcon />}
+        </span>
+      )}
+      <Tooltip id={id} />
     </TipWrap>
   );
 }

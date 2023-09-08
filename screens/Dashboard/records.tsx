@@ -64,7 +64,7 @@ const Records = ({ isShow }) => {
   };
 
   const handleTxClick = (tx) => {
-    window.open(tx);
+    window.open(`https://nearblocks.io/txns/${tx}`);
   };
 
   const columns = getColumns({ showToast, handleTxClick });

@@ -54,7 +54,7 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
 
   return (
     <div className="flex gap-2 md:gap-0 md:flex-col">
-      <div className="flex items-center mb-1">{node}</div>
+      <div className="flex items-center md:mb-1">{node}</div>
       <div className="md:h6 md:text-gray-300">{usdNode}</div>
     </div>
   );

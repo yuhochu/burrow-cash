@@ -97,6 +97,9 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
 });
 
 const StyledButton = styled.button`
+  &._loading {
+    padding: 0;
+  }
   .loading-spinner {
     .ldsring {
       border-color: #6d708d;
@@ -122,7 +125,7 @@ const btnColor = {
 
 const btnSize = {
   lg: "py-3 px-6 text-lg",
-  md: "py-2 md:py-2 px-2 md:px-5 text-sm md:text-md",
+  md: "py-2 md:py-2 px-2 md:px-5 text-sm md:text-md min-h-[39px]",
   sm: "py-1 px-2 text-sm",
 };
 
