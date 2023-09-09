@@ -18,6 +18,7 @@ module.exports = {
       // md: { min: "600px", max: "1023px" },
       // lg: { min: "1024px" },
       lg2: { min: "1092px" },
+      lg3: { min: "1134px" },
       // xl: { min: "1280px" },
       // "2xl": { min: "1536px" },
       "3xl": { min: "1792px" },

@@ -94,7 +94,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
 
   return (
     <>
-      <div className="flex gap-2 justify-between items-center mb-4 md:hidden">
+      <div className="flex gap-2 justify-between items-center mb-4 lg3:hidden">
         <div className="h2">Dashboard</div>
         <div className="flex gap-2">
           {liquidationButton}
@@ -102,9 +102,9 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         </div>
       </div>
       <ContentBox className="mb-8">
-        <div className="lg:flex md:justify-between lg:justify-between">
-          <div className="mb-4 md:mb-0" style={{ maxWidth: 640 }}>
-            <div className="flex gap-2 md:gap-6 lg:gap-8">
+        <div className="lg3:flex lg3:justify-between">
+          <div className="mb-4 lg3:max-w-[640px] lg3:mb-0">
+            <div className="flex gap-2 justify-between lg3:gap-6 lg3:gap-8">
               <div className="gap-6 flex flex-col">
                 <UserLiquidity />
                 <UserDailyRewards />
@@ -118,7 +118,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
                   {/*  value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"} */}
                   {/* /> */}
                   <div className="h6 text-gray-300">Unclaimed Rewards</div>
-                  <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                  <div className="flex flex-col lg3:flex-row lg3:items-center lg3:gap-4">
                     <div className="flex items-center gap-4 my-1">
                       <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
                       <div className="flex" style={{ marginRight: 5 }}>
@@ -169,8 +169,8 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-end md:gap-6 lg:ml-10">
-            <div className="items-center gap-2 hidden md:flex">
+          <div className="flex flex-col items-center lg3:items-end lg3:gap-6 lg3:ml-10">
+            <div className="items-center gap-2 hidden lg3:flex">
               {liquidationButton}
               {recordsButton}
             </div>
