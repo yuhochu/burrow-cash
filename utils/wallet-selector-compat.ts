@@ -74,7 +74,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
   selector = await setupWalletSelector({
     modules: [
       setupNearWallet(),
-      setupXDEFI(),
+      // setupXDEFI(),
       setupSender(),
       walletConnect,
       setupHereWallet(),
