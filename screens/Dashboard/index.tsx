@@ -122,7 +122,7 @@ const yourSuppliedColumns = [
 
       return (
         <>
-          <DashboardReward rewardList={originalData?.rewards} price={originalData.price} />
+          <DashboardReward rewardList={originalData?.rewards} page="deposit" />
           {/* <div className="h6 text-gray-300 mt-1">{originalData.price}</div> */}
         </>
       );
@@ -268,12 +268,12 @@ const yourBorrowedColumns = [
   {
     header: "Rewards",
     cell: ({ originalData }) => {
-      if (!originalData?.borrowRewards?.length) {
+      if (!originalData?.rewards?.length) {
         return "-";
       }
       return (
         <>
-          <DashboardReward rewardList={originalData.borrowRewards} price={originalData.price} />
+          <DashboardReward rewardList={originalData.rewards} page="borrow" />
           {/* <div className="h6 text-gray-300 mt-1">{originalData.price}</div> */}
         </>
       );

@@ -157,7 +157,7 @@ const SupplyItem = ({ data }) => {
           />
         </ItemRow>
         <ItemRow label="Rewards">
-          <DashboardReward rewardList={data?.depositRewards} price={data?.price} />
+          <DashboardReward rewardList={data?.depositRewards} />
         </ItemRow>
         <ItemRow label="Collateral">
           {/* <div>{formatTokenValue(data?.collateral)}</div> */}
@@ -210,7 +210,7 @@ const BorrowItem = ({ data }) => {
         </ItemRow>
         <ItemRow label="Rewards">
           <div className="flex gap-2 items-center">
-            <DashboardReward rewardList={data.borrowRewards} />
+            <DashboardReward rewardList={data.rewards} />
             {/* <div className="h6 text-gray-300">{data.price}</div> */}
           </div>
         </ItemRow>

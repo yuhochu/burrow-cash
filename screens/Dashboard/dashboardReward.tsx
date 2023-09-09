@@ -1,6 +1,5 @@
 import millify from "millify";
 import { IReward } from "../../interfaces";
-import { useFullDigits } from "../../hooks/useFullDigits";
 import { PERCENT_DIGITS, shrinkToken } from "../../store";
 import { formatPortfolioRewardAmount } from "../../components/Table/common/cells";
 import { formatUSDValue } from "../../helpers/helpers";
@@ -9,12 +8,9 @@ import { standardizeAsset } from "../../utils";
 interface RewardProps {
   rewardList?: IReward[];
   page?: "deposit" | "borrow";
-  price?: number;
 }
 
-const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
-  const { fullDigits } = useFullDigits();
-  const isCompact = fullDigits?.table;
+const DashboardReward = ({ rewardList = [], page }: RewardProps) => {
   // const netLiquidityRewards = page === "deposit" ? useNetLiquidityRewards() : [];
   //
   // const restRewards = netLiquidityRewards.filter(
@@ -24,7 +20,7 @@ const DashboardReward = ({ rewardList = [], page, price }: RewardProps) => {
   let node;
   let totalUsd = 0;
   if (rewardList?.length) {
-    node = rewardList.map(({ metadata, rewards, config }) => {
+    node = rewardList.map(({ metadata, rewards, config, price }) => {
       const { symbol, decimals } = metadata;
       const dailyRewards = shrinkToken(
         rewards.reward_per_day || 0,
