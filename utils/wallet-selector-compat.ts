@@ -80,8 +80,8 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
       setupHereWallet(),
       setupNightly(),
       setupNeth({
-        useModalCover: true,
-        gas: "400000000000000",
+        bundle: false,
+        gas: "300000000000000",
       }),
       myNearWallet,
       setupMeteorWallet(),
