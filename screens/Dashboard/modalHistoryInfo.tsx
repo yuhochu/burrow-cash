@@ -4,10 +4,11 @@ import CustomModal from "../../components/CustomModal/CustomModal";
 import Liquidations from "./liquidations";
 import { CloseIcon } from "../../components/Icons/Icons";
 import Records from "./records";
-import { useUnreadLiquidation } from "../../hooks/hooks";
+import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 import Datasource from "../../data/datasource";
 
 const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
+  const accountId = useAccountId();
   const [tabIndex, setTabIndex] = useState(tab);
   const { unreadLiquidation, fetchUnreadLiquidation } = useUnreadLiquidation();
 
@@ -24,7 +25,7 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
 
   const markReads = async (ids) => {
     try {
-      await Promise.allSettled(ids.map((d) => Datasource.shared.markLiquidationRead(d)));
+      await Promise.allSettled(ids.map((d) => Datasource.shared.markLiquidationRead(d, accountId)));
       await fetchUnreadLiquidation();
     } catch (e) {
       console.error("markReadsErr", e);

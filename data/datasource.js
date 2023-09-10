@@ -56,9 +56,9 @@ class DataSource {
     );
   }
 
-  markLiquidationRead(id) {
+  markLiquidationRead(id, account) {
     return this.callAPI(
-      `/burrow/set_liquidation_info/${id}`,
+      `/burrow/set_liquidation_info/${account}/${id}`,
       "POST",
       null,
       null,
