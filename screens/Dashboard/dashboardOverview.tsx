@@ -118,7 +118,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
                   {/*  value={rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"} */}
                   {/* /> */}
                   <div className="h6 text-gray-300">Unclaimed Rewards</div>
-                  <div className="flex flex-col lg3:flex-row lg3:items-center lg3:gap-4">
+                  <div className="flex flex-col items-start lg3:flex-row lg3:items-center lg3:gap-4">
                     <div className="flex items-center gap-4 my-1">
                       <div className="h2">{rewardsObj?.data?.totalUnClaimUSDDisplay || "$0"}</div>
                       <div className="flex" style={{ marginRight: 5 }}>
@@ -153,7 +153,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
                     </div>
 
                     {rewardsObj?.data?.totalUnClaimUSD > 0 && (
-                      <div style={{ marginBottom: 4 }}>
+                      <div className="mt-1 lg3:mt-0">
                         <CustomTooltips
                           text={unclaimNodes}
                           style={{

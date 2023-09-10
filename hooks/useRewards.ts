@@ -23,13 +23,37 @@ export function useRewards() {
       totalUnClaimUSDDisplay = totalUnClaimUSD.toLocaleString(undefined, USD_FORMAT);
     }
   }
-  const array = extra.map(([key, value]) => {
-    return {
+
+  const all: Array<{
+    tokenId: string;
+    data: any;
+  }> = [
+    {
+      tokenId: brrr.tokenId,
+      data: brrr,
+    },
+  ];
+  extra.forEach(([key, value]) => {
+    all.push({
       tokenId: key,
       data: value,
-    };
+    });
   });
-  array.push({ tokenId: "brrr", data: brrr });
+
+  net.forEach(([key, value]) => {
+    const existIndex = all.findIndex((a) => a.tokenId === key);
+    if (existIndex !== undefined) {
+      all[existIndex].data.dailyAmount += value.dailyAmount;
+      all[existIndex].data.newDailyAmount += value.newDailyAmount;
+      all[existIndex].data.unclaimedAmount = value.unclaimedAmount;
+      all[existIndex].data.unclaimedAmountUSD += value.unclaimedAmountUSD;
+    } else {
+      all.push({
+        tokenId: key,
+        data: value,
+      });
+    }
+  });
 
   return {
     brrr,
@@ -37,7 +61,7 @@ export function useRewards() {
     net,
     protocol,
     data: {
-      array,
+      array: all,
       totalUnClaimUSD,
       totalUnClaimUSDDisplay,
     },

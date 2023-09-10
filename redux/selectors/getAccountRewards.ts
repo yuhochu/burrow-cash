@@ -18,6 +18,7 @@ interface IPortfolioReward {
   totalAmount: number;
   dailyAmount: number;
   unclaimedAmount: number;
+  unclaimedAmountUSD: number;
   boosterLogBase: number;
   newDailyAmount: number;
   multiplier: number;
@@ -194,7 +195,7 @@ export const getAccountRewards = createSelector(
             newDailyAmount,
             multiplier,
             price: rewardAsset.price?.usd || 0,
-            unclaimedAmountUsd: unclaimedAmount * (rewardAsset.price?.usd || 0),
+            unclaimedAmountUSD: unclaimedAmount * (rewardAsset.price?.usd || 0),
           };
         });
       };
@@ -224,7 +225,7 @@ export const getAccountRewards = createSelector(
         newDailyAmount,
         multiplier,
         price: rewardAsset.price?.usd || 0,
-        unclaimedAmountUsd: unclaimedAmount * (rewardAsset.price?.usd || 0),
+        unclaimedAmountUSD: unclaimedAmount * (rewardAsset.price?.usd || 0),
       };
     };
 
@@ -242,7 +243,7 @@ export const getAccountRewards = createSelector(
 
     let totalUnClaimUSD = 0;
     const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
-      totalUnClaimUSD += asset.unclaimedAmountUsd;
+      totalUnClaimUSD += asset.unclaimedAmountUSD;
       if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
       const updatedAsset = rewards[asset.tokenId];
       updatedAsset.unclaimedAmount += asset.unclaimedAmount;
