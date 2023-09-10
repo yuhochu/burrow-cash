@@ -16,7 +16,8 @@ export const BRRR_TOKEN = {
   mainnet: "token.burrow.near",
 };
 
-export const WALLET_CONNECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string;
+export const WALLET_CONNECT_ID =
+  process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ("87e549918631f833447b56c15354e450" as string);
 
 export const missingPriceTokens = [REF_TOKEN, META_TOKEN, BRRR_TOKEN];
 
