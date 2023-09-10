@@ -547,7 +547,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-radius: 6px;
   border: 1px solid #40435a;
   background: #282a42;
-  padding: 14px 10px;
+  padding: 14px 14px;
 }
 
 .custom-input-wrap .icon {

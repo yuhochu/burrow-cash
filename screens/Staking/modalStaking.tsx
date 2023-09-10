@@ -14,6 +14,7 @@ import { APY_FORMAT, TOKEN_FORMAT } from "../../store";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useRewards } from "../../hooks/useRewards";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
+import { BrrrLogo } from "./components";
 
 const ModalStaking = ({ isOpen, onClose }) => {
   const [total, totalUnclaim, totalToken] = useAppSelector(getTotalBRRR);
@@ -117,7 +118,8 @@ const ModalStaking = ({ isOpen, onClose }) => {
         <span className="h5 text-gray-300">Available</span>
         <span className="h5 text-gray-300">{total.toLocaleString(undefined, TOKEN_FORMAT)}</span>
       </div>
-      <StyledRow className="custom-input-wrap relative">
+      <StyledRow className="custom-input-wrap relative gap-2">
+        <BrrrLogo color="#D2FF3A" />
         <input
           value={inputAmount}
           type="number"

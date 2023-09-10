@@ -30,7 +30,10 @@ export function useRewards() {
   }> = [
     {
       tokenId: brrr.tokenId,
-      data: brrr,
+      data: {
+        ...brrr,
+        unclaimedAmountPool: brrr.unclaimedAmount,
+      },
     },
   ];
   extra.forEach(([key, value]) => {
@@ -45,8 +48,9 @@ export function useRewards() {
     if (existIndex !== undefined) {
       all[existIndex].data.dailyAmount += value.dailyAmount;
       all[existIndex].data.newDailyAmount += value.newDailyAmount;
-      all[existIndex].data.unclaimedAmount = value.unclaimedAmount;
+      all[existIndex].data.unclaimedAmount += value.unclaimedAmount;
       all[existIndex].data.unclaimedAmountUSD += value.unclaimedAmountUSD;
+      all[existIndex].data.unclaimedAmountNet = value.unclaimedAmount;
     } else {
       all.push({
         tokenId: key,
