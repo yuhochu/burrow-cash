@@ -18,7 +18,7 @@ import LayoutContainer from "../../components/LayoutContainer/LayoutContainer";
 import ModalStaking from "./modalStaking";
 import { modalProps } from "../../interfaces/common";
 import { LockIcon, Mascot, UnlockIcon } from "../../components/Icons/Icons";
-import { isMobileDevice } from "../../helpers/helpers";
+import { formatAPYValue, isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 
 const Staking = () => {
@@ -63,7 +63,7 @@ const Staking = () => {
   return (
     <LayoutContainer>
       <div>
-        <StyledStakingHeader className="flex md:justify-center flex-row items-end gap-4 mb-2 md:mb-12 md:flex-col md:items-center">
+        <StyledStakingHeader className="flex items-end gap-4 mb-2 md:mb-12 md:items-center md:justify-center">
           <div className="flex justify-center mascot">
             <Mascot width={isMobile ? 122 : 158} height={isMobile ? 114 : 147} />
           </div>
@@ -79,8 +79,8 @@ const Staking = () => {
           <StakingBox
             text1="💰 Available"
             value1={total > 0 ? total.toLocaleString(undefined, TOKEN_FORMAT) : 0}
-            // text2="Your APY"
-            // value2="0%"
+            text2="Your APY"
+            value2={`${formatAPYValue(stakingNetAPY + stakingNetTvlAPY)}%`}
             value2ClassName="text-primary"
           >
             {accountId ? (

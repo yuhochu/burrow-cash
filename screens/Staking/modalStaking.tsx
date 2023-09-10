@@ -42,10 +42,6 @@ const ModalStaking = ({ isOpen, onClose }) => {
 
   const sliderValue = Math.round((amount * 100) / Number(total)) || 0;
 
-  useEffect(() => {
-    setMonths(selectedMonths);
-  }, [stakingTimestamp]);
-
   const handleMaxClick = () => {
     trackMaxStaking({ total: totalToken });
     setAmount(totalToken);

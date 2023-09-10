@@ -13,6 +13,10 @@ export const formatUSDValue = (v) => {
   return Number(v).toLocaleString(undefined, USD_FORMAT);
 };
 
+export const formatAPYValue = (v) => {
+  return Number(v).toLocaleString(undefined, APY_FORMAT);
+};
+
 export const millifyNumber = (v: string | number, ignoreBelow?: number, isDisplay = false) => {
   const number = Number(v);
   if ((isDisplay && number === 0) || Number.isNaN(number)) {
