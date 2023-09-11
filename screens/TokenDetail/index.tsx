@@ -484,7 +484,7 @@ function TokenBorrowChart() {
       </div>
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
-        <LabelMobile title="Total Supplied" value={value} subValue={value_value} subMode="space" />
+        <LabelMobile title="Total Borrowed" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
       </div>
       <div className="flex items-center justify-center h-[300px]">
