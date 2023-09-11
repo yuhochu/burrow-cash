@@ -180,7 +180,7 @@ export const CollateralTip = () => {
   return (
     <div className="flex items-center gap-2.5">
       <WarnIcon />
-      <span className="text-gray-300 text-sm">This asset cannot be use as collateral yet</span>
+      <span className="text-gray-300 text-sm">This asset cannot be used as collateral yet</span>
     </div>
   );
 };
@@ -251,7 +251,7 @@ export const Alerts = ({ data }) => {
   };
 
   return (
-    <div className={`flex flex-col gap-4 ${Object.entries(data).length ? "my-5" : "my-2"}`}>
+    <div className={`flex flex-col gap-4 ${Object.entries(data).length ? "my-5" : "my-3.5"}`}>
       {Object.entries(data)
         .sort(sort)
         .map(([alert]) => {

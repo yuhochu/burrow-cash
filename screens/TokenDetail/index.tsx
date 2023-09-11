@@ -425,7 +425,7 @@ function TokenSupplyChart() {
         />
       </div>
       <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300">Suppling chart is coming soon</span>
+        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
       </div>
     </div>
   );
@@ -462,7 +462,7 @@ function TokenBorrowChart() {
         <LabelMobile title="APY" value={apy} />
       </div>
       <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300">Borrowing chart is coming soon</span>
+        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
       </div>
     </div>
   );
@@ -472,7 +472,7 @@ function TokenRateModeChart() {
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
       <div className="font-bold text-lg text-white mb-5">Interest Rate Mode</div>
       <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300">Interest Rate Mode chart is coming soon</span>
+        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
       </div>
     </div>
   );

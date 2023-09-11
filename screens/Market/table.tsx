@@ -49,7 +49,7 @@ function TableHead({ sorting }) {
             dispatch_sort_action("totalSupply");
           }}
         >
-          Total Supply
+          Total Supplied
           <SortButton sort={getCurColumnSort("totalSupply")} />
         </div>
         <div
@@ -80,12 +80,12 @@ function TableHead({ sorting }) {
         </div>
       </div>
       <div
-        className="col-span-1 bg-gray-300 rounded-t-2xl flex items-center text-sm text-black cursor-pointer pl-6 xl:pl-14 whitespace-nowrap"
+        className="col-span-1 bg-gray-300 rounded-t-2xl flex items-center text-sm text-black cursor-pointer pl-4 xl:pl-8 whitespace-nowrap"
         onClick={() => {
           dispatch_sort_action("availableLiquidity");
         }}
       >
-        Liquidity
+        Available Liquidity
         <SortButton sort={getCurColumnSort("availableLiquidity")} />
       </div>
     </div>
@@ -94,8 +94,8 @@ function TableHead({ sorting }) {
 function HeadMobile({ sorting }) {
   const [showSelectBox, setShowSelectBox] = useState(false);
   const sortList = {
-    availableLiquidity: "Liquidity",
-    totalSupply: "Total Supply",
+    availableLiquidity: "Available Liquidity",
+    totalSupply: "Total Supplied",
     depositApy: "Supply APY",
     totalBorrowed: "Total Borrowed",
     borrowApy: "Borrow APY",
@@ -134,9 +134,6 @@ function HeadMobile({ sorting }) {
           >
             {Object.entries(sortList).map(([key, name]) => {
               const isSelected = property === key;
-              // if (isSelected && order === "asc") {
-              //   dispatch_sort_action(key);
-              // }
               return (
                 <div
                   key={key}
@@ -337,7 +334,7 @@ function TableRowPc({ row, lastRow }: { row: UIAsset; lastRow: boolean }) {
             )}
           </span>
         </div>
-        <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
+        <div className="col-span-1 flex flex-col justify-center pl-4 xl:pl-8 whitespace-nowrap">
           <span className="text-sm text-white">
             {toInternationalCurrencySystem_number(row.availableLiquidity)}
           </span>
@@ -369,7 +366,7 @@ function TableRowMobile({
         </div>
         <div className="grid grid-cols-2 gap-y-5 pt-4">
           <TemplateMobile
-            title="Total Supply"
+            title="Total Supplied"
             value={toInternationalCurrencySystem_number(row.totalSupply)}
             subValue={toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
           />
@@ -386,7 +383,7 @@ function TableRowMobile({
           />
           <TemplateMobile title="Borrow APY" value={row.can_borrow ? format_apy(borrowAPY) : "-"} />
           <TemplateMobile
-            title="Liquidity"
+            title="Available Liquidity"
             value={toInternationalCurrencySystem_number(row.availableLiquidity)}
             subValue={toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
           />
