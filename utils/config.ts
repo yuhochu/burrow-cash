@@ -31,7 +31,7 @@ const getConfig = (env: string = defaultNetwork) => {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
-        centralizationUrl: "https://dev.data-service.ref-finance.com/burrow",
+        centralizationUrl: "https://api.data-service.ref-finance.com/burrow",
         liquidationUrl:
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://api.data-service.ref-finance.com",
