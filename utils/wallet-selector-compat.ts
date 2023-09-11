@@ -73,9 +73,10 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
 
   selector = await setupWalletSelector({
     modules: [
-      setupNearWallet(),
-      // setupXDEFI(),
+      myNearWallet,
       setupSender(),
+      setupNearWallet(),
+      setupMeteorWallet(),
       walletConnect,
       setupHereWallet(),
       setupNightly(),
@@ -83,8 +84,6 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
         bundle: false,
         gas: "300000000000000",
       }),
-      myNearWallet,
-      setupMeteorWallet(),
     ],
     network: defaultNetwork,
     debug: !!isTestnet,
