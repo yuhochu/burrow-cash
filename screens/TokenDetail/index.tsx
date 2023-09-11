@@ -386,7 +386,7 @@ function TokenSupplyChart() {
       {/* only pc */}
       <div className="flex items-stretch xsm:hidden">
         <div className="flex flex-col">
-          <span className="text-sm text-gray-300">Total Supply</span>
+          <span className="text-sm text-gray-300">Total Supplied</span>
           <div className="flex items-center">
             <span className="font-bold text-lg text-white">{value}</span>
             <span className="text-xs text-gray-300 relative top-0.5 ml-1.5">{value_value}</span>
@@ -441,7 +441,7 @@ function TokenBorrowChart() {
       {/* only pc */}
       <div className="flex items-stretch xsm:hidden">
         <div className="flex flex-col">
-          <span className="text-sm text-gray-300">Total Borrow</span>
+          <span className="text-sm text-gray-300">Total Borrowed</span>
           <div className="flex items-center">
             <span className="font-bold text-lg text-white">
               {toInternationalCurrencySystem_number(tokenRow?.totalBorrowed)}
@@ -574,7 +574,7 @@ function YouSupplied() {
           <div className="flex items-center justify-center py-5">
             <SuppliedEmptyIcon />
           </div>
-          <div className="flex items-center justify-center text-base text-gray-300 mb-4">
+          <div className="flex items-center justify-center text-base text-gray-300 mb-4 text-opacity-50">
             Your suppling will appear here
           </div>
         </UserBox>
@@ -670,7 +670,7 @@ function YouBorrowed() {
           <div className="flex items-center justify-center py-5">
             <BorrowedEmptyIcon />
           </div>
-          <div className="flex items-center justify-center text-base text-gray-300 mb-4">
+          <div className="flex items-center justify-center text-base text-gray-300 mb-4 text-opacity-50">
             Your borrowing will appear here
           </div>
         </UserBox>
