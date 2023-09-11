@@ -818,7 +818,7 @@ function OuterLink() {
       )}
 
       <LabelOuterLink
-        title="Bridge in"
+        title="Bridge from"
         content={
           <LabelOuterLinkIcon>
             <RainbowIcon

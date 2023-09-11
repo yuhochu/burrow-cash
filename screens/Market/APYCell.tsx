@@ -6,8 +6,7 @@ import TokenIcon from "../../components/TokenIcon";
 import { APY_FORMAT } from "../../store/constants";
 import { useExtraAPY } from "../../hooks/useExtraAPY";
 import { useAPY } from "../../hooks/useAPY";
-
-const toAPY = (v) => v.toLocaleString(undefined, APY_FORMAT);
+import { format_apy } from "../../utils/uiNumber";
 
 export const APYCell = ({
   baseAPY,
@@ -39,7 +38,7 @@ export const APYCell = ({
       onlyMarket={onlyMarket}
     >
       <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
-        {toAPY(boostedAPY)}%
+        {format_apy(boostedAPY)}
       </span>
     </ToolTip>
   );
@@ -70,14 +69,14 @@ const ToolTip = ({
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
           <Typography fontSize="0.75rem">Base APY</Typography>
           <Typography fontSize="0.75rem" color="#fff" textAlign="right">
-            {toAPY(baseAPY)}%
+            {format_apy(baseAPY)}
           </Typography>
           {!isBorrow && [
             <Typography fontSize="0.75rem" key={0}>
               Net Liquidity APY
             </Typography>,
             <Typography fontSize="0.75rem" color="#fff" textAlign="right" key={1}>
-              {toAPY(netLiquidityAPY * netTvlMultiplier)}%
+              {format_apy(netLiquidityAPY * netTvlMultiplier)}
             </Typography>,
           ]}
           {list.map(({ rewards, metadata, price, config }) => {
@@ -101,27 +100,10 @@ const ToolTip = ({
               </Stack>,
               <Typography fontSize="0.75rem" key={2} color="#fff" textAlign="right">
                 {isBorrow ? "-" : ""}
-                {toAPY(isStaking ? stakingRewardAPY : rewardAPY)}%
+                {format_apy(isStaking ? stakingRewardAPY : rewardAPY)}
               </Typography>,
             ];
           })}
-          {/* <Box
-            gridColumn="1 / span 2"
-            component="hr"
-            sx={{
-              width: "100%",
-              borderWidth: 0.5,
-              bgcolor: theme.palette.background.default,
-              borderStyle: "outset",
-            }}
-          />
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Box component="span">{isLucky ? "🍀" : "🚀"}</Box>
-            <Typography fontSize="0.75rem">Boosted APY</Typography>
-          </Stack>
-          <Typography fontSize="0.75rem" textAlign="right">
-            {toAPY(boostedAPY)}%
-          </Typography> */}
         </Box>
       }
     >

@@ -118,13 +118,13 @@ export const Available = ({ totalAvailable, available$ }) => (
 export const HealthFactor = ({ value }) => {
   const healthFactorColor =
     value === -1
-      ? "text-gray-300"
+      ? "text-primary"
       : value <= 100
       ? "text-red-50"
       : value <= 180
       ? "text-warning"
       : "text-primary";
-  const healthFactorDisplayValue = value === -1 ? "N/A" : `${value?.toFixed(2)}%`;
+  const healthFactorDisplayValue = value === -1 ? "10000%" : `${value?.toFixed(2)}%`;
 
   return (
     <div className="flex items-center justify-between">
