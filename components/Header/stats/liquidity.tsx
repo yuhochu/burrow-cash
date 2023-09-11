@@ -60,8 +60,8 @@ export const UserLiquidity = () => {
     weightedNetLiquidity > 0 ? `$${m(weightedNetLiquidity)}` : "$0";
 
   const userDepositedValue = userDeposited > 0 ? `$${m(userDeposited)}` : `$0`;
-
   const userBorrowedValue = userBorrowed > 0 ? `$${m(userBorrowed)}` : "$0";
+  const showLabels = userDeposited > 0 || userBorrowed > 0;
 
   const netLiquidityLabels = [
     [
@@ -93,7 +93,7 @@ export const UserLiquidity = () => {
       title="Weighted Net Liquidity"
       titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
-      labels={weightedNetLiquidity > 0 ? netLiquidityLabels : []}
+      labels={showLabels ? netLiquidityLabels : []}
       onClick={toggleValues}
     />
   );

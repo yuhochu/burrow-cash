@@ -12,7 +12,7 @@ export const APY = () => {
   const globalValue = `${netAPY.toLocaleString(undefined, APY_FORMAT)}%`;
   const netLiquidityValue = `${netLiquidityAPY.toLocaleString(undefined, APY_FORMAT)}%`;
   const totalApy = netAPY + netLiquidityAPY;
-  const amount = totalApy > 0 ? `${totalApy.toLocaleString(undefined, APY_FORMAT)}%` : "0%";
+  const amount = `${totalApy.toLocaleString(undefined, APY_FORMAT)}%`;
 
   const netLiquidityTooltip = hasNegativeNetLiquidity ? (
     <NotFarmingNetLiquidity assets={assets} liquidity={weightedNetLiquidity} />

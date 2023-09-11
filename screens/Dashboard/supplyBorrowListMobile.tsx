@@ -119,6 +119,7 @@ const StyledTabActiveBall = styled.div`
 `;
 
 const SupplyItem = ({ data }) => {
+  const { canUseAsCollateral } = data || {};
   return (
     <div>
       <div
@@ -166,7 +167,7 @@ const SupplyItem = ({ data }) => {
 
         <div className="flex gap-2">
           <WithdrawButton tokenId={data?.tokenId} />
-          <AdjustButton tokenId={data?.tokenId} />
+          {canUseAsCollateral && <AdjustButton tokenId={data?.tokenId} />}
         </div>
       </div>
     </div>
