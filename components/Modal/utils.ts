@@ -71,7 +71,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
   switch (action) {
     case "Supply":
       data.apy = supplyApy;
-      data.totalTitle = `Total Supply`;
+      data.totalTitle = `Total Supplied`;
       data.rates = [
         ...(canUseAsCollateral ? [{ label: "Collateral Factor", value: collateralFactor }] : []),
       ];
@@ -84,7 +84,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
       data.alerts = {};
       break;
     case "Borrow":
-      data.totalTitle = `Total Borrow`;
+      data.totalTitle = `Total Borrowed`;
       data.available = toDecimal(Math.min(Math.max(0, maxBorrowAmount), availableLiquidity));
       data.rates = [{ label: "Collateral Factor", value: collateralFactor }];
 

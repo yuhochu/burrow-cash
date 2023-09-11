@@ -305,7 +305,12 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
         <div
           style={{ width: "104px" }}
-          onClick={handleSwitchWallet}
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            }
+            handleSwitchWallet();
+          }}
           className="flex flex-grow items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1"
         >
           Change
@@ -313,7 +318,12 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
         <div
           role="button"
           style={{ width: "104px" }}
-          onClick={handleSignOut}
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            }
+            handleSignOut();
+          }}
           className="flex flex-grow items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-1"
         >
           Disconnect

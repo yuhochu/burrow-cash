@@ -219,12 +219,17 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   );
 }
 function MarketInfo({ className }) {
+  const { tokenRow } = useContext(DetailData) as any;
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${className}`}>
       <TokenOverviewMobile />
       <TokenSupplyChart />
-      <TokenBorrowChart />
-      <TokenRateModeChart />
+      {tokenRow.can_borrow && (
+        <>
+          <TokenBorrowChart />
+          <TokenRateModeChart />
+        </>
+      )}
     </div>
   );
 }
@@ -279,16 +284,25 @@ function TokenOverviewMobile() {
   return (
     <div className="grid grid-cols-1 gap-y-5 bg-gray-800 rounded-2xl p-4">
       <LabelMobile
-        title="Supply Cap/APY"
+        title="Supply Cap"
         value={toInternationalCurrencySystem_number(tokenRow?.totalSupply)}
-        subValue={format_apy(depositAPY)}
+        subValue={toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney)}
       />
       <LabelMobile
-        title="Borrow Cap/APY"
+        title="Borrow Cap"
         value={toInternationalCurrencySystem_number(
           !tokenRow?.can_borrow ? "" : tokenRow?.totalBorrowed,
         )}
-        subValue={format_apy(!tokenRow?.can_borrow ? "" : tokenRow?.borrowApy)}
+        subValue={
+          tokenRow?.can_borrow
+            ? toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney)
+            : ""
+        }
+      />
+      <LabelMobile title="Supply APY" value={format_apy(depositAPY)} />
+      <LabelMobile
+        title="Borrow APY"
+        value={!tokenRow?.can_borrow ? "-" : format_apy(tokenRow?.borrowApy)}
       />
       <LabelMobile
         title="Available Liquidity"
@@ -308,38 +322,42 @@ function TokenOverview() {
     DetailData,
   ) as any;
   return (
-    <Box className="mb-7 pr-20">
+    <Box className="mb-7">
       <div className="flex items-center">
         <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
         <span className="ml-3 text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
       </div>
-      <div className="flex items-stretch justify-between mt-6">
-        <div className="flex flex-col w-1/3">
-          <span className="text-sm text-gray-300">Supply Cap/APY</span>
+      <div className="grid grid-cols-4 mt-6 gap-x-10">
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-300 whitespace-nowrap">Supply Cap</span>
           <div className="flex items-center">
             <span className="text-[26px] text-white font-bold">
               {toInternationalCurrencySystem_number(tokenRow?.totalSupply)}
             </span>
-            <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apy(depositAPY)}
+            <span className="text-sm text-gray-300 ml-1 relative top-0.5">
+              {toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney)}
             </span>
           </div>
         </div>
-        <div className="flex flex-col w-1/3 ">
-          <span className="text-sm text-gray-300">Borrow Cap/APY</span>
+        <div className="flex flex-col ">
+          <span className="text-sm text-gray-300 whitespace-nowrap">Borrow Cap</span>
           <div className="flex items-center">
-            <span className="text-[26px] text-white font-bold">
-              {toInternationalCurrencySystem_number(
-                !tokenRow?.can_borrow ? "" : tokenRow?.totalBorrowed,
-              )}
-            </span>
-            <span className="text-sm text-white ml-1 relative top-0.5">
-              /{format_apy(!tokenRow?.can_borrow ? "" : borrowAPY)}
-            </span>
+            {!tokenRow?.can_borrow ? (
+              "-"
+            ) : (
+              <>
+                <span className="text-[26px] text-white font-bold">
+                  {toInternationalCurrencySystem_number(tokenRow?.totalBorrowed)}
+                </span>
+                <span className="text-sm text-gray-300 ml-1 relative top-0.5">
+                  {toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney)}
+                </span>
+              </>
+            )}
           </div>
         </div>
-        <div className="flex flex-col w-1/3 ">
-          <span className="text-sm text-gray-300">Available Liquidity</span>
+        <div className="flex flex-col ">
+          <span className="text-sm text-gray-300 whitespace-nowrap">Available Liquidity</span>
           <div className="flex items-center">
             <span className="text-[26px] text-white font-bold">
               {toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
@@ -347,23 +365,31 @@ function TokenOverview() {
           </div>
         </div>
       </div>
-      <div className="flex items-stretch justify-between mt-7">
-        <div className="flex flex-col w-1/3">
-          <span className="text-sm text-gray-300">Price</span>
+      <div className="grid grid-cols-4 mt-7 gap-x-10">
+        <div className="flex flex-col w-1/4">
+          <span className="text-sm text-gray-300 whitespace-nowrap">Supply APY</span>
           <div className="flex items-center">
-            <span className="text-lg text-white font-bold">${tokenRow?.price}</span>
+            <span className="text-lg text-white font-bold">{format_apy(depositAPY)}</span>
           </div>
         </div>
-        <div className="flex flex-col w-1/3 ">
-          <span className="text-sm text-gray-300"># of suppliers</span>
+        <div className="flex flex-col w-1/4">
+          <span className="text-sm text-gray-300 whitespace-nowrap">Borrow APY</span>
+          <div className="flex items-center">
+            <span className="text-lg text-white font-bold">
+              {!tokenRow?.can_borrow ? "-" : format_apy(borrowAPY)}
+            </span>
+          </div>
+        </div>
+        <div className="flex flex-col ">
+          <span className="text-sm text-gray-300 whitespace-nowrap"># of suppliers</span>
           <div className="flex items-center">
             <span className="text-lg text-white font-bold">
               {formatWithCommas_number(suppliers_number, 0)}
             </span>
           </div>
         </div>
-        <div className="flex flex-col w-1/3 ">
-          <span className="text-sm text-gray-300"># of borrowers</span>
+        <div className="flex flex-col ">
+          <span className="text-sm text-gray-300 whitespace-nowrap"># of borrowers</span>
           <div className="flex items-center">
             <span className="text-lg text-white font-bold">
               {!tokenRow?.can_borrow ? "-" : formatWithCommas_number(borrowers_number, 0)}
@@ -410,7 +436,7 @@ function TokenSupplyChart() {
       </div>
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
-        <LabelMobile title="Total Supply" value={value} subValue={value_value} subMode="space" />
+        <LabelMobile title="Total Supplied" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
         <LabelMobile
           title="Rewards"
@@ -458,7 +484,7 @@ function TokenBorrowChart() {
       </div>
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
-        <LabelMobile title="Total Supply" value={value} subValue={value_value} subMode="space" />
+        <LabelMobile title="Total Supplied" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
       </div>
       <div className="flex items-center justify-center h-[300px]">

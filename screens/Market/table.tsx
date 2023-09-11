@@ -372,7 +372,7 @@ function TableRowMobile({
           />
           <TemplateMobile
             title="Supply APY"
-            value={row.can_deposit ? format_apy(depositAPY || "") : "-"}
+            value={row.can_deposit ? format_apy(depositAPY) : "-"}
           />
           <TemplateMobile
             title="Total Borrowed"
