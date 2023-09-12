@@ -77,7 +77,7 @@ const CustomButton = forwardRef((props: Props, ref: any) => {
         "border-transparent border rounded-md px-4 transition duration-500 ease select-none",
         getBtnSizeClassName(size),
         isDisabled
-          ? "bg-gray-500 hover:bg-gray-500 text-gray-400 border-transparent"
+          ? "bg-gray-500 hover:bg-gray-500 text-gray-400 border-transparent text-gray-300"
           : getBtnColorClassName(color),
         isLoading2 && "_loading",
         className,

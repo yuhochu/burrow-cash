@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
 
 const CustomTableMobile = ({ data, columns, noDataText, isLoading }) => {
@@ -41,7 +42,12 @@ const CustomTableMobile = ({ data, columns, noDataText, isLoading }) => {
     );
   }
 
-  return <div>{bodyNodes}</div>;
+  return (
+    <div>
+      <StyledLoading active={!!isLoading}>Loading</StyledLoading>
+      {bodyNodes}
+    </div>
+  );
 };
 
 const ItemRow = ({ label, children, style = {} }) => {
@@ -52,5 +58,27 @@ const ItemRow = ({ label, children, style = {} }) => {
     </div>
   );
 };
+
+interface Props {
+  active: boolean | undefined;
+}
+
+const StyledLoading = styled.div<Props>`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: ${(p) => (p.active ? 22 : -1)};
+  opacity: ${(p) => (p.active ? 1 : 0)};
+  pointer-events: ${(p) => (p.active ? "all" : "none")};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default CustomTableMobile;

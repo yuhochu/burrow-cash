@@ -54,6 +54,7 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
       isOpen={isOpen}
       onClose={handleModelClose}
       onOutsideClick={handleModelClose}
+      className="modal-mobile-bottom modal-history"
       size="lg"
     >
       <div
@@ -73,7 +74,10 @@ const ModalHistoryInfo = ({ isOpen, onClose, tab }) => {
           <CloseIcon />
         </div>
       </div>
-      <div className="relative" style={{ margin: "0 -1rem -1rem", padding: "8px 1rem 1rem" }}>
+      <div
+        className="relative  modal-history-body"
+        style={{ margin: "0 -1rem -1rem", padding: "8px 1rem 1rem" }}
+      >
         {node}
       </div>
     </CustomModal>

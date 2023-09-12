@@ -26,6 +26,7 @@ const CustomModal = ({
   size,
   width,
   canScroll,
+  className,
 }: Props) => {
   const [show, setShow] = React.useState(false);
 
@@ -46,7 +47,7 @@ const CustomModal = ({
   return (
     <Portal>
       <StyledWrapper
-        className={twMerge("modal fade", show && "show")}
+        className={twMerge("modal fade", show && "show", className)}
         style={show ? { display: "block" } : {}}
       >
         <div className="overlay" onClick={onOutsideClick} />

@@ -17,19 +17,24 @@ const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
 
   let supplyNode;
   let borrowNode;
-  if (accountId) {
+
+  if (suppliedRows?.length) {
     supplyNode = suppliedRows?.map((d) => (
       <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
         <SupplyItem data={d} key={d.tokenId} />
       </ContentBox>
     ));
+  } else {
+    supplyNode = <NoLoginContent text="Your supplied assets will appear here" />;
+  }
+
+  if (borrowedRows?.length) {
     borrowNode = borrowedRows?.map((d) => (
       <ContentBox style={{ padding: 0, overflow: "hidden", marginBottom: 15 }} key={d.tokenId}>
         <BorrowItem data={d} key={d.tokenId} />
       </ContentBox>
     ));
   } else {
-    supplyNode = <NoLoginContent text="Your supplied assets will appear here" />;
     borrowNode = <NoLoginContent text="Your borrowed assets will appear here" />;
   }
 

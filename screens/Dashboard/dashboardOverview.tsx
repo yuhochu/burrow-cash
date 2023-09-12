@@ -175,7 +175,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
               {recordsButton}
             </div>
 
-            <div className="relative mr-10">
+            <div className="relative lg3:mr-10">
               <HealthFactor userHealth={userHealth} />
             </div>
           </div>

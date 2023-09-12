@@ -107,6 +107,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
       isOpen={isOpen}
       onClose={handleModalClose}
       onOutsideClick={handleModalClose}
+      className="modal-mobile-bottom"
       width={540}
       title="Stake BRRR"
     >

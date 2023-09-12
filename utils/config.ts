@@ -35,9 +35,9 @@ const getConfig = (env: string = defaultNetwork) => {
         liquidationUrl:
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://api.data-service.ref-finance.com",
-        recordsUrl:
-          process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://mainnet-indexer.ref-finance.com",
+        recordsUrl: process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://indexer.ref.finance",
       } as unknown as ConnectConfig;
+
     case "development":
     case "testnet":
       return {
