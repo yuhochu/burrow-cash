@@ -125,7 +125,7 @@ const btnColor = {
 
 const btnSize = {
   lg: "py-3 px-6 text-lg",
-  md: "py-2 md:py-2 px-2 md:px-5 text-sm md:text-md min-h-[39px]",
+  md: "py-2 md:py-2 px-2 md:px-5 text-base md:text-sm min-h-[39px]",
   sm: "py-1 px-2 text-sm",
 };
 
