@@ -28,12 +28,13 @@ import { useDegenMode } from "../../hooks/hooks";
 import { HamburgerMenu } from "./Menu";
 import Disclaimer from "../Disclaimer";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
-import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon, CopyIcon } from "./svg";
+import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon } from "./svg";
 import NearIcon from "../../public/near-icon.svg";
 import ClaimAllRewards from "../ClaimAllRewards";
 import { formatWithCommas_usd } from "../../utils/uiNumber";
 import { isMobileDevice } from "../../helpers/helpers";
 import getConfig from "../../utils/config";
+import CopyToClipboardComponent from "./CopyToClipboardComponent";
 
 const config = getConfig();
 
@@ -259,6 +260,17 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     isMobile,
     rewards,
   } = useContext(WalletContext) as any;
+  const [showTip, setShowTip] = useState<boolean>(false);
+  const [copyButtonDisabled, setCopyButtonDisabled] = useState<boolean>(false);
+  function showToast() {
+    if (copyButtonDisabled) return;
+    setCopyButtonDisabled(true);
+    setShowTip(true);
+    setTimeout(() => {
+      setShowTip(false);
+      setCopyButtonDisabled(false);
+    }, 1000);
+  }
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
@@ -269,14 +281,9 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
         </div>
       )}
       <div className="flex items-center justify-between">
-        {/* onCopy={() => showToast("Copied")} */}
         <div className="flex items-center">
           <span className=" text-white text-lg">{accountTrim(accountId)}</span>
-          <CopyToClipboard text={accountId}>
-            <div className="cursor-pointer ml-2">
-              <CopyIcon />
-            </div>
-          </CopyToClipboard>
+          <CopyToClipboardComponent text={accountId} className="ml-2" />
         </div>
         {isMobile && (
           <div className="flex items-center">
