@@ -226,7 +226,7 @@ function Account() {
             show_account_detail ? " bg-primary bg-opacity-20" : ""
           }`}
         >
-          <span className="mr-4">{accountTrim(accountId)}</span>
+          <span className="flex-grow flex justify-center mr-2">{accountTrim(accountId)}</span>
           <span className={`${show_account_detail ? "transform rotate-180" : ""}`}>
             <ArrowDownIcon />
           </span>

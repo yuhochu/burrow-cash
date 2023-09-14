@@ -307,6 +307,7 @@ function TokenOverviewMobile() {
       <LabelMobile
         title="Available Liquidity"
         value={toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
+        subValue={toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)}
       />
       <LabelMobile title="# of suppliers" value={formatWithCommas_number(suppliers_number, 0)} />
       <LabelMobile
@@ -327,7 +328,7 @@ function TokenOverview() {
         <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
         <span className="ml-3 text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
       </div>
-      <div className="grid grid-cols-4 mt-6 gap-x-10">
+      <div className="grid grid-cols-3 mt-6 gap-x-10">
         <div className="flex flex-col">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply Cap</span>
           <div className="flex items-center">
@@ -361,6 +362,9 @@ function TokenOverview() {
           <div className="flex items-center">
             <span className="text-[26px] text-white font-bold">
               {toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
+            </span>
+            <span className="text-sm text-gray-300 ml-1 relative top-0.5">
+              {toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)}
             </span>
           </div>
         </div>
