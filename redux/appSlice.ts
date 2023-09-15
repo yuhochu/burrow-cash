@@ -79,7 +79,7 @@ export const initialState: AppState = {
   showInfo: true,
   protocolStats: true,
   displayAsTokenValue: true,
-  showDust: true,
+  showDust: false,
   showTicker: false,
   slimStats: false,
   showDailyReturns: false,
