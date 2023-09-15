@@ -132,7 +132,6 @@ const WalletButton = () => {
       <Box
         sx={{
           gridArea: "wallet",
-          marginLeft: "1rem",
           marginRight: 0,
           display: "flex",
           alignItems: "center",

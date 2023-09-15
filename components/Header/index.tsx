@@ -7,14 +7,13 @@ import LogoIcon from "../../public/logo.svg";
 import BrrrIcon from "../../public/brrr.svg";
 import WalletButton from "./WalletButton";
 import Bridge from "./Bridge";
+import Set from "./Set";
 import { Wrapper, Logo, Menu, LinkStyled, WrapperMobile, WalletMobile } from "./style";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import { isAssetsFetching } from "../../redux/assetsSelectors";
 import { helpMenu, mainMenuList, Imenu } from "./menuData";
 import MenuMobile from "./MenuMobile";
 import { RefreshIcon } from "./svg";
-import { toggleShowDust } from "../../redux/appSlice";
-import { getShowDust } from "../../redux/appSelectors";
 
 const MenuItem = ({ item }: { item: Imenu }) => {
   const { title, link, allLinks } = item;
@@ -56,9 +55,7 @@ const HelpMenuItem = () => {
 const Header = () => {
   const [open, setOpen] = useState(false);
   const isFetching = useAppSelector(isAssetsFetching);
-  const dispatch = useAppDispatch();
   const theme = useTheme();
-  const showDust = useAppSelector(getShowDust);
   useEffect(() => {
     if (isFetching) {
       setOpen(true);
@@ -70,9 +67,6 @@ const Header = () => {
       return;
     }
     setOpen(false);
-  };
-  const handleToggleShowDust = () => {
-    dispatch(toggleShowDust());
   };
 
   return (
@@ -94,13 +88,10 @@ const Header = () => {
             })}
             <HelpMenuItem />
           </Menu>
-          <Box display="flex" justifyContent="flex-end" alignItems="stretch">
-            <div className="cursor-pointer" onClick={handleToggleShowDust}>
-              {/* todo */}
-              {/* {showDust ? "Hide" : "Show"} Dust */}
-            </div>
+          <Box display="flex" justifyContent="flex-end" alignItems="stretch" className=" gap-4">
             <Bridge />
             <WalletButton />
+            <Set />
           </Box>
           <Snackbar
             open={open}
