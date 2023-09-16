@@ -32,7 +32,7 @@ function SetList({ hover }) {
   const showDust = useAppSelector(getShowDust);
   return (
     <Box className={`${hover ? "" : "hidden"}`}>
-      <Item label="Dust">
+      <Item label="Show Dust">
         <SliderButton active={showDust} onClick={handleToggleShowDust} />
       </Item>
     </Box>
@@ -41,7 +41,7 @@ function SetList({ hover }) {
 
 function Box({ children, className }) {
   return (
-    <div className="absolute right-0 top-10 pt-2">
+    <div className="absolute right-0 top-10 pt-2 z-50">
       <div
         className={twMerge(
           "border border-dark-300 rounded-md bg-dark-100 p-4 min-w-[200px]",

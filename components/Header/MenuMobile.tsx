@@ -138,7 +138,7 @@ const SetMenuItem = () => {
         <ArrowDownIcon className={`${open ? "transform rotate-180" : ""}`} />
       </div>
       <div className={`${open ? "" : "hidden"}`}>
-        <SetSubMenuItem label="Dust">
+        <SetSubMenuItem label="Show Dust">
           <SliderButton active={showDust} onClick={handleToggleShowDust} />
         </SetSubMenuItem>
       </div>
