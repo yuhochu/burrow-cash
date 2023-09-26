@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import LogoIcon from "../../public/logo.svg";
+import BurrowIcon from "../../public/burrow.svg";
 import BrrrIcon from "../../public/brrr.svg";
 import WalletButton from "./WalletButton";
 import Bridge from "./Bridge";
@@ -81,6 +82,7 @@ const Header = () => {
         <Wrapper style={{ position: "relative" }}>
           <Logo>
             <LogoIcon style={{ fill: "white" }} />
+            <BurrowIcon />
           </Logo>
           <Menu>
             {mainMenuList.map((item) => {

@@ -5,6 +5,7 @@ import { showModal } from "../../redux/appSlice";
 import { useAvailableAssets } from "../../hooks/hooks";
 import { useTableSorting } from "../../hooks/useTableSorting";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
+import { MarketLoadIcon } from "./svg";
 
 const Market = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +14,7 @@ const Market = () => {
   const handleOnRowClick = ({ tokenId }) => {
     dispatch(showModal({ action: "Supply", tokenId, amount: "0" }));
   };
+  const loading = !rows.length;
   return (
     <LayoutBox className="flex flex-col items-center justify-center">
       <MarketsOverview />
@@ -21,6 +23,12 @@ const Market = () => {
         onRowClick={handleOnRowClick}
         sorting={{ name: "market", ...sorting.market, setSorting }}
       />
+      {loading ? (
+        <div className="flex flex-col items-center mt-24">
+          <MarketLoadIcon />
+          <span className="flex items-center text-sm text-gray-300 mt-2">Loading data...</span>
+        </div>
+      ) : null}
     </LayoutBox>
   );
 };
