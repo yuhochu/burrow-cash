@@ -25,7 +25,7 @@ const Market = () => {
       />
       {loading ? (
         <div className="flex flex-col items-center mt-24">
-          <MarketLoadIcon />
+          <img src="/loading-brrr.gif" alt="" width="75px" />
           <span className="flex items-center text-sm text-gray-300 mt-2">Loading data...</span>
         </div>
       ) : null}
