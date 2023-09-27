@@ -232,7 +232,10 @@ function Account() {
           </span>
         </div>
         {!isMobile && (
-          <div className={`absolute z-50 top-12 pt-4 ${show_account_detail ? "" : "hidden"}`}>
+          <div
+            style={{ zIndex: 9999 }}
+            className={`absolute top-12 pt-4 ${show_account_detail ? "" : "hidden"}`}
+          >
             <AccountDetail />
           </div>
         )}
