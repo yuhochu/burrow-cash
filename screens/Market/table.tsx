@@ -270,7 +270,7 @@ function TableRowPc({ row, lastRow }: { row: UIAsset; lastRow: boolean }) {
         }`}
       >
         <div className="col-span-1 flex items-center justify-self-start pl-5">
-          <img src={row.icon} alt="" className="h-[26px] rounded-full" />
+          <img src={row.icon} alt="" className="w-[26px] rounded-full" />
           <div className="flex flex-col items-start ml-3">
             <span className="text-sm text-white">{row.symbol}</span>
             <span className="text-xs text-gray-300">${row.price}</span>
@@ -361,7 +361,7 @@ function TableRowMobile({
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div className={`bg-gray-800 rounded-xl p-3.5 ${lastRow ? "" : "mb-4"}`}>
         <div className="flex items-center pb-4 border-b border-dark-950">
-          <img src={row.icon} alt="" className="h-[26px] rounded-full" />
+          <img src={row.icon} alt="" className="w-[26px] rounded-full" />
           <span className="text-sm text-white ml-2">{row.symbol}</span>
         </div>
         <div className="grid grid-cols-2 gap-y-5 pt-4">
