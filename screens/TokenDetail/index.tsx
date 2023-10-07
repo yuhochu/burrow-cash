@@ -326,7 +326,12 @@ function TokenOverview() {
     <Box className="mb-7">
       <div className="flex items-center">
         <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
-        <span className="ml-3 text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
+        <div className="flex flex-col ml-3">
+          <span className="text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
+          <span className="text-xs text-gray-300 transform -translate-y-1.5">
+            ${tokenRow?.price}
+          </span>
+        </div>
       </div>
       <div className="grid grid-cols-3 mt-6 gap-x-10">
         <div className="flex flex-col">
