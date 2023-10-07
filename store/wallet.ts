@@ -5,7 +5,7 @@ import { Transaction as SelectorTransaction } from "@near-wallet-selector/core";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { Balance } from "../interfaces";
-import { NO_REQUIRED_REGISTRATION_TOKEN_IDS } from "../utils/config";
+import { SPECIAL_REGISTRATION_TOKEN_IDS } from "../utils/config";
 
 export interface Transaction {
   receiverId: string;
@@ -66,7 +66,7 @@ export const executeMultipleTransactions = async (transactions) => {
 
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
   const { view } = await getBurrow();
-  if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(contract.contractId)) {
+  if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(contract.contractId)) {
     const registration = (await view(
       contract,
       ViewMethodsLogic[ViewMethodsLogic.check_registration],

@@ -28,7 +28,7 @@ import {
   Transaction,
 } from "./wallet";
 
-import { NO_REQUIRED_REGISTRATION_TOKEN_IDS } from "../utils/config";
+import { SPECIAL_REGISTRATION_TOKEN_IDS } from "../utils/config";
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -111,7 +111,7 @@ export const prepareAndExecuteTokenTransactions = async (
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
     //
-    if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
+    if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
       functionCalls.push({
         methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
         gas: new BN("10000000000000"),
