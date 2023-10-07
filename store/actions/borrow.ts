@@ -6,6 +6,7 @@ import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from 
 import { Transaction, isRegistered } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
+import { NO_REQUIRED_REGISTRATION_TOKEN_IDS } from "../../utils/config";
 
 export async function borrow({
   tokenId,
@@ -24,20 +25,32 @@ export async function borrow({
   const transactions: Transaction[] = [];
 
   const expandedAmount = expandTokenDecimal(amount, decimals + extraDecimals);
-
   if (
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    transactions.push({
-      receiverId: tokenContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
-        },
-      ],
-    });
+    //
+    if (NO_REQUIRED_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
+      transactions.push({
+        receiverId: tokenContract.contractId,
+        functionCalls: [
+          {
+            methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
+            gas: new BN("10000000000000"),
+          },
+        ],
+      });
+    } else {
+      transactions.push({
+        receiverId: tokenContract.contractId,
+        functionCalls: [
+          {
+            methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+            attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+          },
+        ],
+      });
+    }
   }
 
   const borrowTemplate = {
