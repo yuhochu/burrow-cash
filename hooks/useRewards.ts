@@ -11,7 +11,6 @@ export function useRewards() {
   const { brrr, totalUnClaimUSD } = assetRewards || {};
   const extra = Object.entries(assetRewards.extra);
   const net = Object.entries(assetRewards.net);
-
   let totalUnClaimUSDDisplay;
   if (totalUnClaimUSD !== undefined) {
     const IGNORE_AMOUNT = 0.01;
@@ -45,7 +44,7 @@ export function useRewards() {
 
   net.forEach(([key, value]) => {
     const existIndex = all.findIndex((a) => a.tokenId === key);
-    if (existIndex !== undefined) {
+    if (existIndex !== -1) {
       all[existIndex].data.dailyAmount += value.dailyAmount;
       all[existIndex].data.newDailyAmount += value.newDailyAmount;
       all[existIndex].data.unclaimedAmount += value.unclaimedAmount;
