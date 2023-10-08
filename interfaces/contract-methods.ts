@@ -13,6 +13,7 @@ export enum ViewMethodsLogic {
   get_asset_farms,
   get_asset_farms_paged,
   storage_balance_of,
+  check_registration,
 }
 
 // Change methods can modify the state. But you don't receive the returned value when called.
@@ -35,6 +36,7 @@ export enum ChangeMethodsLogic {
   // stake
   account_stake_booster,
   account_unstake_booster,
+  register_account,
 }
 
 export enum ViewMethodsOracle {
@@ -55,9 +57,11 @@ export enum ViewMethodsToken {
   ft_metadata,
   ft_balance_of,
   storage_balance_of,
+  check_registration,
 }
 
 export enum ChangeMethodsToken {
   ft_transfer_call,
   storage_deposit,
+  register_account,
 }

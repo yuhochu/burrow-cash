@@ -28,6 +28,10 @@ import {
   Transaction,
 } from "./wallet";
 
+import getConfig from "../utils/config";
+
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
+
 Decimal.set({ precision: DEFAULT_PRECISION });
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
@@ -108,10 +112,17 @@ export const prepareAndExecuteTokenTransactions = async (
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    functionCalls.push({
-      methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
-    });
+    if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
+      functionCalls.push({
+        methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
+        gas: new BN("10000000000000"),
+      });
+    } else {
+      functionCalls.push({
+        methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+        attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+      });
+    }
   }
 
   if (functionCall) {
