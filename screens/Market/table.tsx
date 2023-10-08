@@ -158,7 +158,19 @@ function HeadMobile({ sorting }) {
 function TableBody({ rows, sorting }: TableProps) {
   const [depositApyMap, setDepositApyMap] = useState<Record<string, number>>({});
   const [borrowApyMap, setBorrowApyMap] = useState<Record<string, number>>({});
+  const [sortedRows, setSortedRows] = useState<any>();
   const { property, order } = sorting;
+  useEffect(() => {
+    if (rows?.length) {
+      setSortedRows(rows.sort(comparator));
+    }
+  }, [
+    rows?.length,
+    Object.keys(depositApyMap).length,
+    Object.keys(borrowApyMap).length,
+    property,
+    order,
+  ]);
   if (!rows?.length) return null;
   function comparator(b: UIAsset, a: UIAsset) {
     let a_comparator_value;
@@ -189,7 +201,7 @@ function TableBody({ rows, sorting }: TableProps) {
   }
   return (
     <>
-      {rows.sort(comparator).map((row: UIAsset, index: number) => {
+      {(sortedRows || rows).map((row: UIAsset, index: number) => {
         return (
           <TableRow
             key={row.tokenId}
