@@ -13,8 +13,9 @@ import { transformAssets } from "../../transformers/asstets";
 import getAccount from "../../api/get-account";
 import { transformAccount } from "../../transformers/account";
 import { computeWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
-import { SPECIAL_REGISTRATION_TOKEN_IDS } from "../../utils/config";
+import getConfig from "../../utils/config";
 
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 interface Props {
   tokenId: string;
   extraDecimals: number;
@@ -46,7 +47,6 @@ export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props)
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    //
     if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
       transactions.push({
         receiverId: tokenContract.contractId,

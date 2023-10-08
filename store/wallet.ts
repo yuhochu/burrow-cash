@@ -5,7 +5,9 @@ import { Transaction as SelectorTransaction } from "@near-wallet-selector/core";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { Balance } from "../interfaces";
-import { SPECIAL_REGISTRATION_TOKEN_IDS } from "../utils/config";
+import getConfig from "../utils/config";
+
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 
 export interface Transaction {
   receiverId: string;

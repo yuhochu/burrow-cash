@@ -6,8 +6,9 @@ import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from 
 import { Transaction, isRegistered } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
-import { SPECIAL_REGISTRATION_TOKEN_IDS } from "../../utils/config";
+import getConfig from "../../utils/config";
 
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 export async function borrow({
   tokenId,
   extraDecimals,
@@ -29,7 +30,6 @@ export async function borrow({
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    //
     if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
       transactions.push({
         receiverId: tokenContract.contractId,

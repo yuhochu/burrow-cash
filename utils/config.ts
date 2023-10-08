@@ -20,9 +20,6 @@ export const WALLET_CONNECT_ID =
   process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ("87e549918631f833447b56c15354e450" as string);
 
 export const missingPriceTokens = [REF_TOKEN, META_TOKEN, BRRR_TOKEN];
-export const SPECIAL_REGISTRATION_TOKEN_IDS = [
-  "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
-];
 const getConfig = (env: string = defaultNetwork) => {
   switch (env) {
     case "production":
@@ -38,6 +35,9 @@ const getConfig = (env: string = defaultNetwork) => {
           process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
           "https://api.data-service.ref-finance.com",
         recordsUrl: process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://indexer.ref.finance",
+        SPECIAL_REGISTRATION_TOKEN_IDS: [
+          "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+        ],
       } as unknown as ConnectConfig;
 
     case "development":
@@ -51,6 +51,7 @@ const getConfig = (env: string = defaultNetwork) => {
         centralizationUrl: "https://dev.data-service.ref-finance.com/burrow",
         liquidationUrl: "https://dev.data-service.ref-finance.com",
         recordsUrl: "https://dev-indexer.ref-finance.com",
+        SPECIAL_REGISTRATION_TOKEN_IDS: [],
       } as unknown as ConnectConfig;
     case "betanet":
       return {
@@ -59,6 +60,7 @@ const getConfig = (env: string = defaultNetwork) => {
         walletUrl: "https://wallet.betanet.near.org",
         helperUrl: "https://helper.betanet.near.org",
         explorerUrl: "https://explorer.betanet.near.org",
+        SPECIAL_REGISTRATION_TOKEN_IDS: [],
       } as unknown as ConnectConfig;
     case "local":
       return {
