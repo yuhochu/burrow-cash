@@ -851,21 +851,22 @@ function OuterLink() {
           }
         />
       )}
-
-      <LabelOuterLink
-        title="Bridge from"
-        content={
-          <LabelOuterLinkIcon>
-            <RainbowIcon
-              key="4"
-              className="lg:opacity-60 lg:hover:opacity-100"
-              onClick={() => {
-                window.open("https://rainbowbridge.app/");
-              }}
-            />
-          </LabelOuterLinkIcon>
-        }
-      />
+      {symbol !== "USDt" && symbol !== "USDC" && (
+        <LabelOuterLink
+          title="Bridge from"
+          content={
+            <LabelOuterLinkIcon>
+              <RainbowIcon
+                key="4"
+                className="lg:opacity-60 lg:hover:opacity-100"
+                onClick={() => {
+                  window.open("https://rainbowbridge.app/");
+                }}
+              />
+            </LabelOuterLinkIcon>
+          }
+        />
+      )}
     </div>
   );
 }

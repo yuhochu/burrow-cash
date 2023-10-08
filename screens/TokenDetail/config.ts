@@ -37,9 +37,9 @@ export const OuterLinkConfig = {
   },
   USDt: {
     binance: "https://www.binance.com/en/price/tether",
-    okx: "https://www.okx.com/price/tether-usdt",
+    // okx: "https://www.okx.com/price/tether-usdt",
     gateio: "https://www.gate.io/price/tether-usdt/usd",
-    coinbase: "https://www.coinbase.com/price/tether",
+    // coinbase: "https://www.coinbase.com/price/tether",
     kucoin: "https://www.kucoin.com/price/USDT",
   },
 };
