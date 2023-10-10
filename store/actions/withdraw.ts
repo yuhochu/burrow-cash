@@ -54,6 +54,9 @@ export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props)
           {
             methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
             gas: new BN("10000000000000"),
+            args: {
+              account_id: account.accountId,
+            },
             attachedDeposit: new BN(0),
           },
         ],

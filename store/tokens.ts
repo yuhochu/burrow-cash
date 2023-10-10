@@ -116,6 +116,9 @@ export const prepareAndExecuteTokenTransactions = async (
       functionCalls.push({
         methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
         gas: new BN("10000000000000"),
+        args: {
+          account_id: account.accountId,
+        },
         attachedDeposit: new BN(0),
       });
     } else {
