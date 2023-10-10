@@ -49,7 +49,9 @@ const getConfig = (env: string = defaultNetwork) => {
         explorerUrl: "https://explorer.testnet.near.org",
         liquidationUrl: "https://dev.data-service.ref-finance.com",
         recordsUrl: "https://dev-indexer.ref-finance.com",
-        SPECIAL_REGISTRATION_TOKEN_IDS: ["usdcc.fakes.testnet"],
+        SPECIAL_REGISTRATION_TOKEN_IDS: [
+          "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af",
+        ],
       } as unknown as ConnectConfig;
     case "betanet":
       return {
