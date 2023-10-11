@@ -80,7 +80,11 @@ const Header = () => {
       {/* pc */}
       <div className="xsm:hidden">
         <Wrapper style={{ position: "relative" }}>
-          <Logo>
+          <Logo
+            onClick={() => {
+              window.open("https://burrow.finance/");
+            }}
+          >
             <LogoIcon style={{ fill: "white" }} />
             <BurrowIcon />
           </Logo>
@@ -111,7 +115,11 @@ const Header = () => {
       {/* mobile */}
       <div className="lg:hidden p-4">
         <WrapperMobile>
-          <Logo>
+          <Logo
+            onClick={() => {
+              window.open("https://burrow.finance/");
+            }}
+          >
             <BrrrIcon />
           </Logo>
           <Box className="flex items-center">

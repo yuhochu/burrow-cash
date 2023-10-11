@@ -26,6 +26,7 @@ export const Logo = styled("div")(() => ({
   justifySelf: "start",
   alignSelf: "center",
   gap: "8px",
+  cursor: "pointer",
 }));
 
 export const Menu = styled("div")(({ theme }) => ({
