@@ -3,7 +3,7 @@ import BN from "bn.js";
 import { getBurrow, nearTokenId } from "../../utils";
 import { expandToken, expandTokenDecimal } from "../helper";
 import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
-import { Transaction, isRegistered } from "../wallet";
+import { Transaction, isRegistered, isRegisteredNew } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
 import getConfig from "../../utils/config";
@@ -31,19 +31,32 @@ export async function borrow({
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
     if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
-      transactions.push({
-        receiverId: tokenContract.contractId,
-        functionCalls: [
-          {
-            methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
-            gas: new BN("10000000000000"),
-            args: {
-              account_id: account.accountId,
+      const r = await isRegisteredNew(account.accountId, tokenContract);
+      if (r) {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+              attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
             },
-            attachedDeposit: new BN(0),
-          },
-        ],
-      });
+          ],
+        });
+      } else {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
+              gas: new BN("10000000000000"),
+              args: {
+                account_id: account.accountId,
+              },
+              attachedDeposit: new BN(0),
+            },
+          ],
+        });
+      }
     } else {
       transactions.push({
         receiverId: tokenContract.contractId,

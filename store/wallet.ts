@@ -69,18 +69,36 @@ export const executeMultipleTransactions = async (transactions) => {
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
   const { view } = await getBurrow();
   if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(contract.contractId)) {
-    const registration = (await view(
-      contract,
-      ViewMethodsLogic[ViewMethodsLogic.check_registration],
-      {
+    try {
+      const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
         account_id,
-      },
-    )) as boolean;
-    return registration;
+      })) as Balance;
+      return balance && balance?.total !== "0";
+    } catch (error) {
+      const registration = (await view(
+        contract,
+        ViewMethodsLogic[ViewMethodsLogic.check_registration],
+        {
+          account_id,
+        },
+      )) as boolean;
+      return registration;
+    }
   } else {
     const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
       account_id,
     })) as Balance;
     return balance && balance?.total !== "0";
+  }
+};
+export const isRegisteredNew = async (account_id: string, contract: Contract): Promise<boolean> => {
+  const { view } = await getBurrow();
+  try {
+    (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+      account_id,
+    })) as Balance;
+    return true;
+  } catch (error) {
+    return false;
   }
 };
