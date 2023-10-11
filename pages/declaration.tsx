@@ -15,7 +15,7 @@ function TermsPage({ content }) {
 
 export async function getStaticProps() {
   const content = await fetch(
-    "https://raw.githubusercontent.com/burrowfdn/burrow-cash/main/DECLARATION.md",
+    "https://raw.githubusercontent.com/burrowHQ/burrow-cash/main/DECLARATION.md",
   ).then((r) => r.text());
   return {
     props: { content },

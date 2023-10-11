@@ -93,12 +93,12 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
    1.4. **Defined Terms**
 
-   - “**_Burrow Smart Contract Protocol_**” means the open source code used to compile contracts at [Burrow Contracts GitHub](https://github.com/burrowfdn/burrowland).
+   - “**_Burrow Smart Contract Protocol_**” means the open source code used to compile contracts at [Burrow Contracts GitHub](https://github.com/burrowHQ/burrowland).
    - “**_Burrow Smart Contract System_**” means the runtime bytecodes (aka “smart contracts”) deployed to the following Near network addresses:
 
      [contract.main.burrow.near, contract.beta.burrow.near]
 
-   - “**_Site_**” means the web site, web pages, web applications and information and software available at or accessible through the URL [https://burrow.cash](https://burrow.cash) or any sub-URL of such URL.
+   - “**_Site_**” means the web site, web pages, web applications and information and software available at or accessible through the URL [https://app.burrow.finance/](https://app.burrow.finance) or any sub-URL of such URL.
    - “**_Near_**”: at each time, the canonical blockchain and virtual machine environment of the Near ‘mainnet’, as recognized by at least a majority of the Near Validators then being operated in good faith in the ordinary course of the network. On the Purchase Date, the Near mainnet is the network associated with ChainID ‘mainnet’.
    - “**_Near Core Nodes_**”: at each time, the internet-connected computers then running unaltered and correctly configured instances of the most up-to-date production release of Near Core (the reference implementation of the Near Protocol at [https://github.com/near/nearcore](https://github.com/near/nearcore).
    - “**_Near Validators_**”: at each time, the Near Core Nodes (by number of $NEAR staked) included at such time by the Near Code as part of the recognized validator set.
@@ -135,7 +135,7 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
    3.1. **Site Code**
 
-   The HTML and other software code and text used in the Site is available at [https://github.com/burrowfdn/burrow-cash](https://github.com/burrowfdn/burrow-cash)
+   The HTML and other software code and text used in the Site is available at [https://github.com/burrowHQ/burrow-cash](https://github.com/burrowHQ/burrow-cash)
 
    3.2. **Marks, Logos and Branding**
 
@@ -143,7 +143,7 @@ The above is only a partial summary. You should read the Disclaimers & Warnings 
 
    3.3. **Burrow Smart Contract Protocol**
 
-   The Burrow Smart Contract Protocol is available at [https://github.com/burrowfdn/burrowland](https://github.com/burrowfdn/burrowland) and is freely licensed under [UNLICENSE](https://unlicense.org)
+   The Burrow Smart Contract Protocol is available at [https://github.com/burrowHQ/burrowland](https://github.com/burrowHQ/burrowland) and is freely licensed under [UNLICENSE](https://unlicense.org)
 
 4. **Permitted & Prohibited Uses**
 
