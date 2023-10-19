@@ -409,9 +409,9 @@ function TableRowMobile({
         <div className="relative flex items-center pb-4 border-b border-dark-950">
           <img src={row.icon} alt="" className="w-[26px] h-[26px]  rounded-full" />
           <div className="flex">
-            <span className="text-sm text-white ml-2">{row.symbol}</span>
+            <span className="text-base text-white font-bold ml-2">{row.symbol}</span>
             {is_native ? (
-              <span className="text-gray-300 italic text-xs transform translate-y-0.5 ml-0.5">
+              <span className="text-gray-300 italic text-xs transform translate-y-1.5 ml-0.5">
                 Native
               </span>
             ) : null}
