@@ -20,6 +20,7 @@ import {
   GateIcon,
   CoinbaseIcon,
 } from "./svg";
+import { NewTagIcon } from "../Market/svg";
 import { useAccountId, useAvailableAssets, usePortfolioAssets } from "../../hooks/hooks";
 import {
   toInternationalCurrencySystem_number,
@@ -47,6 +48,7 @@ import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
+import getConfig from "../../utils/config";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -64,6 +66,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const [borrowers_number, set_borrowers_number] = useState<number>();
   const isMobile = isMobileDevice();
   const router = useRouter();
+  const { NATIVE_TOKENS, NEW_TOKENS } = getConfig() as any;
   const depositAPY = useAPY({
     baseAPY: tokenRow.supplyApy,
     rewards: tokenRow.depositRewards,
@@ -96,6 +99,8 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       }
     });
   }, []);
+  const is_native = NATIVE_TOKENS?.includes(tokenRow.tokenId);
+  const is_new = NEW_TOKENS?.includes(tokenRow.tokenId);
   return (
     <DetailData.Provider
       value={{
@@ -107,6 +112,8 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         tokenRow,
         suppliers_number,
         borrowers_number,
+        is_native,
+        is_new,
       }}
     >
       {isMobile ? <DetailMobile /> : <DetailPc />}
@@ -114,7 +121,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   );
 }
 function DetailMobile() {
-  const { router, depositAPY, supplied, borrowed, tokenRow } = useContext(DetailData) as any;
+  const { router, is_new, is_native, tokenRow } = useContext(DetailData) as any;
   const [activeTab, setActiveTab] = useState<"market" | "your">("market");
   const [open, setOpen] = useState<boolean>(false);
   function switchTab(tab) {
@@ -141,8 +148,20 @@ function DetailMobile() {
         {/* Token head */}
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <img src={tokenRow?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
-            <span className="ml-2 text-xl text-white font-bold">{tokenRow?.symbol}</span>
+            <div className="relative">
+              <img src={tokenRow?.icon} className="w-[26px] h-[26px] rounded-full" alt="" />
+              {is_new ? (
+                <NewTagIcon className="absolute -bottom-1.5 transform -translate-x-1" />
+              ) : null}
+            </div>
+            <div className="flex">
+              <span className="ml-2 text-xl text-white font-bold">{tokenRow?.symbol}</span>
+              {is_native ? (
+                <span className="text-gray-300 italic text-xs transform translate-y-2 ml-0.5">
+                  Native
+                </span>
+              ) : null}
+            </div>
           </div>
           <span
             onClick={openGetTokenModal}
@@ -319,15 +338,24 @@ function TokenOverviewMobile() {
   );
 }
 function TokenOverview() {
-  const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY } = useContext(
-    DetailData,
-  ) as any;
+  const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY, is_native, is_new } =
+    useContext(DetailData) as any;
   return (
     <Box className="mb-7">
       <div className="flex items-center">
-        <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
+        <div className="relative">
+          <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
+          {is_new ? <NewTagIcon className="absolute -bottom-1 transform -translate-x-0" /> : null}
+        </div>
         <div className="flex flex-col ml-3">
-          <span className="text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
+          <div className="flex">
+            <span className="text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
+            {is_native ? (
+              <span className="text-gray-300 italic text-sm transform translate-y-3 ml-1">
+                Native
+              </span>
+            ) : null}
+          </div>
           <span className="text-xs text-gray-300 transform -translate-y-1.5">
             ${tokenRow?.price}
           </span>

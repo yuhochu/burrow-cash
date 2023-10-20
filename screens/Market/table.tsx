@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { TableProps } from "../../components/Table";
-import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon } from "./svg";
+import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon, NewTagIcon } from "./svg";
 import type { UIAsset } from "../../interfaces";
 import { isMobileDevice } from "../../helpers/helpers";
 import { useAPY } from "../../hooks/useAPY";
@@ -12,6 +12,7 @@ import {
   isInvalid,
 } from "../../utils/uiNumber";
 import { APYCell } from "./APYCell";
+import getConfig from "../../utils/config";
 
 function MarketsTable({ rows, sorting }: TableProps) {
   return (
@@ -233,6 +234,7 @@ function TableRow({
   borrowApyMap: Record<string, number>;
   setBorrowApyMap: any;
 }) {
+  const { NATIVE_TOKENS, NEW_TOKENS } = getConfig() as any;
   const isMobile = isMobileDevice();
   const depositAPY = useAPY({
     baseAPY: row.supplyApy,
@@ -256,6 +258,8 @@ function TableRow({
   useEffect(() => {
     setBorrowApyMap(borrowApyMap);
   }, [Object.keys(borrowApyMap).length]);
+  const is_native = NATIVE_TOKENS?.includes(row.tokenId);
+  const is_new = NEW_TOKENS?.includes(row.tokenId);
   return (
     <div>
       {isMobile ? (
@@ -265,15 +269,33 @@ function TableRow({
           lastRow={lastRow}
           depositAPY={depositAPY}
           borrowAPY={borrowAPY}
+          is_native={is_native}
+          is_new={is_new}
         />
       ) : (
-        <TableRowPc key={row.tokenId} row={row} lastRow={lastRow} />
+        <TableRowPc
+          key={row.tokenId}
+          row={row}
+          lastRow={lastRow}
+          is_native={is_native}
+          is_new={is_new}
+        />
       )}
     </div>
   );
 }
 
-function TableRowPc({ row, lastRow }: { row: UIAsset; lastRow: boolean }) {
+function TableRowPc({
+  row,
+  lastRow,
+  is_native,
+  is_new,
+}: {
+  row: UIAsset;
+  lastRow: boolean;
+  is_native: boolean;
+  is_new: boolean;
+}) {
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div
@@ -281,12 +303,20 @@ function TableRowPc({ row, lastRow }: { row: UIAsset; lastRow: boolean }) {
           lastRow ? "rounded-b-md" : ""
         }`}
       >
-        <div className="col-span-1 flex items-center justify-self-start pl-5">
-          <img src={row.icon} alt="" className="w-[26px] rounded-full" />
+        <div className="relative col-span-1 flex items-center justify-self-start pl-5">
+          <img src={row.icon} alt="" className="w-[27px] h-[27px] rounded-full" />
           <div className="flex flex-col items-start ml-3">
-            <span className="text-sm text-white">{row.symbol}</span>
+            <div className="flex">
+              <span className="text-sm text-white">{row.symbol}</span>
+              {is_native ? (
+                <span className="text-gray-300 italic text-xs transform translate-y-0.5 ml-0.5">
+                  Native
+                </span>
+              ) : null}
+            </div>
             <span className="text-xs text-gray-300">${row.price}</span>
           </div>
+          {is_new ? <NewTagIcon className="absolute bottom-2 transform -translate-x-1" /> : null}
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
           {row.can_deposit ? (
@@ -363,18 +393,30 @@ function TableRowMobile({
   lastRow,
   depositAPY,
   borrowAPY,
+  is_native,
+  is_new,
 }: {
   row: UIAsset;
   lastRow: boolean;
   depositAPY: number;
   borrowAPY: number;
+  is_native: boolean;
+  is_new: boolean;
 }) {
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div className={`bg-gray-800 rounded-xl p-3.5 ${lastRow ? "" : "mb-4"}`}>
-        <div className="flex items-center pb-4 border-b border-dark-950">
-          <img src={row.icon} alt="" className="w-[26px] rounded-full" />
-          <span className="text-sm text-white ml-2">{row.symbol}</span>
+        <div className="relative flex items-center pb-4 border-b border-dark-950">
+          <img src={row.icon} alt="" className="w-[26px] h-[26px]  rounded-full" />
+          <div className="flex">
+            <span className="text-base text-white font-bold ml-2">{row.symbol}</span>
+            {is_native ? (
+              <span className="text-gray-300 italic text-xs transform translate-y-1.5 ml-0.5">
+                Native
+              </span>
+            ) : null}
+          </div>
+          {is_new ? <NewTagIcon className="absolute bottom-2 transform -translate-x-1" /> : null}
         </div>
         <div className="grid grid-cols-2 gap-y-5 pt-4">
           <TemplateMobile
