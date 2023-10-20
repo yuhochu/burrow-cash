@@ -304,7 +304,7 @@ function TableRowPc({
         }`}
       >
         <div className="relative col-span-1 flex items-center justify-self-start pl-5">
-          <img src={row.icon} alt="" className="w-[26px] h-[26px] rounded-full" />
+          <img src={row.icon} alt="" className="w-[27px] h-[27px] rounded-full" />
           <div className="flex flex-col items-start ml-3">
             <div className="flex">
               <span className="text-sm text-white">{row.symbol}</span>
