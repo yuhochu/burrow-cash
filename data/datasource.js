@@ -74,6 +74,29 @@ class DataSource {
     };
     return this.callAPI(`/get-burrow-records`, "GET", qryObj, null, config?.recordsUrl);
   }
+
+  getTokenDetails(tokenId, period = 1) {
+    const qryObj = {
+      period,
+    };
+    return this.callAPI(
+      `/burrow/get_token_detail/${tokenId}`,
+      "GET",
+      qryObj,
+      null,
+      config?.liquidationUrl,
+    );
+  }
+
+  getInterestRate() {
+    return this.callAPI(
+      `/burrow/get_token_interest_rate/usn`,
+      "GET",
+      null,
+      null,
+      config?.liquidationUrl,
+    );
+  }
 }
 
 export default DataSource;
