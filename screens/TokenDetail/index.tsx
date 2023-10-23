@@ -49,6 +49,10 @@ import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
+import InterestRateChart from "./interestRateChart";
+import Datasource from "../../data/datasource";
+import TokenSuppliesChart from "./tokenSuppliesChart";
+import { useTokenDetails } from "../../hooks/useTokenDetails";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -81,6 +85,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     page: "borrow",
     onlyMarket: true,
   });
+  const { fetchTokenDetails, tokenDetailDays, interestRates } = useTokenDetails();
   const [suppliedRows, borrowedRows] = usePortfolioAssets() as [any[], any[]];
   const supplied = suppliedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
@@ -89,6 +94,7 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     return row.tokenId === tokenRow.tokenId;
   });
   useEffect(() => {
+    fetchTokenDetails(tokenRow.tokenId).catch();
     get_token_detail(tokenRow.tokenId).then((response) => {
       const { total_suppliers, total_borrowers } = response[0] || {};
       if (!isInvalid(total_suppliers)) {
@@ -99,8 +105,10 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       }
     });
   }, []);
+
   const is_native = NATIVE_TOKENS?.includes(tokenRow.tokenId);
   const is_new = NEW_TOKENS?.includes(tokenRow.tokenId);
+
   return (
     <DetailData.Provider
       value={{
@@ -116,20 +124,28 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         is_new,
       }}
     >
-      {isMobile ? <DetailMobile /> : <DetailPc />}
+      {isMobile ? (
+        <DetailMobile tokenDetailDays={tokenDetailDays} interestRates={interestRates} />
+      ) : (
+        <DetailPc tokenDetailDays={tokenDetailDays} interestRates={interestRates} />
+      )}
     </DetailData.Provider>
   );
 }
-function DetailMobile() {
+
+function DetailMobile({ tokenDetailDays, interestRates }) {
   const { router, is_new, is_native, tokenRow } = useContext(DetailData) as any;
   const [activeTab, setActiveTab] = useState<"market" | "your">("market");
   const [open, setOpen] = useState<boolean>(false);
+
   function switchTab(tab) {
     setActiveTab(tab);
   }
+
   function openGetTokenModal() {
     setOpen(true);
   }
+
   const isMarket = activeTab === "market";
   const isYour = activeTab === "your";
   return (
@@ -210,7 +226,11 @@ function DetailMobile() {
           </div>
         </div>
         {/* Tab content */}
-        <MarketInfo className={`${isMarket ? "" : "hidden"}`} />
+        <MarketInfo
+          className={`${isMarket ? "" : "hidden"}`}
+          tokenDetailDays={tokenDetailDays}
+          interestRates={interestRates}
+        />
         <YourInfo className={`${isYour ? "" : "hidden"}`} />
         {/* Get token  modal */}
         <TokenFetchModal open={open} setOpen={setOpen} />
@@ -218,11 +238,14 @@ function DetailMobile() {
     </LayoutBox>
   );
 }
+
 function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   const { tokenRow } = useContext(DetailData) as any;
+
   function handleClose() {
     setOpen(false);
   }
+
   return (
     <MUIModal open={open} onClose={handleClose}>
       <div className="absolute bottom-0 left-0 bg-dark-100 w-full rounded-t-2xl border border-dark-300 p-4 outline-none">
@@ -237,21 +260,24 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
     </MUIModal>
   );
 }
-function MarketInfo({ className }) {
+
+function MarketInfo({ className, tokenDetailDays, interestRates }) {
   const { tokenRow } = useContext(DetailData) as any;
+
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${className}`}>
       <TokenOverviewMobile />
-      <TokenSupplyChart />
+      <TokenSuppliesChart data={tokenDetailDays} />
       {tokenRow.can_borrow && (
         <>
-          <TokenBorrowChart />
-          <TokenRateModeChart />
+          <TokenBorrowChart tokenDetailDays={tokenDetailDays} />
+          <TokenRateModeChart interestRates={interestRates} />
         </>
       )}
     </div>
   );
 }
+
 function YourInfo({ className }) {
   const { supplied, borrowed, tokenRow } = useContext(DetailData) as any;
   return (
@@ -262,8 +288,10 @@ function YourInfo({ className }) {
     </div>
   );
 }
-function DetailPc() {
+
+function DetailPc({ tokenDetailDays, interestRates }) {
   const { router, supplied, borrowed, tokenRow } = useContext(DetailData) as any;
+
   return (
     <LayoutBox>
       <div
@@ -278,11 +306,11 @@ function DetailPc() {
       <div className="grid grid-cols-3/5">
         <div className="mr-6">
           <TokenOverview />
-          <TokenSupplyChart />
+          <TokenSupplyChart tokenDetailDays={tokenDetailDays} />
           {tokenRow.can_borrow && (
             <>
-              <TokenBorrowChart />
-              <TokenRateModeChart />
+              <TokenBorrowChart tokenDetailDays={tokenDetailDays} />
+              <TokenRateModeChart interestRates={interestRates} />
             </>
           )}
         </div>
@@ -296,6 +324,7 @@ function DetailPc() {
     </LayoutBox>
   );
 }
+
 function TokenOverviewMobile() {
   const { tokenRow, depositAPY, suppliers_number, borrowers_number } = useContext(
     DetailData,
@@ -337,6 +366,7 @@ function TokenOverviewMobile() {
     </div>
   );
 }
+
 function TokenOverview() {
   const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY, is_native, is_new } =
     useContext(DetailData) as any;
@@ -437,7 +467,8 @@ function TokenOverview() {
     </Box>
   );
 }
-function TokenSupplyChart() {
+
+function TokenSupplyChart({ tokenDetailDays }) {
   const { tokenRow, depositAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalSupply);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney);
@@ -487,13 +518,15 @@ function TokenSupplyChart() {
           }
         />
       </div>
-      <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+      <div className="flex items-center justify-center h-[300px] mt-8">
+        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenSupplyApy" />
+        {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
   );
 }
-function TokenBorrowChart() {
+
+function TokenBorrowChart({ tokenDetailDays }) {
   const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
@@ -524,22 +557,25 @@ function TokenBorrowChart() {
         <LabelMobile title="Total Borrowed" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
       </div>
-      <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+      <div className="flex items-center justify-center h-[300px] mt-8">
+        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenBorrowApy" />
       </div>
     </div>
   );
 }
-function TokenRateModeChart() {
+
+function TokenRateModeChart({ interestRates }) {
   return (
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
-      <div className="font-bold text-lg text-white mb-5">Interest Rate Mode</div>
+      <div className="font-bold text-lg text-white mb-5">Interest Rate</div>
       <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+        <InterestRateChart data={interestRates} xKey="percent" />
+        {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
   );
 }
+
 function TokenUserInfo() {
   const { tokenRow } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;

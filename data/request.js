@@ -16,10 +16,6 @@ const constServerError = {
     "Couldn't contact the server. Please check your internet connection and try again",
 };
 
-export const getApiHost = () => {
-  return process.env.NEXT_PUBLIC_INTERNAL_API_HOST;
-};
-
 export const parseResponse = async (response) => {
   const responseStatusNumber = Number(response?.status);
   const clientErrors = [constResStatus.NOT_FOUND];
@@ -47,7 +43,7 @@ export const parseResponse = async (response) => {
 
 export const URLForEndpoint = (endpoint, params, host) => {
   if (!host) {
-    host = getApiHost();
+    throw new Error("host is required");
   }
   let url = `${host}${endpoint}`;
   if (params && typeof params === "object") {
