@@ -30,10 +30,8 @@ const getConfig = (env: string = defaultNetwork) => {
         walletUrl: "https://wallet.near.org",
         helperUrl: "https://helper.mainnet.near.org",
         explorerUrl: "https://explorer.mainnet.near.org",
-        liquidationUrl:
-          process.env.NEXT_PUBLIC_LIQUIDATION_API_HOST ||
-          "https://api.data-service.ref-finance.com",
-        recordsUrl: process.env.NEXT_PUBLIC_RECORDS_API_HOST || "https://indexer.ref.finance",
+        liquidationUrl: "https://api.data-service.ref.finance",
+        recordsUrl: "https://indexer.ref.finance",
         SPECIAL_REGISTRATION_TOKEN_IDS: [
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
         ],
