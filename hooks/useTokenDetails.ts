@@ -4,6 +4,8 @@ import Datasource from "../data/datasource";
 
 export const useTokenDetails = () => {
   const [tokenDetailDays, setTokenDetailDays] = useState<any[]>([]);
+  const [tokenBorrowDays, setTokenBorrowDays] = useState<any[]>([]);
+  const [tokenSupplyDays, setTokenSupplyDays] = useState<any[]>([]);
   const [interestRates, setInterestRates] = useState<any[]>([]);
 
   const fetchTokenDetails = async (tokenId, period = 30) => {
@@ -30,15 +32,15 @@ export const useTokenDetails = () => {
         return d;
       });
 
-      const interestRatesCal = [0, 25, 50, 75, 100].map((n) => {
-        const percent = n / 100;
-        const rateIndex = interestRate?.utilization.findIndex((i) => i === percent);
+      const interestRatesCal = interestRate?.utilization.map((n, i) => {
+        const percent = n * 100;
+        // const rateIndex = interestRate?.utilization.findIndex((i) => i === percent);
         return {
           currentUtilRate: lastTokenDetails.token_utilization_rate * 100,
-          percent: n,
-          percentLabel: `${n}%`,
-          borrowRate: interestRate ? interestRate.burrow_apr[rateIndex] * 100 : 0,
-          supplyRate: interestRate ? interestRate.supply_apr[rateIndex] * 100 : 0,
+          percent,
+          percentLabel: `${percent}%`,
+          borrowRate: interestRate ? interestRate.burrow_apr[i] * 100 : 0,
+          supplyRate: interestRate ? interestRate.supply_apr[i] * 100 : 0,
         };
       });
       setInterestRates(interestRatesCal);

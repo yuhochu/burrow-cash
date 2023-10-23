@@ -6,12 +6,15 @@ import {
   YAxis,
   Tooltip,
   Legend,
+  CartesianGrid,
   ReferenceLine,
   ResponsiveContainer,
 } from "recharts";
+import { isMobileDevice } from "../../helpers/helpers";
 
-const InterestRateChart = ({ data, xKey }) => {
+const InterestRateChart = ({ data }) => {
   const { currentUtilRate } = data?.[0] || [];
+  const isMobile = isMobileDevice();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -21,8 +24,8 @@ const InterestRateChart = ({ data, xKey }) => {
         data={data}
         margin={{
           top: 20,
-          right: 50,
-          left: 20,
+          right: isMobile ? 16 : 50,
+          left: isMobile ? 0 : 20,
           bottom: 5,
         }}
       >
@@ -49,19 +52,38 @@ const InterestRateChart = ({ data, xKey }) => {
           }}
           content={<CustomTooltip />}
         />
-        {/* <Legend /> */}
-        <ReferenceLine
-          type="number"
-          x={currentUtilRate}
-          stroke="#C0C4E9"
-          label={<CustomLabel value={currentUtilRate} />}
-        />
-        <Line type="monotone" dataKey="borrowRate" stroke="#FF6BA9" />
-        <Line type="monotone" dataKey="supplyRate" stroke="#D2FF3A" />
+
+        {isMobile && (
+          <CartesianGrid stroke="#eee" strokeWidth={0.2} opacity={0.2} vertical={false} />
+        )}
+
+        {!isMobile && (
+          <ReferenceLine
+            type="number"
+            x={currentUtilRate}
+            stroke="#C0C4E9"
+            label={<CustomLabel value={currentUtilRate} />}
+          />
+        )}
+
+        <Line type="monotone" dataKey="borrowRate" stroke="#FF6BA9" dot={<CustomizedDot />} />
+        <Line type="monotone" dataKey="supplyRate" stroke="#D2FF3A" dot={<CustomizedDot />} />
       </LineChart>
     </ResponsiveContainer>
   );
 };
+
+const CustomizedDot = (props) => {
+  const { cx, cy, stroke, payload, value } = props;
+  const { percent } = payload || {};
+
+  if (percent === 100) {
+    return <circle cx={cx} cy={cy} r={4} stroke={stroke} fill={stroke} />;
+  }
+
+  return null;
+};
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload || !payload?.[0]) return null;
   const data = payload?.[0] || {};
@@ -77,10 +99,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
-const LabelText = ({ left, right, className = "" }) => {
+export const LabelText = ({ left, right, className = "" }) => {
   return (
     <div className={`text-white text-sm mb-1 flex justify-between ${className}`}>
-      <div className="mr-1">{left}</div>
+      <div className="mr-1 text-gray-300">{left}</div>
       <div>{right}</div>
     </div>
   );
@@ -112,14 +134,24 @@ const CustomLabel = (props) => {
   const { viewBox, value } = props || {};
   const { x, y } = viewBox || {};
 
+  const WIDTH = 153;
   return (
     <g>
-      <rect x={x - 50} y={y} fill="#32344B" width={100} height={30} radius={100} />
-      <text x={x - 50} y={y} fill="#fff" dy={19} dx={9} fontSize={12}>
-        Utilization {value?.toFixed(0)}%
+      <rect x={x - WIDTH / 2} y={y} fill="#32344B" width={WIDTH} height={30} radius={100} />
+      <text x={x - WIDTH / 2} y={y} fill="#fff" dy={19} dx={9} fontSize={11}>
+        Current Utilization {value?.toFixed(2)}%
       </text>
     </g>
   );
+};
+
+const MobileLine = (props) => {
+  const { viewBox, data } = props || {};
+  const { x } = viewBox || {};
+  const fullRate = data?.find((d) => d.percent === 100);
+  const { borrowRate, supplyRate } = fullRate || {};
+  const y = Math.max(borrowRate, supplyRate);
+  return <text x={x - 50} y={y} fill="#fff" dy={19} dx={9} fontSize={12} />;
 };
 
 export default InterestRateChart;

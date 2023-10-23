@@ -49,7 +49,7 @@ import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
-import InterestRateChart from "./interestRateChart";
+import InterestRateChart, { LabelText } from "./interestRateChart";
 import Datasource from "../../data/datasource";
 import TokenSuppliesChart from "./tokenSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
@@ -65,6 +65,7 @@ const TokenDetail = () => {
   if (!tokenRow) return null;
   return <TokenDetailView tokenRow={tokenRow} />;
 };
+
 function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const [suppliers_number, set_suppliers_number] = useState<number>();
   const [borrowers_number, set_borrowers_number] = useState<number>();
@@ -106,6 +107,14 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     });
   }, []);
 
+  const handlePeriodClick = async (period) => {
+    try {
+      await fetchTokenDetails(tokenRow.tokenId, period);
+    } catch (e) {
+      console.error("err", e);
+    }
+  };
+
   const is_native = NATIVE_TOKENS?.includes(tokenRow.tokenId);
   const is_new = NEW_TOKENS?.includes(tokenRow.tokenId);
 
@@ -125,15 +134,23 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       }}
     >
       {isMobile ? (
-        <DetailMobile tokenDetailDays={tokenDetailDays} interestRates={interestRates} />
+        <DetailMobile
+          tokenDetailDays={tokenDetailDays}
+          fetchTokenDetails={fetchTokenDetails}
+          interestRates={interestRates}
+        />
       ) : (
-        <DetailPc tokenDetailDays={tokenDetailDays} interestRates={interestRates} />
+        <DetailPc
+          tokenDetailDays={tokenDetailDays}
+          interestRates={interestRates}
+          fetchTokenDetails={handlePeriodClick}
+        />
       )}
     </DetailData.Provider>
   );
 }
 
-function DetailMobile({ tokenDetailDays, interestRates }) {
+function DetailMobile({ tokenDetailDays, interestRates, fetchTokenDetails }) {
   const { router, is_new, is_native, tokenRow } = useContext(DetailData) as any;
   const [activeTab, setActiveTab] = useState<"market" | "your">("market");
   const [open, setOpen] = useState<boolean>(false);
@@ -230,6 +247,7 @@ function DetailMobile({ tokenDetailDays, interestRates }) {
           className={`${isMarket ? "" : "hidden"}`}
           tokenDetailDays={tokenDetailDays}
           interestRates={interestRates}
+          fetchTokenDetails={fetchTokenDetails}
         />
         <YourInfo className={`${isYour ? "" : "hidden"}`} />
         {/* Get token  modal */}
@@ -261,17 +279,20 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   );
 }
 
-function MarketInfo({ className, tokenDetailDays, interestRates }) {
+function MarketInfo({ className, tokenDetailDays, interestRates, fetchTokenDetails }) {
   const { tokenRow } = useContext(DetailData) as any;
 
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${className}`}>
       <TokenOverviewMobile />
-      <TokenSuppliesChart data={tokenDetailDays} />
+      <TokenSupplyChart tokenDetailDays={tokenDetailDays} fetchTokenDetails={fetchTokenDetails} />
       {tokenRow.can_borrow && (
         <>
-          <TokenBorrowChart tokenDetailDays={tokenDetailDays} />
-          <TokenRateModeChart interestRates={interestRates} />
+          <TokenBorrowChart
+            tokenDetailDays={tokenDetailDays}
+            fetchTokenDetails={fetchTokenDetails}
+          />
+          <TokenRateModeChart interestRates={interestRates} tokenRow={tokenRow} />
         </>
       )}
     </div>
@@ -289,7 +310,7 @@ function YourInfo({ className }) {
   );
 }
 
-function DetailPc({ tokenDetailDays, interestRates }) {
+function DetailPc({ tokenDetailDays, interestRates, fetchTokenDetails }) {
   const { router, supplied, borrowed, tokenRow } = useContext(DetailData) as any;
 
   return (
@@ -306,10 +327,16 @@ function DetailPc({ tokenDetailDays, interestRates }) {
       <div className="grid grid-cols-3/5">
         <div className="mr-6">
           <TokenOverview />
-          <TokenSupplyChart tokenDetailDays={tokenDetailDays} />
+          <TokenSupplyChart
+            tokenDetailDays={tokenDetailDays}
+            fetchTokenDetails={fetchTokenDetails}
+          />
           {tokenRow.can_borrow && (
             <>
-              <TokenBorrowChart tokenDetailDays={tokenDetailDays} />
+              <TokenBorrowChart
+                tokenDetailDays={tokenDetailDays}
+                fetchTokenDetails={fetchTokenDetails}
+              />
               <TokenRateModeChart interestRates={interestRates} />
             </>
           )}
@@ -468,7 +495,7 @@ function TokenOverview() {
   );
 }
 
-function TokenSupplyChart({ tokenDetailDays }) {
+function TokenSupplyChart({ tokenDetailDays, fetchTokenDetails }) {
   const { tokenRow, depositAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalSupply);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney);
@@ -518,15 +545,23 @@ function TokenSupplyChart({ tokenDetailDays }) {
           }
         />
       </div>
-      <div className="flex items-center justify-center h-[300px] mt-8">
-        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenSupplyApy" />
+      <HrLine />
+      <div className="mt-8 xsm:-ml-5">
+        <TokenSuppliesChart
+          data={tokenDetailDays}
+          xKey="dayDate"
+          yKey="tokenSupplyApy"
+          fetchData={fetchTokenDetails}
+        />
         {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
   );
 }
 
-function TokenBorrowChart({ tokenDetailDays }) {
+const HrLine = () => <hr className="hidden mt-6 mb-6 h-px my-8 bg-dark-500 border-0 xsm:block" />;
+
+function TokenBorrowChart({ tokenDetailDays, fetchTokenDetails }) {
   const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
@@ -557,19 +592,40 @@ function TokenBorrowChart({ tokenDetailDays }) {
         <LabelMobile title="Total Borrowed" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
       </div>
-      <div className="flex items-center justify-center h-[300px] mt-8">
-        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenBorrowApy" />
+      <HrLine />
+      <div className="mt-8 xsm:-ml-5">
+        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenBorrowApy" isBorrow />
       </div>
     </div>
   );
 }
 
-function TokenRateModeChart({ interestRates }) {
+function TokenRateModeChart({
+  interestRates,
+  tokenRow,
+}: {
+  interestRates: Array<any>;
+  tokenRow?: any;
+}) {
+  const fullRateDetail = interestRates?.find((d) => d.percent === 100);
+  const { borrowRate, supplyRate, currentUtilRate } = fullRateDetail || {};
+
   return (
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
-      <div className="font-bold text-lg text-white mb-5">Interest Rate</div>
-      <div className="flex items-center justify-center h-[300px]">
-        <InterestRateChart data={interestRates} xKey="percent" />
+      <div className="font-bold text-lg text-white mb-5">Interest Rate Mode</div>
+
+      <div className="grid grid-cols-1 gap-y-4 mb-6">
+        <LabelText
+          left="Current Utilization"
+          right={currentUtilRate ? `${currentUtilRate.toFixed(2)}%` : "-"}
+        />
+        <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} />
+        <LabelText left="Borrow Rate" right={borrowRate ? `${borrowRate.toFixed(2)}%` : "-"} />
+        <LabelText left="Supply Rate" right={supplyRate ? `${supplyRate.toFixed(2)}%` : "-"} />
+      </div>
+      <HrLine />
+      <div className="flex items-center justify-center h-[300px] xsm:-ml-4">
+        <InterestRateChart data={interestRates} />
         {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
@@ -632,6 +688,7 @@ function TokenUserInfo() {
     </UserBox>
   );
 }
+
 function YouSupplied() {
   const { tokenRow, supplied } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
@@ -731,6 +788,7 @@ function YouSupplied() {
     </div>
   );
 }
+
 function YouBorrowed() {
   const { tokenRow, borrowed } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
@@ -813,6 +871,7 @@ function YouBorrowed() {
     </div>
   );
 }
+
 function OuterLink() {
   const { tokenRow } = useContext(DetailData) as any;
   const { symbol } = tokenRow;
@@ -934,6 +993,7 @@ function OuterLink() {
     </div>
   );
 }
+
 function Box({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`px-7 py-5 border border-dark-50 rounded-md bg-gray-800 ${className}`}>
@@ -941,6 +1001,7 @@ function Box({ children, className = "" }: { children: React.ReactNode; classNam
     </div>
   );
 }
+
 function UserBox({
   children,
   className = "",
@@ -956,6 +1017,7 @@ function UserBox({
     </div>
   );
 }
+
 function Label({ title, content }: { title: string; content: string | React.ReactNode }) {
   return (
     <div className="flex items-center justify-between mt-4">
@@ -964,6 +1026,7 @@ function Label({ title, content }: { title: string; content: string | React.Reac
     </div>
   );
 }
+
 function LabelOuterLink({
   title,
   content,
@@ -980,6 +1043,7 @@ function LabelOuterLink({
     </div>
   );
 }
+
 function LabelOuterLinkIcon({ children }) {
   return (
     <span className="flex items-center justify-center h-[22px] px-2.5  xsm:h-8 rounded-md lg:bg-gray-300 lg:bg-opacity-20 xsm:bg-dark-150 cursor-pointer">
@@ -987,6 +1051,7 @@ function LabelOuterLinkIcon({ children }) {
     </span>
   );
 }
+
 function LabelMobile({
   title,
   value,
@@ -1013,4 +1078,5 @@ function LabelMobile({
     </div>
   );
 }
+
 export default TokenDetail;
