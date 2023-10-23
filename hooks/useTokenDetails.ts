@@ -10,7 +10,7 @@ export const useTokenDetails = () => {
     try {
       const [tokenDetailsRes, interestRateRes] = await Promise.allSettled([
         Datasource.shared.getTokenDetails(tokenId, period),
-        Datasource.shared.getInterestRate(),
+        Datasource.shared.getInterestRate(tokenId),
       ]);
 
       let tokenDetails: any[] = [];

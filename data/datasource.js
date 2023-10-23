@@ -88,9 +88,9 @@ class DataSource {
     );
   }
 
-  getInterestRate() {
+  getInterestRate(tokenId) {
     return this.callAPI(
-      `/burrow/get_token_interest_rate/usn`,
+      `/burrow/get_token_interest_rate/${tokenId}`,
       "GET",
       null,
       null,
