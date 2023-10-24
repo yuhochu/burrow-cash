@@ -418,7 +418,7 @@ function TokenOverview() {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-3 mt-6 gap-x-10">
+      <div className="grid grid-cols-3 mt-4 gap-x-10">
         <div className="flex flex-col">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply Cap</span>
           <div className="flex items-center">
@@ -459,7 +459,7 @@ function TokenOverview() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-4 mt-7 gap-x-10">
+      <div className="grid grid-cols-4 mt-5 gap-x-10">
         <div className="flex flex-col w-1/4">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply APY</span>
           <div className="flex items-center">
