@@ -86,7 +86,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     page: "borrow",
     onlyMarket: true,
   });
-  const { fetchTokenDetails, tokenDetailDays, interestRates } = useTokenDetails();
+  const tokenDetails = useTokenDetails();
+  const { fetchTokenDetails, changePeriodDisplay } = tokenDetails || {};
+
   const [suppliedRows, borrowedRows] = usePortfolioAssets() as [any[], any[]];
   const supplied = suppliedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
@@ -107,9 +109,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     });
   }, []);
 
-  const handlePeriodClick = async (period) => {
+  const handlePeriodClick = async (borrowPeriod, supplyPeriod) => {
     try {
-      await fetchTokenDetails(tokenRow.tokenId, period);
+      await changePeriodDisplay(tokenRow.tokenId, borrowPeriod, supplyPeriod);
     } catch (e) {
       console.error("err", e);
     }
@@ -134,23 +136,15 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       }}
     >
       {isMobile ? (
-        <DetailMobile
-          tokenDetailDays={tokenDetailDays}
-          fetchTokenDetails={fetchTokenDetails}
-          interestRates={interestRates}
-        />
+        <DetailMobile tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
       ) : (
-        <DetailPc
-          tokenDetailDays={tokenDetailDays}
-          interestRates={interestRates}
-          fetchTokenDetails={handlePeriodClick}
-        />
+        <DetailPc tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
       )}
     </DetailData.Provider>
   );
 }
 
-function DetailMobile({ tokenDetailDays, interestRates, fetchTokenDetails }) {
+function DetailMobile({ tokenDetails, handlePeriodClick }) {
   const { router, is_new, is_native, tokenRow } = useContext(DetailData) as any;
   const [activeTab, setActiveTab] = useState<"market" | "your">("market");
   const [open, setOpen] = useState<boolean>(false);
@@ -245,9 +239,8 @@ function DetailMobile({ tokenDetailDays, interestRates, fetchTokenDetails }) {
         {/* Tab content */}
         <MarketInfo
           className={`${isMarket ? "" : "hidden"}`}
-          tokenDetailDays={tokenDetailDays}
-          interestRates={interestRates}
-          fetchTokenDetails={fetchTokenDetails}
+          tokenDetails={tokenDetails}
+          handlePeriodClick={handlePeriodClick}
         />
         <YourInfo className={`${isYour ? "" : "hidden"}`} />
         {/* Get token  modal */}
@@ -279,19 +272,17 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   );
 }
 
-function MarketInfo({ className, tokenDetailDays, interestRates, fetchTokenDetails }) {
+function MarketInfo({ className, tokenDetails, handlePeriodClick }) {
+  const { interestRates } = tokenDetails || {};
   const { tokenRow } = useContext(DetailData) as any;
 
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${className}`}>
       <TokenOverviewMobile />
-      <TokenSupplyChart tokenDetailDays={tokenDetailDays} fetchTokenDetails={fetchTokenDetails} />
+      <TokenSupplyChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
       {tokenRow.can_borrow && (
         <>
-          <TokenBorrowChart
-            tokenDetailDays={tokenDetailDays}
-            fetchTokenDetails={fetchTokenDetails}
-          />
+          <TokenBorrowChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
           <TokenRateModeChart interestRates={interestRates} tokenRow={tokenRow} />
         </>
       )}
@@ -310,7 +301,8 @@ function YourInfo({ className }) {
   );
 }
 
-function DetailPc({ tokenDetailDays, interestRates, fetchTokenDetails }) {
+function DetailPc({ tokenDetails, handlePeriodClick }) {
+  const { interestRates } = tokenDetails || {};
   const { router, supplied, borrowed, tokenRow } = useContext(DetailData) as any;
 
   return (
@@ -327,16 +319,10 @@ function DetailPc({ tokenDetailDays, interestRates, fetchTokenDetails }) {
       <div className="grid grid-cols-3/5">
         <div className="mr-6">
           <TokenOverview />
-          <TokenSupplyChart
-            tokenDetailDays={tokenDetailDays}
-            fetchTokenDetails={fetchTokenDetails}
-          />
+          <TokenSupplyChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
           {tokenRow.can_borrow && (
             <>
-              <TokenBorrowChart
-                tokenDetailDays={tokenDetailDays}
-                fetchTokenDetails={fetchTokenDetails}
-              />
+              <TokenBorrowChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
               <TokenRateModeChart interestRates={interestRates} />
             </>
           )}
@@ -495,7 +481,8 @@ function TokenOverview() {
   );
 }
 
-function TokenSupplyChart({ tokenDetailDays, fetchTokenDetails }) {
+function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
+  const { tokenSupplyDays, supplyAnimating } = tokenDetails || {};
   const { tokenRow, depositAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalSupply);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney);
@@ -548,10 +535,12 @@ function TokenSupplyChart({ tokenDetailDays, fetchTokenDetails }) {
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
         <TokenSuppliesChart
-          data={tokenDetailDays}
+          defaultPeriod={tokenSupplyDays?.length}
+          data={tokenSupplyDays}
           xKey="dayDate"
           yKey="tokenSupplyApy"
-          fetchData={fetchTokenDetails}
+          disableControl={supplyAnimating}
+          onPeriodClick={(v) => handlePeriodClick(null, v)}
         />
         {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
@@ -561,7 +550,8 @@ function TokenSupplyChart({ tokenDetailDays, fetchTokenDetails }) {
 
 const HrLine = () => <hr className="hidden mt-6 mb-6 h-px my-8 bg-dark-500 border-0 xsm:block" />;
 
-function TokenBorrowChart({ tokenDetailDays, fetchTokenDetails }) {
+function TokenBorrowChart({ tokenDetails, handlePeriodClick }) {
+  const { tokenBorrowDays } = tokenDetails || {};
   const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
@@ -594,7 +584,14 @@ function TokenBorrowChart({ tokenDetailDays, fetchTokenDetails }) {
       </div>
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
-        <TokenSuppliesChart data={tokenDetailDays} xKey="dayDate" yKey="tokenBorrowApy" isBorrow />
+        <TokenSuppliesChart
+          defaultPeriod={tokenBorrowDays?.length}
+          data={tokenBorrowDays}
+          xKey="dayDate"
+          yKey="tokenBorrowApy"
+          isBorrow
+          onPeriodClick={(v) => handlePeriodClick(v)}
+        />
       </div>
     </div>
   );
@@ -614,17 +611,17 @@ function TokenRateModeChart({
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
       <div className="font-bold text-lg text-white mb-5">Interest Rate Mode</div>
 
-      <div className="grid grid-cols-1 gap-y-4 mb-6">
+      <div className="grid grid-cols-1 gap-y-4 mb-6 hidden xsm2:block">
         <LabelText
           left="Current Utilization"
           right={currentUtilRate ? `${currentUtilRate.toFixed(2)}%` : "-"}
         />
-        <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} />
+        {/* <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} /> */}
         <LabelText left="Borrow Rate" right={borrowRate ? `${borrowRate.toFixed(2)}%` : "-"} />
         <LabelText left="Supply Rate" right={supplyRate ? `${supplyRate.toFixed(2)}%` : "-"} />
       </div>
       <HrLine />
-      <div className="flex items-center justify-center h-[300px] xsm:-ml-4">
+      <div className="flex items-center justify-center h-[300px] xsm2:-ml-4">
         <InterestRateChart data={interestRates} />
         {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
