@@ -1,4 +1,4 @@
-import React, { PureComponent, useState } from "react";
+import React, { PureComponent, useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -16,27 +16,56 @@ type chartProps = {
   xKey?: string;
   yKey?: any;
   isBorrow?: boolean;
-  fetchData?: (number) => any;
+  onPeriodClick?: (number) => any;
+  disableControl?: boolean;
+  defaultPeriod: number;
 };
 
-const TokenSuppliesChart = ({ data, xKey, yKey, isBorrow, fetchData }: chartProps) => {
+const TokenSuppliesChart = ({
+  data,
+  xKey,
+  yKey,
+  isBorrow,
+  onPeriodClick,
+  disableControl,
+  defaultPeriod,
+}: chartProps) => {
   const [period, setPeriod] = useState(30);
   const isMobile = isMobileDevice();
 
+  useEffect(() => {
+    setPeriod(defaultPeriod);
+  }, [defaultPeriod]);
+
   const handlePeriodClick = (n: number) => {
-    if (fetchData) {
-      fetchData(n);
+    if (onPeriodClick) {
+      onPeriodClick(n);
     }
     setPeriod(n);
   };
 
   return (
     <>
-      {/* <div> */}
-      {/*  <TabItem onClick={() => handlePeriodClick(30)} active={period === 30} label="1M" /> */}
-      {/*  <TabItem onClick={() => handlePeriodClick(365)} active={period === 365} label="1Y" /> */}
-      {/*  <TabItem onClick={() => handlePeriodClick(9999)} active={period === 9999} label="ALL" /> */}
-      {/* </div> */}
+      <div className="flex gap-1 justify-end mb-2 text-sm">
+        <TabItem
+          onClick={() => handlePeriodClick(30)}
+          active={period === 30}
+          label="1M"
+          disable={disableControl}
+        />
+        <TabItem
+          onClick={() => handlePeriodClick(365)}
+          active={period === 365}
+          label="1Y"
+          disable={disableControl}
+        />
+        <TabItem
+          onClick={() => handlePeriodClick(9999)}
+          active={period === 9999}
+          label="ALL"
+          disable={disableControl}
+        />
+      </div>
 
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -52,7 +81,7 @@ const TokenSuppliesChart = ({ data, xKey, yKey, isBorrow, fetchData }: chartProp
             }}
           >
             {isMobile && (
-              <CartesianGrid stroke="#eee" strokeWidth={0.2} opacity={0.2} vertical={false} />
+              <CartesianGrid stroke="#eee" strokeWidth={0.2} opacity={0.3} vertical={false} />
             )}
 
             <XAxis dataKey={xKey} tickLine={false} axisLine={false} tick={<RenderTick />} />
@@ -102,9 +131,22 @@ const TokenSuppliesChart = ({ data, xKey, yKey, isBorrow, fetchData }: chartProp
   );
 };
 
-const TabItem = ({ onClick, active, label }) => {
+const TabItem = ({ onClick, active, label, disable }) => {
+  const handleClick = () => {
+    if (!disable) {
+      onClick();
+    }
+  };
+
   return (
-    <div onClick={onClick} className={twMerge(active && "active")}>
+    <div
+      onClick={handleClick}
+      className={twMerge(
+        "px-2 rounded-md cursor-pointer",
+        active && "active bg-dark-900",
+        disable && "disable text-dark-800",
+      )}
+    >
       {label}
     </div>
   );
