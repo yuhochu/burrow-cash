@@ -551,7 +551,7 @@ function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
 const HrLine = () => <hr className="hidden mt-6 mb-6 h-px my-8 bg-dark-500 border-0 xsm:block" />;
 
 function TokenBorrowChart({ tokenDetails, handlePeriodClick }) {
-  const { tokenBorrowDays } = tokenDetails || {};
+  const { tokenBorrowDays, borrowAnimating } = tokenDetails || {};
   const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
@@ -585,6 +585,7 @@ function TokenBorrowChart({ tokenDetails, handlePeriodClick }) {
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
         <TokenSuppliesChart
+          disableControl={borrowAnimating}
           defaultPeriod={tokenBorrowDays?.length}
           data={tokenBorrowDays}
           xKey="dayDate"
