@@ -46,7 +46,7 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
-import { APYCell } from "../Market/APYCell";
+import { APYCell, BaseAPYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
@@ -449,7 +449,13 @@ function TokenOverview() {
         <div className="flex flex-col w-1/4">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply APY</span>
           <div className="flex items-center">
-            <span className="text-lg text-white font-bold">{format_apy(depositAPY)}</span>
+            <APYCell
+              rewards={tokenRow.depositRewards}
+              baseAPY={tokenRow.supplyApy}
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+              onlyMarket
+            />
           </div>
         </div>
         <div className="flex flex-col w-1/4">
@@ -502,7 +508,15 @@ function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
         </div>
         <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{apy}</span>
+          <span className="font-bold text-lg text-white">
+            <APYCell
+              rewards={tokenRow.depositRewards}
+              baseAPY={tokenRow.supplyApy}
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+              onlyMarket
+            />
+          </span>
         </div>
         <div className="flex flex-col justify-between ml-10">
           <span className="text-sm text-gray-300">Rewards</span>
@@ -751,14 +765,7 @@ function YouSupplied() {
           </div>
           <Label
             title="Your APY"
-            content={
-              <APYCell
-                rewards={tokenRow.depositRewards}
-                baseAPY={tokenRow.supplyApy}
-                page="deposit"
-                tokenId={tokenRow.tokenId}
-              />
-            }
+            content={<BaseAPYCell baseAPY={tokenRow.supplyApy} tokenId={tokenRow.tokenId} />}
           />
           <Label title="Daily rewards" content={RewardsReactNode} />
           <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />

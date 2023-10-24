@@ -24,16 +24,12 @@ export const APYCell = ({
     page,
     onlyMarket,
   });
-  const isLucky = isBorrow && boostedAPY <= 0;
-
   return (
     <ToolTip
       tokenId={tokenId}
       list={list}
       baseAPY={baseAPY}
       isBorrow={isBorrow}
-      boostedAPY={boostedAPY}
-      isLucky={isLucky}
       isStaking={isStaking}
       onlyMarket={onlyMarket}
     >
@@ -44,18 +40,16 @@ export const APYCell = ({
   );
 };
 
-const ToolTip = ({
-  children,
-  tokenId,
-  list,
-  baseAPY,
-  isBorrow,
-  boostedAPY,
-  isLucky,
-  isStaking,
-  onlyMarket,
-}) => {
-  const theme = useTheme();
+export const BaseAPYCell = ({ baseAPY, tokenId }) => {
+  return (
+    <ToolTip tokenId={tokenId} list={[]} baseAPY={baseAPY} isBorrow isStaking={false} onlyMarket>
+      <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
+        {format_apy(baseAPY)}
+      </span>
+    </ToolTip>
+  );
+};
+const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, isStaking, onlyMarket }) => {
   const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
     useExtraAPY({
       tokenId,
