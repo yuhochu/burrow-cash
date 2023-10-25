@@ -46,7 +46,7 @@ import { get_token_detail } from "../../api/get-markets";
 import { isMobileDevice } from "../../helpers/helpers";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
-import { APYCell, BaseAPYCell } from "../Market/APYCell";
+import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
@@ -765,7 +765,15 @@ function YouSupplied() {
           </div>
           <Label
             title="Your APY"
-            content={<BaseAPYCell baseAPY={tokenRow.supplyApy} tokenId={tokenRow.tokenId} />}
+            content={
+              <APYCell
+                rewards={tokenRow.depositRewards}
+                baseAPY={tokenRow.supplyApy}
+                page="deposit"
+                tokenId={tokenRow.tokenId}
+                excludeNetApy
+              />
+            }
           />
           <Label title="Daily rewards" content={RewardsReactNode} />
           <Label title="Collateral" content={formatWithCommas_number(supplied?.collateral)} />

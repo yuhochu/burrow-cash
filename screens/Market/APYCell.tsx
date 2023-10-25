@@ -1,9 +1,7 @@
 import { Box, Typography, Stack, useTheme } from "@mui/material";
-import { hiddenAssets } from "../../utils/config";
 
 import HtmlTooltip from "../../components/common/html-tooltip";
 import TokenIcon from "../../components/TokenIcon";
-import { APY_FORMAT } from "../../store/constants";
 import { useExtraAPY } from "../../hooks/useExtraAPY";
 import { useAPY } from "../../hooks/useAPY";
 import { format_apy } from "../../utils/uiNumber";
@@ -15,6 +13,7 @@ export const APYCell = ({
   tokenId,
   isStaking = false,
   onlyMarket = false,
+  excludeNetApy = false,
 }) => {
   const isBorrow = page === "borrow";
   const boostedAPY = useAPY({
@@ -23,6 +22,7 @@ export const APYCell = ({
     tokenId,
     page,
     onlyMarket,
+    excludeNetApy,
   });
   return (
     <ToolTip
@@ -32,6 +32,7 @@ export const APYCell = ({
       isBorrow={isBorrow}
       isStaking={isStaking}
       onlyMarket={onlyMarket}
+      excludeNetApy={excludeNetApy}
     >
       <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
         {format_apy(boostedAPY)}
@@ -40,16 +41,16 @@ export const APYCell = ({
   );
 };
 
-export const BaseAPYCell = ({ baseAPY, tokenId }) => {
-  return (
-    <ToolTip tokenId={tokenId} list={[]} baseAPY={baseAPY} isBorrow isStaking={false} onlyMarket>
-      <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
-        {format_apy(baseAPY)}
-      </span>
-    </ToolTip>
-  );
-};
-const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, isStaking, onlyMarket }) => {
+const ToolTip = ({
+  children,
+  tokenId,
+  list,
+  baseAPY,
+  isBorrow,
+  isStaking,
+  onlyMarket,
+  excludeNetApy,
+}) => {
   const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
     useExtraAPY({
       tokenId,
@@ -65,14 +66,15 @@ const ToolTip = ({ children, tokenId, list, baseAPY, isBorrow, isStaking, onlyMa
           <Typography fontSize="0.75rem" color="#fff" textAlign="right">
             {format_apy(baseAPY)}
           </Typography>
-          {!isBorrow && [
-            <Typography fontSize="0.75rem" key={0}>
-              Net Liquidity APY
-            </Typography>,
-            <Typography fontSize="0.75rem" color="#fff" textAlign="right" key={1}>
-              {format_apy(netLiquidityAPY * netTvlMultiplier)}
-            </Typography>,
-          ]}
+          {!isBorrow &&
+            !excludeNetApy && [
+              <Typography fontSize="0.75rem" key={0}>
+                Net Liquidity APY
+              </Typography>,
+              <Typography fontSize="0.75rem" color="#fff" textAlign="right" key={1}>
+                {format_apy(netLiquidityAPY * netTvlMultiplier)}
+              </Typography>,
+            ]}
           {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
 
