@@ -11,7 +11,9 @@ export const useTokenDetails = () => {
   const [supplyAnimating, setSupplyAnimating] = useState(false);
 
   const changePeriodDisplay = async (tokenId, borrowPeriod, supplyPeriod) => {
-    if (!tokenDetailDays?.length) {
+    const newBorrowPeriod = borrowPeriod && borrowPeriod?.length > tokenDetailDays?.length;
+    const newSupplyPeriod = supplyPeriod && supplyPeriod?.length > tokenDetailDays?.length;
+    if (!tokenDetailDays?.length || newBorrowPeriod || newSupplyPeriod) {
       await fetchTokenDetails(tokenId, borrowPeriod || supplyPeriod);
     } else {
       if (borrowPeriod && borrowPeriod !== tokenBorrowDays?.length) {
@@ -60,7 +62,8 @@ export const useTokenDetails = () => {
       const supplies: any[] = [];
       const result = tokenDetails?.map((d) => {
         const date = DateTime.fromISO(d.createdAt);
-        d.tokenSupplyApy = Number((d.token_supply_apr * 100).toFixed(2));
+        const supplyApyWithNet = Number(d.token_supply_apr) + Number(d.net_liquidity_apr || 0);
+        d.tokenSupplyApy = Number((supplyApyWithNet * 100).toFixed(2));
         d.tokenBorrowApy = Number((d.token_borrow_apr * 100).toFixed(2));
         d.dayDate = date.toFormat("dd MMM");
         borrows.push({
