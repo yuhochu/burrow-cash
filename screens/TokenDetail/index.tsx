@@ -50,8 +50,7 @@ import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
-import Datasource from "../../data/datasource";
-import TokenSuppliesChart from "./tokenSuppliesChart";
+import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
 
 const DetailData = createContext(null) as any;
@@ -96,8 +95,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const borrowed = borrowedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
   });
+
   useEffect(() => {
-    fetchTokenDetails(tokenRow.tokenId).catch();
+    fetchTokenDetails(tokenRow.tokenId, 365).catch();
     get_token_detail(tokenRow.tokenId).then((response) => {
       const { total_suppliers, total_borrowers } = response[0] || {};
       if (!isInvalid(total_suppliers)) {
@@ -109,9 +109,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     });
   }, []);
 
-  const handlePeriodClick = async (borrowPeriod, supplyPeriod) => {
+  const handlePeriodClick = async ({ borrowPeriod, supplyPeriod }) => {
     try {
-      await changePeriodDisplay(tokenRow.tokenId, borrowPeriod, supplyPeriod);
+      await changePeriodDisplay({ tokenId: tokenRow.tokenId, borrowPeriod, supplyPeriod });
     } catch (e) {
       console.error("err", e);
     }
@@ -548,13 +548,12 @@ function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
       </div>
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
-        <TokenSuppliesChart
-          defaultPeriod={tokenSupplyDays?.length}
+        <TokenBorrowSuppliesChart
           data={tokenSupplyDays}
           xKey="dayDate"
           yKey="tokenSupplyApy"
           disableControl={supplyAnimating}
-          onPeriodClick={(v) => handlePeriodClick(null, v)}
+          onPeriodClick={(v) => handlePeriodClick({ supplyPeriod: v })}
         />
         {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
@@ -598,14 +597,13 @@ function TokenBorrowChart({ tokenDetails, handlePeriodClick }) {
       </div>
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
-        <TokenSuppliesChart
+        <TokenBorrowSuppliesChart
           disableControl={borrowAnimating}
-          defaultPeriod={tokenBorrowDays?.length}
           data={tokenBorrowDays}
           xKey="dayDate"
           yKey="tokenBorrowApy"
           isBorrow
-          onPeriodClick={(v) => handlePeriodClick(v)}
+          onPeriodClick={(v) => handlePeriodClick({ borrowPeriod: v })}
         />
       </div>
     </div>

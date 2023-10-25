@@ -18,10 +18,10 @@ type chartProps = {
   isBorrow?: boolean;
   onPeriodClick?: (number) => any;
   disableControl?: boolean;
-  defaultPeriod: number;
+  defaultPeriod?: number;
 };
 
-const TokenSuppliesChart = ({
+const TokenBorrowSuppliesChart = ({
   data,
   xKey,
   yKey,
@@ -30,11 +30,15 @@ const TokenSuppliesChart = ({
   disableControl,
   defaultPeriod,
 }: chartProps) => {
-  const [period, setPeriod] = useState(30);
+  const [period, setPeriod] = useState(365);
+  const [init, setInit] = useState(false);
   const isMobile = isMobileDevice();
 
   useEffect(() => {
-    setPeriod(defaultPeriod);
+    if (!init && defaultPeriod) {
+      setPeriod(defaultPeriod);
+      setInit(true);
+    }
   }, [defaultPeriod]);
 
   const handlePeriodClick = (n: number) => {
@@ -60,8 +64,8 @@ const TokenSuppliesChart = ({
           disable={disableControl}
         />
         <TabItem
-          onClick={() => handlePeriodClick(9999)}
-          active={period === 9999}
+          onClick={() => handlePeriodClick(0)}
+          active={period === 0}
           label="ALL"
           disable={disableControl}
         />
@@ -101,7 +105,7 @@ const TokenSuppliesChart = ({
                 fill: "#00c6a2",
                 strokeDasharray: "2, 2",
               }}
-              content={<CustomTooltip />}
+              content={<CustomTooltip isBorrow={isBorrow} />}
             />
 
             <defs>
@@ -142,7 +146,7 @@ const TabItem = ({ onClick, active, label, disable }) => {
     <div
       onClick={handleClick}
       className={twMerge(
-        "px-2 rounded-md cursor-pointer",
+        "px-2 rounded-md cursor-pointer select-none",
         active && "active bg-dark-900",
         disable && "disable text-dark-800",
       )}
@@ -192,4 +196,4 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
-export default TokenSuppliesChart;
+export default TokenBorrowSuppliesChart;
