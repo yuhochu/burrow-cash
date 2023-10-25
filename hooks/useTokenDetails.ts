@@ -10,39 +10,53 @@ export const useTokenDetails = () => {
   const [borrowAnimating, setBorrowAnimating] = useState(false);
   const [supplyAnimating, setSupplyAnimating] = useState(false);
 
-  const changePeriodDisplay = async (tokenId, borrowPeriod, supplyPeriod) => {
-    const newBorrowPeriod = borrowPeriod && borrowPeriod?.length > tokenDetailDays?.length;
-    const newSupplyPeriod = supplyPeriod && supplyPeriod?.length > tokenDetailDays?.length;
-    if (!tokenDetailDays?.length || newBorrowPeriod || newSupplyPeriod) {
-      await fetchTokenDetails(tokenId, borrowPeriod || supplyPeriod);
-    } else {
-      if (borrowPeriod && borrowPeriod !== tokenBorrowDays?.length) {
+  const changePeriodDisplay = async ({ tokenId, borrowPeriod, supplyPeriod }) => {
+    try {
+      const isBorrowPeriodChange =
+        borrowPeriod === 0 || (borrowPeriod && borrowPeriod !== tokenBorrowDays?.length);
+      const isSupplyPeriodChange =
+        supplyPeriod === 0 || (supplyPeriod && supplyPeriod !== tokenSupplyDays?.length);
+      let docs = tokenDetailDays;
+
+      if (isBorrowPeriodChange) {
         setBorrowAnimating(true);
-        const displayDetails = tokenDetailDays.slice(
-          tokenDetailDays.length - borrowPeriod,
-          tokenDetailDays.length,
-        );
+      }
+      if (isSupplyPeriodChange) {
+        setSupplyAnimating(true);
+      }
+
+      if (!tokenDetailDays?.length || borrowPeriod === 0 || supplyPeriod === 0) {
+        const { all } = await fetchTokenDetails(tokenId, borrowPeriod ?? supplyPeriod, true);
+        docs = all;
+      }
+
+      if (isBorrowPeriodChange) {
+        const displayDetails =
+          borrowPeriod === 0 ? docs : docs.slice(docs.length - borrowPeriod, docs.length);
         setTokenBorrowDays(displayDetails);
         setTimeout(() => {
           setBorrowAnimating(false);
         }, 1500);
       }
 
-      if (supplyPeriod && supplyPeriod !== tokenSupplyDays?.length) {
-        setSupplyAnimating(true);
-        const displayDetails = tokenDetailDays.slice(
-          tokenDetailDays.length - supplyPeriod,
-          tokenDetailDays.length,
-        );
+      if (isSupplyPeriodChange) {
+        const displayDetails =
+          supplyPeriod === 0 ? docs : docs.slice(docs.length - supplyPeriod, docs.length);
         setTokenSupplyDays(displayDetails);
         setTimeout(() => {
           setSupplyAnimating(false);
         }, 1500);
       }
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  const fetchTokenDetails = async (tokenId, period = 365) => {
+  const fetchTokenDetails = async (tokenId, period, isFetchOnly?: boolean) => {
+    if (period === undefined || period === null) {
+      period = 365;
+    }
+
     try {
       const [tokenDetailsRes, interestRateRes] = await Promise.allSettled([
         Datasource.shared.getTokenDetails(tokenId, period),
@@ -57,6 +71,7 @@ export const useTokenDetails = () => {
       if (interestRateRes.status !== "rejected") {
         interestRate = interestRateRes?.value;
       }
+
       const lastTokenDetails = tokenDetails[tokenDetails.length - 1];
       const borrows: any[] = [];
       const supplies: any[] = [];
@@ -65,7 +80,7 @@ export const useTokenDetails = () => {
         const supplyApyWithNet = Number(d.token_supply_apr) + Number(d.net_liquidity_apr || 0);
         d.tokenSupplyApy = Number((supplyApyWithNet * 100).toFixed(2));
         d.tokenBorrowApy = Number((d.token_borrow_apr * 100).toFixed(2));
-        d.dayDate = date.toFormat("dd MMM");
+        d.dayDate = date.toFormat("dd MMM yyyy");
         borrows.push({
           tokenBorrowApy: d.tokenBorrowApy,
           dayDate: d.dayDate,
@@ -103,12 +118,25 @@ export const useTokenDetails = () => {
           supplyRate2,
         };
       });
+
+      const returnObj = {
+        borrows,
+        supplies,
+        interestRates: interestRatesCal,
+        all: result,
+      };
+      if (isFetchOnly) {
+        return returnObj;
+      }
+
       setInterestRates(interestRatesCal);
       setTokenDetailDays(result);
       setTokenBorrowDays(borrows);
       setTokenSupplyDays(supplies);
+      return returnObj;
     } catch (e) {
       console.error("fetchTokenDetailsErr", e);
+      throw e;
     }
   };
 

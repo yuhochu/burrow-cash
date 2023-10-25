@@ -80,20 +80,37 @@ const InterestRateChart = ({ data }) => {
           />
         )}
 
-        <Line type="monotone" dataKey="borrowRate" stroke="#FF6BA9" dot={<CustomizedDot />} />
-        <Line type="monotone" dataKey="supplyRate" stroke="#D2FF3A" dot={<CustomizedDot />} />
+        <Line
+          type="monotone"
+          dataKey="borrowRate"
+          stroke="#FF6BA9"
+          dot={<CustomizedDot />}
+          activeDot={<ActiveDot />}
+        />
+        <Line
+          type="monotone"
+          dataKey="supplyRate"
+          stroke="#D2FF3A"
+          dot={<CustomizedDot />}
+          activeDot={<ActiveDot />}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
+};
+
+const ActiveDot = (props) => {
+  const { cx, cy, stroke, fill, payload, value } = props;
+  return <circle cx={cx} cy={cy} r={4} stroke={fill} fill={fill} />;
 };
 
 const CustomizedDot = (props) => {
   const { cx, cy, stroke, payload, value } = props;
   const { percent } = payload || {};
 
-  if (percent === 100) {
-    return <circle cx={cx} cy={cy} r={4} stroke={stroke} fill={stroke} />;
-  }
+  // if (percent === 100) {
+  //   return <circle cx={cx} cy={cy} r={4} stroke={stroke} fill={stroke} />;
+  // }
 
   return null;
 };
@@ -108,15 +125,24 @@ const CustomTooltip = ({ active, payload, defaultPayload }: any) => {
   return (
     <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
       <LabelText left="Utilization Rate" right={`${percent?.toFixed(2)}%`} />
-      <LabelText left="Borrow Rate" right={`${borrowRate?.toFixed(2)}%`} />
-      <LabelText left="Supply Rate" right={`${supplyRate?.toFixed(2)}%`} className="mb-0" />
+      <LabelText
+        left="Borrow Rate"
+        right={`${borrowRate?.toFixed(2)}%`}
+        style={{ color: "#FF6BA9" }}
+      />
+      <LabelText
+        left="Supply Rate"
+        right={`${supplyRate?.toFixed(2)}%`}
+        style={{ color: "#D2FF3A" }}
+        className="mb-0"
+      />
     </div>
   );
 };
 
-export const LabelText = ({ left, right, className = "" }) => {
+export const LabelText = ({ left, right, style, className = "" }: any) => {
   return (
-    <div className={`text-white text-sm mb-1 flex justify-between ${className}`}>
+    <div className={`text-white text-sm mb-1 flex justify-between ${className}`} style={style}>
       <div className="mr-1 text-gray-300">{left}</div>
       <div>{right}</div>
     </div>
