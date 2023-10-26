@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
+import Decimal from "decimal.js";
 import Datasource from "../data/datasource";
+import { getAssets } from "../store";
 
 export const useTokenDetails = () => {
   const [tokenDetailDays, setTokenDetailDays] = useState<any[]>([]);
@@ -58,18 +60,23 @@ export const useTokenDetails = () => {
     }
 
     try {
-      const [tokenDetailsRes, interestRateRes] = await Promise.allSettled([
+      const [tokenDetailsRes, interestRateRes, currentUtilizationRes] = await Promise.allSettled([
         Datasource.shared.getTokenDetails(tokenId, period),
         Datasource.shared.getInterestRate(tokenId),
+        getCurrentUtilization(tokenId),
       ]);
 
       let tokenDetails: any[] = [];
       let interestRate: any = {};
+      let currentUtilization: number | null;
       if (tokenDetailsRes.status !== "rejected") {
         tokenDetails = tokenDetailsRes?.value;
       }
       if (interestRateRes.status !== "rejected") {
         interestRate = interestRateRes?.value;
+      }
+      if (currentUtilizationRes.status !== "rejected") {
+        currentUtilization = currentUtilizationRes.value;
       }
 
       const lastTokenDetails = tokenDetails[tokenDetails.length - 1];
@@ -109,7 +116,7 @@ export const useTokenDetails = () => {
         }
 
         return {
-          currentUtilRate: lastTokenDetails.token_utilization_rate * 100,
+          currentUtilRate: currentUtilization || lastTokenDetails.token_utilization_rate * 100,
           percent,
           percentLabel: `${percent}%`,
           borrowRate,
@@ -140,6 +147,19 @@ export const useTokenDetails = () => {
     }
   };
 
+  const getCurrentUtilization = async (tokenId) => {
+    const assets = await getAssets();
+    let token: any = {};
+    token = assets.find((e) => e.token_id === tokenId);
+    if (token) {
+      const { borrowed, supplied, reserved } = token;
+      const totalSupplyD = new Decimal(supplied.balance).plus(new Decimal(reserved)).toFixed();
+      const currentUtilization = (borrowed.balance / Number(totalSupplyD)) * 100;
+      return currentUtilization;
+    }
+    return null;
+  };
+
   return {
     tokenDetailDays,
     tokenBorrowDays,
@@ -149,5 +169,6 @@ export const useTokenDetails = () => {
     interestRates,
     changePeriodDisplay,
     fetchTokenDetails,
+    getCurrentUtilization,
   };
 };
