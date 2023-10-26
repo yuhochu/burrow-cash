@@ -377,12 +377,18 @@ function TableRowPc({
           </span>
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-4 xl:pl-8 whitespace-nowrap">
-          <span className="text-sm text-white">
-            {toInternationalCurrencySystem_number(row.availableLiquidity)}
-          </span>
-          <span className="text-xs text-gray-300">
-            {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
-          </span>
+          {row.can_borrow ? (
+            <>
+              <span className="text-sm text-white">
+                {toInternationalCurrencySystem_number(row.availableLiquidity)}
+              </span>
+              <span className="text-xs text-gray-300">
+                {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
+              </span>
+            </>
+          ) : (
+            "-"
+          )}
         </div>
       </div>
     </Link>
@@ -438,8 +444,12 @@ function TableRowMobile({
           <TemplateMobile title="Borrow APY" value={row.can_borrow ? format_apy(borrowAPY) : "-"} />
           <TemplateMobile
             title="Available Liquidity"
-            value={toInternationalCurrencySystem_number(row.availableLiquidity)}
-            subValue={toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
+            value={
+              row.can_borrow ? toInternationalCurrencySystem_number(row.availableLiquidity) : "-"
+            }
+            subValue={
+              row.can_borrow ? toInternationalCurrencySystem_usd(row.availableLiquidityMoney) : ""
+            }
           />
           <TemplateMobile title="Price" value={`$${row.price}`} />
         </div>
