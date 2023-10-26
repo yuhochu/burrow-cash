@@ -140,10 +140,13 @@ const CustomTooltip = ({ active, payload, defaultPayload }: any) => {
   );
 };
 
-export const LabelText = ({ left, right, style, className = "" }: any) => {
+export const LabelText = ({ left, leftIcon, right, style, className = "" }: any) => {
   return (
     <div className={`text-white text-sm mb-1 flex justify-between ${className}`} style={style}>
-      <div className="mr-1 text-gray-300">{left}</div>
+      <div className="flex items-center mr-1 text-gray-300">
+        {leftIcon}
+        {left}
+      </div>
       <div>{right}</div>
     </div>
   );

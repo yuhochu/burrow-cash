@@ -123,6 +123,7 @@ const TokenBorrowSuppliesChart = ({
             </defs>
 
             <Area
+              activeDot={<ActiveDot />}
               type="monotone"
               dataKey={yKey}
               stroke={isBorrow ? "#FF6BA9" : "#d2ff3a"}
@@ -133,6 +134,11 @@ const TokenBorrowSuppliesChart = ({
       </div>
     </>
   );
+};
+
+const ActiveDot = (props) => {
+  const { cx, cy, stroke, fill, payload, value } = props;
+  return <circle cx={cx} cy={cy} r={4} stroke={fill} fill={fill} />;
 };
 
 const TabItem = ({ onClick, active, label, disable }) => {
