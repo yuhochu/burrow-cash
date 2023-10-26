@@ -93,7 +93,7 @@ export const useTokenDetails = () => {
           dayDate: d.dayDate,
         });
         supplies.push({
-          tokenSupplyApy: d.tokenBorrowApy,
+          tokenSupplyApy: d.tokenSupplyApy,
           dayDate: d.dayDate,
         });
         return d;
