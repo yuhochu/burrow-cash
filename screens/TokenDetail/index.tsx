@@ -641,11 +641,20 @@ function TokenRateModeChart({
       <div className="grid grid-cols-1 gap-y-4 mb-6 hidden xsm2:block">
         <LabelText
           left="Current Utilization"
+          leftIcon={<div className="bg-gray-400 mr-2 h-[2px] w-[10px]" />}
           right={currentUtilRate ? `${currentUtilRate.toFixed(2)}%` : "-"}
         />
         {/* <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} /> */}
-        <LabelText left="Borrow Rate" right={borrowRate ? `${borrowRate.toFixed(2)}%` : "-"} />
-        <LabelText left="Supply Rate" right={supplyRate ? `${supplyRate.toFixed(2)}%` : "-"} />
+        <LabelText
+          left="Borrow Rate"
+          leftIcon={<div className="rounded-full mr-2 bg-primary h-[10px] w-[10px]" />}
+          right={borrowRate ? `${borrowRate.toFixed(2)}%` : "-"}
+        />
+        <LabelText
+          left="Supply Rate"
+          leftIcon={<div className="rounded-full mr-2 bg-danger h-[10px] w-[10px]" />}
+          right={supplyRate ? `${supplyRate.toFixed(2)}%` : "-"}
+        />
       </div>
       <HrLine />
       <div className="flex items-center justify-center h-[300px] xsm2:-ml-4">
