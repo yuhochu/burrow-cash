@@ -44,7 +44,8 @@ const DashboardApy = ({
 
   const sign = isBorrow ? -1 : 1;
   const apy = isStaking ? stakingExtraAPY : extraAPY;
-  const boostedAPY = baseAPY + (isBorrow ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
+  // const boostedAPY = baseAPY + (isBorrow ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
+  const boostedAPY = baseAPY + sign * apy;
   const isLucky = isBorrow && boostedAPY <= 0;
 
   return <div>{toAPY(boostedAPY)}%</div>;
