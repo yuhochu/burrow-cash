@@ -631,8 +631,9 @@ function TokenRateModeChart({
   interestRates: Array<any>;
   tokenRow?: any;
 }) {
-  const fullRateDetail = interestRates?.find((d) => d.percent === 100);
-  const { borrowRate, supplyRate, currentUtilRate } = fullRateDetail || {};
+  const { currentUtilRate } = interestRates?.[0] || {};
+  const { borrowApy, supplyApy } = tokenRow || {};
+  // const { borrowRate, supplyRate } = fullRateDetail || {};
 
   return (
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
@@ -648,12 +649,12 @@ function TokenRateModeChart({
         <LabelText
           left="Borrow Rate"
           leftIcon={<div className="rounded-full mr-2 bg-primary h-[10px] w-[10px]" />}
-          right={borrowRate ? `${borrowRate.toFixed(2)}%` : "-"}
+          right={borrowApy ? `${borrowApy.toFixed(2)}%` : "-"}
         />
         <LabelText
           left="Supply Rate"
           leftIcon={<div className="rounded-full mr-2 bg-danger h-[10px] w-[10px]" />}
-          right={supplyRate ? `${supplyRate.toFixed(2)}%` : "-"}
+          right={supplyApy ? `${supplyApy.toFixed(2)}%` : "-"}
         />
       </div>
       <HrLine />
