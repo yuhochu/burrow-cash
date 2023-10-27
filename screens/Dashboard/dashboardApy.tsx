@@ -1,6 +1,7 @@
 import { IReward } from "../../interfaces";
 import { APY_FORMAT, PERCENT_DIGITS, shrinkToken } from "../../store";
 import { useExtraAPY } from "../../hooks/useExtraAPY";
+import { format_apy } from "../../utils/uiNumber";
 
 interface RewardProps {
   baseAPY: number;
@@ -48,7 +49,7 @@ const DashboardApy = ({
   const boostedAPY = baseAPY + sign * apy;
   const isLucky = isBorrow && boostedAPY <= 0;
 
-  return <div>{toAPY(boostedAPY)}%</div>;
+  return <div>{format_apy(boostedAPY)}</div>;
 };
 
 export default DashboardApy;
