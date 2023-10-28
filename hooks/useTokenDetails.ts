@@ -95,6 +95,9 @@ export const useTokenDetails = () => {
         supplies.push({
           tokenSupplyApy: d.tokenSupplyApy,
           dayDate: d.dayDate,
+          baseApy: Number((d.token_supply_apr * 100).toFixed(2)),
+          netApy: Number((d.net_liquidity_apr * 100).toFixed(2)),
+          farmApy: Number((d.token_farm_supply_apr * 100).toFixed(2)),
         });
         return d;
       });
