@@ -54,11 +54,12 @@ const InterestRateChart = ({ data }) => {
             fill: "#00c6a2",
             strokeDasharray: "2, 2",
           }}
+          // cursor={<HoverLine />}
           content={<CustomTooltip defaultPayload={isMobile && [{ payload: currentData }]} />}
         />
 
         {isMobile && (
-          <CartesianGrid stroke="#eee" strokeWidth={0.2} opacity={0.3} vertical={false} />
+          <CartesianGrid stroke="#eee" strokeWidth={0.3} opacity={0.3} vertical={false} />
         )}
 
         {isMobile && (
@@ -96,6 +97,21 @@ const InterestRateChart = ({ data }) => {
         />
       </LineChart>
     </ResponsiveContainer>
+  );
+};
+
+const HoverLine = (props) => {
+  const { points } = props || {};
+  const { x, y } = points[0];
+  return <line x1={0} y1="20" x2={x} y2={y} />;
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">
+        {/* {payload.value} */}
+        aaa
+      </text>
+    </g>
   );
 };
 

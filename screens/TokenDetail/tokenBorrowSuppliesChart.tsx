@@ -88,7 +88,7 @@ const TokenBorrowSuppliesChart = ({
             }}
           >
             {isMobile && (
-              <CartesianGrid stroke="#eee" strokeWidth={0.2} opacity={0.3} vertical={false} />
+              <CartesianGrid stroke="#eee" strokeWidth={0.3} opacity={0.3} vertical={false} />
             )}
 
             <XAxis dataKey={xKey} tickLine={false} axisLine={false} tick={<RenderTick />} />
@@ -197,7 +197,7 @@ const CustomTooltip = ({ active, payload, tokenRow }: any) => {
   const { value } = data || {};
   const { dayDate, baseApy, netApy, farmApy } = data?.payload || {};
   const { depositRewards } = tokenRow || {};
-  const { metadata } = depositRewards && depositRewards[0];
+  const { metadata } = (depositRewards && depositRewards[0]) || {};
 
   return (
     <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
