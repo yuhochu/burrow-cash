@@ -191,7 +191,7 @@ const RenderTick = (tickProps: any) => {
   return null;
 };
 
-const CustomTooltip = ({ active, payload, tokenRow }: any) => {
+const CustomTooltip = ({ active, isBorrow, payload, tokenRow }: any) => {
   if (!active || !payload || !payload?.[0]) return null;
   const data = payload?.[0] || {};
   const { value } = data || {};
@@ -199,20 +199,32 @@ const CustomTooltip = ({ active, payload, tokenRow }: any) => {
   const { depositRewards } = tokenRow || {};
   const { metadata } = (depositRewards && depositRewards[0]) || {};
 
+  if (isBorrow) {
+    return (
+      <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
+        <div className="text-md text-primaryText">{dayDate}</div>
+        <div className="text-white text-sm">{value}%</div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
       <div className="text-md text-primaryText">{dayDate}</div>
       {/* <div className="text-white text-sm">{value}%</div> */}
 
-      <LabelText left="Base APY  " right={`${baseApy?.toFixed(2)}%`} />
-      <LabelText left="Net Liquidity APY&nbsp;&nbsp;" right={`${netApy?.toFixed(2)}%`} />
-      {farmApy && (
+      <LabelText left="Base APY" right={`${baseApy?.toFixed(2)}%`} />
+      {netApy ? (
+        <LabelText left="Net Liquidity APY&nbsp;&nbsp;" right={`${netApy?.toFixed(2)}%`} />
+      ) : null}
+
+      {farmApy ? (
         <LabelText
           leftIcon={<img src={metadata?.icon} alt="" className="w-4 h-4 rounded-full mr-1" />}
           left="BRRR"
           right={`${farmApy?.toFixed(2)}%`}
         />
-      )}
+      ) : null}
     </div>
   );
 };
