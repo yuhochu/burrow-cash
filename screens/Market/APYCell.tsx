@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
 
 import HtmlTooltip from "../../components/common/html-tooltip";
@@ -34,7 +35,7 @@ export const APYCell = ({
       onlyMarket={onlyMarket}
       excludeNetApy={excludeNetApy}
     >
-      <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
+      <span className="border-b border-dashed border-dark-800 pb-0.5">
         {format_apy(boostedAPY)}
       </span>
     </ToolTip>
@@ -51,6 +52,7 @@ const ToolTip = ({
   onlyMarket,
   excludeNetApy,
 }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
   const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
     useExtraAPY({
       tokenId,
@@ -60,6 +62,9 @@ const ToolTip = ({
 
   return (
     <HtmlTooltip
+      open={showTooltip}
+      onOpen={() => setShowTooltip(true)}
+      onClose={() => setShowTooltip(false)}
       title={
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
           <Typography fontSize="0.75rem">Base APY</Typography>
@@ -103,7 +108,14 @@ const ToolTip = ({
         </Box>
       }
     >
-      {children}
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowTooltip(!showTooltip);
+        }}
+      >
+        {children}
+      </span>
     </HtmlTooltip>
   );
 };

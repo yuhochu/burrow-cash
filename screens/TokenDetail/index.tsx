@@ -360,7 +360,7 @@ function TokenOverviewMobile() {
             : ""
         }
       />
-      <LabelMobile title="Supply APY" value={format_apy(depositAPY)} />
+      <LabelMobileAPY title="Supply APY" tokenRow={tokenRow} />
       <LabelMobile
         title="Borrow APY"
         value={!tokenRow?.can_borrow ? "-" : format_apy(tokenRow?.borrowApy)}
@@ -547,7 +547,7 @@ function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
         <LabelMobile title="Total Supplied" value={value} subValue={value_value} subMode="space" />
-        <LabelMobile title="APY" value={apy} />
+        <LabelMobileAPY title="APY" tokenRow={tokenRow} />
         <LabelMobile
           title="Rewards"
           value={
@@ -1110,6 +1110,22 @@ function LabelMobile({
           ""
         )}
         {subValue && subMode !== "space" ? <span className="text-gray-300">/{subValue}</span> : ""}
+      </span>
+    </div>
+  );
+}
+function LabelMobileAPY({ tokenRow, title }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-300">{title}</span>
+      <span className="text-sm text-white">
+        <APYCell
+          rewards={tokenRow.depositRewards}
+          baseAPY={tokenRow.supplyApy}
+          page="deposit"
+          tokenId={tokenRow.tokenId}
+          onlyMarket
+        />
       </span>
     </div>
   );
