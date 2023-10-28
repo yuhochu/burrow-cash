@@ -563,6 +563,7 @@ function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
       <HrLine />
       <div className="mt-8 xsm:-ml-5">
         <TokenBorrowSuppliesChart
+          tokenRow={tokenRow}
           data={tokenSupplyDays}
           xKey="dayDate"
           yKey="tokenSupplyApy"

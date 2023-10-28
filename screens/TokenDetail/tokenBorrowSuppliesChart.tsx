@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { twMerge } from "tailwind-merge";
 import { isMobileDevice } from "../../helpers/helpers";
+import { LabelText } from "./interestRateChart";
 
 type chartProps = {
   data: any;
@@ -19,6 +20,7 @@ type chartProps = {
   onPeriodClick?: (number) => any;
   disableControl?: boolean;
   defaultPeriod?: number;
+  tokenRow?: any;
 };
 
 const TokenBorrowSuppliesChart = ({
@@ -29,6 +31,7 @@ const TokenBorrowSuppliesChart = ({
   onPeriodClick,
   disableControl,
   defaultPeriod,
+  tokenRow,
 }: chartProps) => {
   const [period, setPeriod] = useState(365);
   const [init, setInit] = useState(false);
@@ -105,7 +108,7 @@ const TokenBorrowSuppliesChart = ({
                 fill: "#00c6a2",
                 strokeDasharray: "2, 2",
               }}
-              content={<CustomTooltip isBorrow={isBorrow} />}
+              content={<CustomTooltip isBorrow={isBorrow} tokenRow={tokenRow} />}
             />
 
             <defs>
@@ -188,16 +191,28 @@ const RenderTick = (tickProps: any) => {
   return null;
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, tokenRow }: any) => {
   if (!active || !payload || !payload?.[0]) return null;
   const data = payload?.[0] || {};
   const { value } = data || {};
-  const { dayDate } = data?.payload || {};
+  const { dayDate, baseApy, netApy, farmApy } = data?.payload || {};
+  const { depositRewards } = tokenRow || {};
+  const { metadata } = depositRewards && depositRewards[0];
 
   return (
     <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
-      <div className="text-xs text-primaryText">{dayDate}</div>
-      <div className="text-white text-sm">{value}%</div>
+      <div className="text-md text-primaryText">{dayDate}</div>
+      {/* <div className="text-white text-sm">{value}%</div> */}
+
+      <LabelText left="Base APY  " right={`${baseApy?.toFixed(2)}%`} />
+      <LabelText left="Net Liquidity APY&nbsp;&nbsp;" right={`${netApy?.toFixed(2)}%`} />
+      {farmApy && (
+        <LabelText
+          leftIcon={<img src={metadata?.icon} alt="" className="w-4 h-4 rounded-full mr-1" />}
+          left="BRRR"
+          right={`${farmApy?.toFixed(2)}%`}
+        />
+      )}
     </div>
   );
 };
