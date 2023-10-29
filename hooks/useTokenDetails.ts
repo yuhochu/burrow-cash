@@ -4,6 +4,18 @@ import Decimal from "decimal.js";
 import Datasource from "../data/datasource";
 import { getAssets } from "../store";
 
+const getSupplyDetails = (tokenDetailDays) => {
+  return tokenDetailDays.map((d) => {
+    return {
+      tokenSupplyApy: d.tokenSupplyApy,
+      dayDate: d.dayDate,
+      baseApy: d.token_supply_apr * 100,
+      netApy: d.net_liquidity_apr * 100,
+      farmApy: d.token_farm_supply_apr * 100,
+    };
+  });
+};
+
 export const useTokenDetails = () => {
   const [tokenDetailDays, setTokenDetailDays] = useState<any[]>([]);
   const [tokenBorrowDays, setTokenBorrowDays] = useState<any[]>([]);
@@ -44,7 +56,8 @@ export const useTokenDetails = () => {
       if (isSupplyPeriodChange) {
         const displayDetails =
           supplyPeriod === 0 ? docs : docs.slice(docs.length - supplyPeriod, docs.length);
-        setTokenSupplyDays(displayDetails);
+        const supplyDetails = getSupplyDetails(displayDetails);
+        setTokenSupplyDays(supplyDetails);
         setTimeout(() => {
           setSupplyAnimating(false);
         }, 1500);
@@ -81,26 +94,19 @@ export const useTokenDetails = () => {
 
       const lastTokenDetails = tokenDetails[tokenDetails.length - 1];
       const borrows: any[] = [];
-      const supplies: any[] = [];
       const result = tokenDetails?.map((d) => {
         const date = DateTime.fromISO(d.createdAt);
         const supplyApyWithNet = Number(d.token_supply_apr) + Number(d.net_liquidity_apr || 0);
-        d.tokenSupplyApy = Number((supplyApyWithNet * 100).toFixed(2));
-        d.tokenBorrowApy = Number((d.token_borrow_apr * 100).toFixed(2));
+        d.tokenSupplyApy = supplyApyWithNet * 100;
+        d.tokenBorrowApy = d.token_borrow_apr * 100;
         d.dayDate = date.toFormat("dd MMM yyyy");
         borrows.push({
           tokenBorrowApy: d.tokenBorrowApy,
           dayDate: d.dayDate,
         });
-        supplies.push({
-          tokenSupplyApy: d.tokenSupplyApy,
-          dayDate: d.dayDate,
-          baseApy: Number((d.token_supply_apr * 100).toFixed(2)),
-          netApy: Number((d.net_liquidity_apr * 100).toFixed(2)),
-          farmApy: Number((d.token_farm_supply_apr * 100).toFixed(2)),
-        });
         return d;
       });
+      const supplies = getSupplyDetails(tokenDetails);
 
       const interestRatesCal = interestRate?.utilization.map((n, i) => {
         const percent = n * 100;
