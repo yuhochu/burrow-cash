@@ -11,6 +11,7 @@ import {
 import { twMerge } from "tailwind-merge";
 import { isMobileDevice } from "../../helpers/helpers";
 import { LabelText } from "./interestRateChart";
+import { format_apy } from "../../utils/uiNumber";
 
 type chartProps = {
   data: any;
@@ -203,7 +204,7 @@ const CustomTooltip = ({ active, isBorrow, payload, tokenRow }: any) => {
     return (
       <div className="px-3 py-2 rounded-md min-w-max" style={{ backgroundColor: "#32344B" }}>
         <div className="text-md text-primaryText">{dayDate}</div>
-        <div className="text-white text-sm">{value}%</div>
+        <div className="text-white text-sm">{value?.toFixed(2)}%</div>
       </div>
     );
   }
@@ -213,7 +214,7 @@ const CustomTooltip = ({ active, isBorrow, payload, tokenRow }: any) => {
       <div className="text-md text-primaryText">{dayDate}</div>
       {/* <div className="text-white text-sm">{value}%</div> */}
 
-      <LabelText left="Base APY" right={`${baseApy?.toFixed(2)}%`} />
+      <LabelText left="Base APY" right={format_apy(baseApy)} />
       {netApy ? (
         <LabelText left="Net Liquidity APY&nbsp;&nbsp;" right={`${netApy?.toFixed(2)}%`} />
       ) : null}
