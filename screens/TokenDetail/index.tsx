@@ -649,12 +649,12 @@ function TokenRateModeChart({
         {/* <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} /> */}
         <LabelText
           left="Borrow Rate"
-          leftIcon={<div className="rounded-full mr-2 bg-primary h-[10px] w-[10px]" />}
+          leftIcon={<div className="rounded-full mr-2 bg-danger h-[10px] w-[10px]" />}
           right={borrowApy ? `${borrowApy.toFixed(2)}%` : "-"}
         />
         <LabelText
           left="Supply Rate"
-          leftIcon={<div className="rounded-full mr-2 bg-danger h-[10px] w-[10px]" />}
+          leftIcon={<div className="rounded-full mr-2 bg-primary h-[10px] w-[10px]" />}
           right={supplyApy ? `${supplyApy.toFixed(2)}%` : "-"}
         />
       </div>
