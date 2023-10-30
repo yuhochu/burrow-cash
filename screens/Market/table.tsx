@@ -377,12 +377,18 @@ function TableRowPc({
           </span>
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-4 xl:pl-8 whitespace-nowrap">
-          <span className="text-sm text-white">
-            {toInternationalCurrencySystem_number(row.availableLiquidity)}
-          </span>
-          <span className="text-xs text-gray-300">
-            {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
-          </span>
+          {row.can_borrow ? (
+            <>
+              <span className="text-sm text-white">
+                {toInternationalCurrencySystem_number(row.availableLiquidity)}
+              </span>
+              <span className="text-xs text-gray-300">
+                {toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
+              </span>
+            </>
+          ) : (
+            "-"
+          )}
         </div>
       </div>
     </Link>
@@ -424,10 +430,11 @@ function TableRowMobile({
             value={toInternationalCurrencySystem_number(row.totalSupply)}
             subValue={toInternationalCurrencySystem_usd(row.totalSupplyMoney)}
           />
-          <TemplateMobile
+          {/* <TemplateMobile
             title="Supply APY"
             value={row.can_deposit ? format_apy(depositAPY) : "-"}
-          />
+          /> */}
+          <TemplateMobileAPY title="Supply APY" row={row} canShow={row.can_deposit} />
           <TemplateMobile
             title="Total Borrowed"
             value={row.can_borrow ? toInternationalCurrencySystem_number(row.totalBorrowed) : "-"}
@@ -438,8 +445,12 @@ function TableRowMobile({
           <TemplateMobile title="Borrow APY" value={row.can_borrow ? format_apy(borrowAPY) : "-"} />
           <TemplateMobile
             title="Available Liquidity"
-            value={toInternationalCurrencySystem_number(row.availableLiquidity)}
-            subValue={toInternationalCurrencySystem_usd(row.availableLiquidityMoney)}
+            value={
+              row.can_borrow ? toInternationalCurrencySystem_number(row.availableLiquidity) : "-"
+            }
+            subValue={
+              row.can_borrow ? toInternationalCurrencySystem_usd(row.availableLiquidityMoney) : ""
+            }
           />
           <TemplateMobile title="Price" value={`$${row.price}`} />
         </div>
@@ -471,6 +482,26 @@ function TemplateMobile({
         <span className="text-base font-bold text-white">{value}</span>
         {!isInvalid(subValue) && (
           <span className="text-gray-300 text-xs ml-1 relative top-px">{subValue}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+function TemplateMobileAPY({ title, row, canShow }) {
+  return (
+    <div className="flex flex-col">
+      <span className="text-gray-300 text-sm">{title}</span>
+      <div className="flex items-center mt-1">
+        {canShow ? (
+          <APYCell
+            rewards={row.depositRewards}
+            baseAPY={row.supplyApy}
+            page="deposit"
+            tokenId={row.tokenId}
+            onlyMarket
+          />
+        ) : (
+          <>-</>
         )}
       </div>
     </div>

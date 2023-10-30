@@ -245,7 +245,7 @@ const yourBorrowedColumns = [
             width={26}
             height={26}
             alt="token"
-            className="rounded-full"
+            className="rounded-full w-[26px] h-[26px]"
           />
           <div className="truncate">{originalData?.symbol}</div>
         </div>

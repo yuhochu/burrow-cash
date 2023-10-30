@@ -49,6 +49,9 @@ import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
 import getConfig from "../../utils/config";
+import InterestRateChart, { LabelText } from "./interestRateChart";
+import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
+import { useTokenDetails } from "../../hooks/useTokenDetails";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -61,6 +64,7 @@ const TokenDetail = () => {
   if (!tokenRow) return null;
   return <TokenDetailView tokenRow={tokenRow} />;
 };
+
 function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const [suppliers_number, set_suppliers_number] = useState<number>();
   const [borrowers_number, set_borrowers_number] = useState<number>();
@@ -81,6 +85,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
     page: "borrow",
     onlyMarket: true,
   });
+  const tokenDetails = useTokenDetails();
+  const { fetchTokenDetails, changePeriodDisplay } = tokenDetails || {};
+
   const [suppliedRows, borrowedRows] = usePortfolioAssets() as [any[], any[]];
   const supplied = suppliedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
@@ -88,7 +95,9 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   const borrowed = borrowedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
   });
+
   useEffect(() => {
+    fetchTokenDetails(tokenRow.tokenId, 365).catch();
     get_token_detail(tokenRow.tokenId).then((response) => {
       const { total_suppliers, total_borrowers } = response[0] || {};
       if (!isInvalid(total_suppliers)) {
@@ -99,8 +108,18 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
       }
     });
   }, []);
+
+  const handlePeriodClick = async ({ borrowPeriod, supplyPeriod }) => {
+    try {
+      await changePeriodDisplay({ tokenId: tokenRow.tokenId, borrowPeriod, supplyPeriod });
+    } catch (e) {
+      console.error("err", e);
+    }
+  };
+
   const is_native = NATIVE_TOKENS?.includes(tokenRow.tokenId);
   const is_new = NEW_TOKENS?.includes(tokenRow.tokenId);
+
   return (
     <DetailData.Provider
       value={{
@@ -116,20 +135,28 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         is_new,
       }}
     >
-      {isMobile ? <DetailMobile /> : <DetailPc />}
+      {isMobile ? (
+        <DetailMobile tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
+      ) : (
+        <DetailPc tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
+      )}
     </DetailData.Provider>
   );
 }
-function DetailMobile() {
+
+function DetailMobile({ tokenDetails, handlePeriodClick }) {
   const { router, is_new, is_native, tokenRow } = useContext(DetailData) as any;
   const [activeTab, setActiveTab] = useState<"market" | "your">("market");
   const [open, setOpen] = useState<boolean>(false);
+
   function switchTab(tab) {
     setActiveTab(tab);
   }
+
   function openGetTokenModal() {
     setOpen(true);
   }
+
   const isMarket = activeTab === "market";
   const isYour = activeTab === "your";
   return (
@@ -210,7 +237,11 @@ function DetailMobile() {
           </div>
         </div>
         {/* Tab content */}
-        <MarketInfo className={`${isMarket ? "" : "hidden"}`} />
+        <MarketInfo
+          className={`${isMarket ? "" : "hidden"}`}
+          tokenDetails={tokenDetails}
+          handlePeriodClick={handlePeriodClick}
+        />
         <YourInfo className={`${isYour ? "" : "hidden"}`} />
         {/* Get token  modal */}
         <TokenFetchModal open={open} setOpen={setOpen} />
@@ -218,11 +249,14 @@ function DetailMobile() {
     </LayoutBox>
   );
 }
+
 function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
   const { tokenRow } = useContext(DetailData) as any;
+
   function handleClose() {
     setOpen(false);
   }
+
   return (
     <MUIModal open={open} onClose={handleClose}>
       <div className="absolute bottom-0 left-0 bg-dark-100 w-full rounded-t-2xl border border-dark-300 p-4 outline-none">
@@ -237,21 +271,25 @@ function TokenFetchModal({ open, setOpen }: { open: boolean; setOpen: any }) {
     </MUIModal>
   );
 }
-function MarketInfo({ className }) {
+
+function MarketInfo({ className, tokenDetails, handlePeriodClick }) {
+  const { interestRates } = tokenDetails || {};
   const { tokenRow } = useContext(DetailData) as any;
+
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${className}`}>
       <TokenOverviewMobile />
-      <TokenSupplyChart />
+      <TokenSupplyChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
       {tokenRow.can_borrow && (
         <>
-          <TokenBorrowChart />
-          <TokenRateModeChart />
+          <TokenBorrowChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
+          <TokenRateModeChart interestRates={interestRates} tokenRow={tokenRow} />
         </>
       )}
     </div>
   );
 }
+
 function YourInfo({ className }) {
   const { supplied, borrowed, tokenRow } = useContext(DetailData) as any;
   return (
@@ -262,8 +300,11 @@ function YourInfo({ className }) {
     </div>
   );
 }
-function DetailPc() {
+
+function DetailPc({ tokenDetails, handlePeriodClick }) {
+  const { interestRates } = tokenDetails || {};
   const { router, supplied, borrowed, tokenRow } = useContext(DetailData) as any;
+
   return (
     <LayoutBox>
       <div
@@ -278,11 +319,11 @@ function DetailPc() {
       <div className="grid grid-cols-3/5">
         <div className="mr-6">
           <TokenOverview />
-          <TokenSupplyChart />
+          <TokenSupplyChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
           {tokenRow.can_borrow && (
             <>
-              <TokenBorrowChart />
-              <TokenRateModeChart />
+              <TokenBorrowChart tokenDetails={tokenDetails} handlePeriodClick={handlePeriodClick} />
+              <TokenRateModeChart interestRates={interestRates} />
             </>
           )}
         </div>
@@ -296,6 +337,7 @@ function DetailPc() {
     </LayoutBox>
   );
 }
+
 function TokenOverviewMobile() {
   const { tokenRow, depositAPY, suppliers_number, borrowers_number } = useContext(
     DetailData,
@@ -318,15 +360,23 @@ function TokenOverviewMobile() {
             : ""
         }
       />
-      <LabelMobile title="Supply APY" value={format_apy(depositAPY)} />
+      <LabelMobileAPY title="Supply APY" tokenRow={tokenRow} />
       <LabelMobile
         title="Borrow APY"
         value={!tokenRow?.can_borrow ? "-" : format_apy(tokenRow?.borrowApy)}
       />
       <LabelMobile
         title="Available Liquidity"
-        value={toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
-        subValue={toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)}
+        value={
+          tokenRow?.can_borrow
+            ? toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)
+            : "-"
+        }
+        subValue={
+          tokenRow?.can_borrow
+            ? toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)
+            : ""
+        }
       />
       <LabelMobile title="# of suppliers" value={formatWithCommas_number(suppliers_number, 0)} />
       <LabelMobile
@@ -337,6 +387,7 @@ function TokenOverviewMobile() {
     </div>
   );
 }
+
 function TokenOverview() {
   const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY, is_native, is_new } =
     useContext(DetailData) as any;
@@ -361,7 +412,7 @@ function TokenOverview() {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-3 mt-6 gap-x-10">
+      <div className="grid grid-cols-3 mt-4 gap-x-10">
         <div className="flex flex-col">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply Cap</span>
           <div className="flex items-center">
@@ -393,20 +444,32 @@ function TokenOverview() {
         <div className="flex flex-col ">
           <span className="text-sm text-gray-300 whitespace-nowrap">Available Liquidity</span>
           <div className="flex items-center">
-            <span className="text-[26px] text-white font-bold">
-              {toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
-            </span>
-            <span className="text-sm text-gray-300 ml-1 relative top-0.5">
-              {toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)}
-            </span>
+            {tokenRow?.can_borrow ? (
+              <>
+                <span className="text-[26px] text-white font-bold">
+                  {toInternationalCurrencySystem_number(tokenRow?.availableLiquidity)}
+                </span>
+                <span className="text-sm text-gray-300 ml-1 relative top-0.5">
+                  {toInternationalCurrencySystem_usd(tokenRow?.availableLiquidityMoney)}
+                </span>
+              </>
+            ) : (
+              <>-</>
+            )}
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-4 mt-7 gap-x-10">
+      <div className="grid grid-cols-4 mt-5 gap-x-10">
         <div className="flex flex-col w-1/4">
           <span className="text-sm text-gray-300 whitespace-nowrap">Supply APY</span>
           <div className="flex items-center">
-            <span className="text-lg text-white font-bold">{format_apy(depositAPY)}</span>
+            <APYCell
+              rewards={tokenRow.depositRewards}
+              baseAPY={tokenRow.supplyApy}
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+              onlyMarket
+            />
           </div>
         </div>
         <div className="flex flex-col w-1/4">
@@ -437,7 +500,9 @@ function TokenOverview() {
     </Box>
   );
 }
-function TokenSupplyChart() {
+
+function TokenSupplyChart({ tokenDetails, handlePeriodClick }) {
+  const { tokenSupplyDays, supplyAnimating } = tokenDetails || {};
   const { tokenRow, depositAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalSupply);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalSupplyMoney);
@@ -457,7 +522,15 @@ function TokenSupplyChart() {
         </div>
         <div className="flex flex-col ml-10">
           <span className="text-sm text-gray-300">APY</span>
-          <span className="font-bold text-lg text-white">{apy}</span>
+          <span className="font-bold text-lg text-white">
+            <APYCell
+              rewards={tokenRow.depositRewards}
+              baseAPY={tokenRow.supplyApy}
+              page="deposit"
+              tokenId={tokenRow.tokenId}
+              onlyMarket
+            />
+          </span>
         </div>
         <div className="flex flex-col justify-between ml-10">
           <span className="text-sm text-gray-300">Rewards</span>
@@ -474,7 +547,7 @@ function TokenSupplyChart() {
       {/* only mobile */}
       <div className="grid grid-cols-1 gap-y-4 lg:hidden">
         <LabelMobile title="Total Supplied" value={value} subValue={value_value} subMode="space" />
-        <LabelMobile title="APY" value={apy} />
+        <LabelMobileAPY title="APY" tokenRow={tokenRow} />
         <LabelMobile
           title="Rewards"
           value={
@@ -487,13 +560,26 @@ function TokenSupplyChart() {
           }
         />
       </div>
-      <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+      <HrLine />
+      <div className="mt-8 xsm:-ml-5">
+        <TokenBorrowSuppliesChart
+          tokenRow={tokenRow}
+          data={tokenSupplyDays}
+          xKey="dayDate"
+          yKey="tokenSupplyApy"
+          disableControl={supplyAnimating}
+          onPeriodClick={(v) => handlePeriodClick({ supplyPeriod: v })}
+        />
+        {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
   );
 }
-function TokenBorrowChart() {
+
+const HrLine = () => <hr className="hidden mt-6 mb-6 h-px my-8 bg-dark-500 border-0 xsm:block" />;
+
+function TokenBorrowChart({ tokenDetails, handlePeriodClick }) {
+  const { tokenBorrowDays, borrowAnimating } = tokenDetails || {};
   const { tokenRow, borrowAPY } = useContext(DetailData) as any;
   const value = toInternationalCurrencySystem_number(tokenRow?.totalBorrowed);
   const value_value = toInternationalCurrencySystem_usd(tokenRow?.totalBorrowedMoney);
@@ -524,22 +610,63 @@ function TokenBorrowChart() {
         <LabelMobile title="Total Borrowed" value={value} subValue={value_value} subMode="space" />
         <LabelMobile title="APY" value={apy} />
       </div>
-      <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+      <HrLine />
+      <div className="mt-8 xsm:-ml-5">
+        <TokenBorrowSuppliesChart
+          disableControl={borrowAnimating}
+          data={tokenBorrowDays}
+          xKey="dayDate"
+          yKey="tokenBorrowApy"
+          isBorrow
+          onPeriodClick={(v) => handlePeriodClick({ borrowPeriod: v })}
+        />
       </div>
     </div>
   );
 }
-function TokenRateModeChart() {
+
+function TokenRateModeChart({
+  interestRates,
+  tokenRow,
+}: {
+  interestRates: Array<any>;
+  tokenRow?: any;
+}) {
+  const { currentUtilRate } = interestRates?.[0] || {};
+  const { borrowApy, supplyApy } = tokenRow || {};
+  // const { borrowRate, supplyRate } = fullRateDetail || {};
+
   return (
     <div className="lg:mb-1.5 lg:rounded-md lg:p-7 xsm:rounded-2xl bg-gray-800 xsm:p-4">
       <div className="font-bold text-lg text-white mb-5">Interest Rate Mode</div>
-      <div className="flex items-center justify-center h-[300px]">
-        <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span>
+
+      <div className="grid grid-cols-1 gap-y-4 mb-6 hidden xsm2:block">
+        <LabelText
+          left="Current Utilization"
+          leftIcon={<div className="bg-gray-400 mr-2 h-[2px] w-[10px]" />}
+          right={currentUtilRate ? `${currentUtilRate.toFixed(2)}%` : "-"}
+        />
+        {/* <LabelText left="Utilization Rate" right={fullRateDetail?.percentLabel || "-"} /> */}
+        <LabelText
+          left="Borrow Rate"
+          leftIcon={<div className="rounded-full mr-2 bg-danger h-[10px] w-[10px]" />}
+          right={borrowApy ? `${borrowApy.toFixed(2)}%` : "-"}
+        />
+        <LabelText
+          left="Supply Rate"
+          leftIcon={<div className="rounded-full mr-2 bg-primary h-[10px] w-[10px]" />}
+          right={supplyApy ? `${supplyApy.toFixed(2)}%` : "-"}
+        />
+      </div>
+      <HrLine />
+      <div className="flex items-center justify-center h-[300px] xsm2:-ml-4">
+        <InterestRateChart data={interestRates} />
+        {/* <span className="text-sm text-gray-300 text-opacity-50">Chart is coming soon</span> */}
       </div>
     </div>
   );
 }
+
 function TokenUserInfo() {
   const { tokenRow } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
@@ -596,6 +723,7 @@ function TokenUserInfo() {
     </UserBox>
   );
 }
+
 function YouSupplied() {
   const { tokenRow, supplied } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
@@ -666,6 +794,7 @@ function YouSupplied() {
                 baseAPY={tokenRow.supplyApy}
                 page="deposit"
                 tokenId={tokenRow.tokenId}
+                excludeNetApy
               />
             }
           />
@@ -695,6 +824,7 @@ function YouSupplied() {
     </div>
   );
 }
+
 function YouBorrowed() {
   const { tokenRow, borrowed } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
@@ -777,6 +907,7 @@ function YouBorrowed() {
     </div>
   );
 }
+
 function OuterLink() {
   const { tokenRow } = useContext(DetailData) as any;
   const { symbol } = tokenRow;
@@ -898,6 +1029,7 @@ function OuterLink() {
     </div>
   );
 }
+
 function Box({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`px-7 py-5 border border-dark-50 rounded-md bg-gray-800 ${className}`}>
@@ -905,6 +1037,7 @@ function Box({ children, className = "" }: { children: React.ReactNode; classNam
     </div>
   );
 }
+
 function UserBox({
   children,
   className = "",
@@ -920,6 +1053,7 @@ function UserBox({
     </div>
   );
 }
+
 function Label({ title, content }: { title: string; content: string | React.ReactNode }) {
   return (
     <div className="flex items-center justify-between mt-4">
@@ -928,6 +1062,7 @@ function Label({ title, content }: { title: string; content: string | React.Reac
     </div>
   );
 }
+
 function LabelOuterLink({
   title,
   content,
@@ -944,6 +1079,7 @@ function LabelOuterLink({
     </div>
   );
 }
+
 function LabelOuterLinkIcon({ children }) {
   return (
     <span className="flex items-center justify-center h-[22px] px-2.5  xsm:h-8 rounded-md lg:bg-gray-300 lg:bg-opacity-20 xsm:bg-dark-150 cursor-pointer">
@@ -951,6 +1087,7 @@ function LabelOuterLinkIcon({ children }) {
     </span>
   );
 }
+
 function LabelMobile({
   title,
   value,
@@ -977,4 +1114,21 @@ function LabelMobile({
     </div>
   );
 }
+function LabelMobileAPY({ tokenRow, title }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-300">{title}</span>
+      <span className="text-sm text-white">
+        <APYCell
+          rewards={tokenRow.depositRewards}
+          baseAPY={tokenRow.supplyApy}
+          page="deposit"
+          tokenId={tokenRow.tokenId}
+          onlyMarket
+        />
+      </span>
+    </div>
+  );
+}
+
 export default TokenDetail;

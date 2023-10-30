@@ -7,6 +7,7 @@ export const useAPY = ({
   tokenId,
   onlyMarket = false,
   isStaking = false,
+  excludeNetApy = false,
 }) => {
   const isBorrow = page === "borrow";
   const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
@@ -34,6 +35,7 @@ export const useAPY = ({
 
   const sign = isBorrow ? -1 : 1;
   const apy = isStaking ? stakingExtraAPY : extraAPY;
-  const boostedAPY = baseAPY + (isBorrow ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
+  const boostedAPY =
+    baseAPY + (isBorrow || excludeNetApy ? 0 : netLiquidityAPY) * netTvlMultiplier + sign * apy;
   return boostedAPY;
 };

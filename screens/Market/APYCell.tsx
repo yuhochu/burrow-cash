@@ -1,9 +1,8 @@
+import { useState } from "react";
 import { Box, Typography, Stack, useTheme } from "@mui/material";
-import { hiddenAssets } from "../../utils/config";
 
 import HtmlTooltip from "../../components/common/html-tooltip";
 import TokenIcon from "../../components/TokenIcon";
-import { APY_FORMAT } from "../../store/constants";
 import { useExtraAPY } from "../../hooks/useExtraAPY";
 import { useAPY } from "../../hooks/useAPY";
 import { format_apy } from "../../utils/uiNumber";
@@ -15,6 +14,7 @@ export const APYCell = ({
   tokenId,
   isStaking = false,
   onlyMarket = false,
+  excludeNetApy = false,
 }) => {
   const isBorrow = page === "borrow";
   const boostedAPY = useAPY({
@@ -23,21 +23,19 @@ export const APYCell = ({
     tokenId,
     page,
     onlyMarket,
+    excludeNetApy,
   });
-  const isLucky = isBorrow && boostedAPY <= 0;
-
   return (
     <ToolTip
       tokenId={tokenId}
       list={list}
       baseAPY={baseAPY}
       isBorrow={isBorrow}
-      boostedAPY={boostedAPY}
-      isLucky={isLucky}
       isStaking={isStaking}
       onlyMarket={onlyMarket}
+      excludeNetApy={excludeNetApy}
     >
-      <span className="lg:border-b lg:border-dashed lg:border-dark-800 lg:pb-0.5">
+      <span className="border-b border-dashed border-dark-800 pb-0.5">
         {format_apy(boostedAPY)}
       </span>
     </ToolTip>
@@ -50,12 +48,11 @@ const ToolTip = ({
   list,
   baseAPY,
   isBorrow,
-  boostedAPY,
-  isLucky,
   isStaking,
   onlyMarket,
+  excludeNetApy,
 }) => {
-  const theme = useTheme();
+  const [showTooltip, setShowTooltip] = useState(false);
   const { computeRewardAPY, computeStakingRewardAPY, netLiquidityAPY, netTvlMultiplier } =
     useExtraAPY({
       tokenId,
@@ -65,20 +62,24 @@ const ToolTip = ({
 
   return (
     <HtmlTooltip
+      open={showTooltip}
+      onOpen={() => setShowTooltip(true)}
+      onClose={() => setShowTooltip(false)}
       title={
         <Box display="grid" gridTemplateColumns="1fr 1fr" alignItems="center" gap={1}>
           <Typography fontSize="0.75rem">Base APY</Typography>
           <Typography fontSize="0.75rem" color="#fff" textAlign="right">
             {format_apy(baseAPY)}
           </Typography>
-          {!isBorrow && [
-            <Typography fontSize="0.75rem" key={0}>
-              Net Liquidity APY
-            </Typography>,
-            <Typography fontSize="0.75rem" color="#fff" textAlign="right" key={1}>
-              {format_apy(netLiquidityAPY * netTvlMultiplier)}
-            </Typography>,
-          ]}
+          {!isBorrow &&
+            !excludeNetApy && [
+              <Typography fontSize="0.75rem" key={0}>
+                Net Liquidity APY
+              </Typography>,
+              <Typography fontSize="0.75rem" color="#fff" textAlign="right" key={1}>
+                {format_apy(netLiquidityAPY * netTvlMultiplier)}
+              </Typography>,
+            ]}
           {list.map(({ rewards, metadata, price, config }) => {
             const { symbol, icon } = metadata;
 
@@ -107,7 +108,14 @@ const ToolTip = ({
         </Box>
       }
     >
-      {children}
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowTooltip(!showTooltip);
+        }}
+      >
+        {children}
+      </span>
     </HtmlTooltip>
   );
 };
