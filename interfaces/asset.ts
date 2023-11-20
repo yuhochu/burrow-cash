@@ -94,6 +94,7 @@ export interface IAssetDetailed {
   farms: IAssetFarmView[];
   // price mixin
   price?: IPrice;
+  prot_fee: string;
 }
 
 export interface AssetFarm {

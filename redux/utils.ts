@@ -59,6 +59,7 @@ export const transformAsset = (
   const brrrTokenId = app.config.booster_token_id;
   const totalSupplyD = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
+    .plus(asset.prot_fee)
     .toFixed();
   const totalBorrowedD = new Decimal(asset.borrowed.balance).toFixed();
   const totalSupply = Number(
@@ -71,6 +72,7 @@ export const transformAsset = (
   // TODO: refactor: remove temp vars using ramda
   const temp1 = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
+    .plus(asset.prot_fee)
     .minus(new Decimal(asset.borrowed.balance));
   const temp2 = temp1.minus(temp1.mul(0.001)).toFixed(0);
   const availableLiquidity = Number(
