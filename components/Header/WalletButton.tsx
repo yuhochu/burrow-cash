@@ -301,15 +301,6 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
           <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
           Near Wallet
         </div>
-        <div
-          onClick={() => {
-            window.open(config.walletUrl);
-          }}
-          className="flex items-center cursor-pointer text-gray-300 xsm:pr-1"
-        >
-          <span className="text-xs underline mr-1">Wallet</span>
-          <ArrowRightTopIcon />
-        </div>
       </div>
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
         <div
