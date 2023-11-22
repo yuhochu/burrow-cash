@@ -129,6 +129,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
           step="any"
           onChange={handleInputChange}
           onFocus={handleFocus}
+          className="noselect"
         />
         <div className="btn-sm cursor-pointer" onClick={handleMaxClick}>
           Max

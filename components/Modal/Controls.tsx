@@ -73,7 +73,7 @@ export default function Controls({
             value={inputAmount}
             onChange={handleInputChange}
             onFocus={handleFocus}
-            className="text-white"
+            className="text-white noselect"
           />
         </div>
         <TokenBox asset={asset} action={action} />
