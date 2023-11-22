@@ -18,7 +18,7 @@ export default function Controls({
   const dispatch = useAppDispatch();
 
   const handleInputChange = (e) => {
-    const value = e.target.value || 0;
+    const { value } = e.target;
     if (new Decimal(value).gt(available)) return;
     dispatch(updateAmount({ isMax: false, amount: value }));
   };
