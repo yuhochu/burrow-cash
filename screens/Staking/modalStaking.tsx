@@ -49,8 +49,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
 
   const handleInputChange = (e) => {
     let { value } = e?.target || {};
-    const decimalPlace = 12;
-    const numRegex = new RegExp(`^$|(^(\\d+\\.?\\d{0,${decimalPlace}})$)`);
+    const numRegex = /^([0-9]*\.?[0-9]*$)/;
     if (!numRegex.test(value)) {
       e.preventDefault();
       return;

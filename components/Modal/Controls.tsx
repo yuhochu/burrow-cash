@@ -19,8 +19,7 @@ export default function Controls({
 
   const handleInputChange = (e) => {
     const { value } = e.target;
-    const decimalPlace = 12;
-    const numRegex = new RegExp(`^$|(^(\\d+\\.?\\d{0,${decimalPlace}})$)`);
+    const numRegex = /^([0-9]*\.?[0-9]*$)/;
     if (!numRegex.test(value) || Number(value) > Number(available)) {
       e.preventDefault();
       return;
