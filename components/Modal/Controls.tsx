@@ -18,9 +18,12 @@ export default function Controls({
   const dispatch = useAppDispatch();
 
   const handleInputChange = (e) => {
-    let { value } = e?.target || {};
-    if (Number(value) > Number(available)) {
-      value = available;
+    const { value } = e.target;
+    const decimalPlace = 12;
+    const numRegex = new RegExp(`^$|(^(\\d+\\.?\\d{0,${decimalPlace}})$)`);
+    if (!numRegex.test(value) || Number(value) > Number(available)) {
+      e.preventDefault();
+      return;
     }
     dispatch(updateAmount({ isMax: false, amount: value }));
   };
