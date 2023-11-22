@@ -72,7 +72,6 @@ export default function Controls({
             step="any"
             value={inputAmount}
             onChange={handleInputChange}
-            onFocus={handleFocus}
             className="text-white noselect"
           />
         </div>
