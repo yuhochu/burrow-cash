@@ -72,6 +72,8 @@ export const UserLiquidity = () => {
           color: "#D2FF3A",
         },
       },
+    ],
+    [
       {
         value: userBorrowedValue,
         text: "Borrowed",

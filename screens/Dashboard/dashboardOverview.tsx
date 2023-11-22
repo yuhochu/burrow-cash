@@ -105,12 +105,12 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
         <div className="lg3:flex lg3:justify-between">
           <div className="mb-4 lg3:max-w-[640px] lg3:mb-0">
             <div className="flex gap-2 justify-between lg3:gap-6 lg3:gap-8">
-              <div className="gap-6 flex flex-col">
+              <div className="gap-6 flex flex-col flex-2">
                 <UserLiquidity />
                 <UserDailyRewards />
               </div>
 
-              <div className="gap-6 flex flex-col">
+              <div className="gap-6 flex flex-col flex-1">
                 <APY />
                 <div className="flex flex-col">
                   {/* <OverviewItem */}
