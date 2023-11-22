@@ -52,7 +52,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
     if (Number(value) > Number(total)) {
       value = total;
     }
-    setAmount(Number(value));
+    setAmount(value);
   };
 
   const handleSliderChange = (e) => {
@@ -120,7 +120,7 @@ const ModalStaking = ({ isOpen, onClose }) => {
         <input
           value={inputAmount}
           type="number"
-          step="0.01"
+          step="any"
           onChange={handleInputChange}
           onFocus={handleFocus}
         />

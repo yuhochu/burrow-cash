@@ -65,7 +65,7 @@ export default function Controls({
           <input
             type="number"
             placeholder="0.0"
-            step="0.01"
+            step="any"
             value={inputAmount}
             onChange={handleInputChange}
             onFocus={handleFocus}
