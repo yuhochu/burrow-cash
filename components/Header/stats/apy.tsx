@@ -20,8 +20,8 @@ export const APY = () => {
   ) : undefined;
 
   const apyLabels = [
+    [{ value: globalValue, text: "Pools", color: netAPY < 0 ? "red" : "green" }],
     [
-      { value: globalValue, text: "Pools", color: netAPY < 0 ? "red" : "green" },
       {
         value: netLiquidityValue,
         text: "Net Liquidity",

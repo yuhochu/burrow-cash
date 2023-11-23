@@ -48,7 +48,7 @@ const CustomModal = ({
     <Portal>
       <StyledWrapper
         className={twMerge("modal fade", show && "show", className)}
-        style={show ? { display: "block" } : {}}
+        // style={show ? { display: "block" } : {}}
       >
         <div className="overlay" onClick={onOutsideClick} />
         <div className={twMerge("modal-dialog background-paper", size && `modal-${size}`)}>

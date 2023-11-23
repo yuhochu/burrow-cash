@@ -100,3 +100,7 @@ export const getDateString = (date) => {
 export const isMobileDevice = (): boolean => {
   return window.screen.width <= 1023;
 };
+
+export const cloneObj = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};

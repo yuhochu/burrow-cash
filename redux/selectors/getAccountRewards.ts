@@ -9,6 +9,7 @@ import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
 import { hasAssets, toUsd } from "../utils";
+import { cloneObj } from "../../helpers/helpers";
 
 interface IPortfolioReward {
   icon: string;
@@ -241,20 +242,28 @@ export const getAccountRewards = createSelector(
           .map(computeNetLiquidityRewards)
       : [];
 
-    let totalUnClaimUSD = 0;
-    const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
-      totalUnClaimUSD += asset.unclaimedAmountUSD;
-      if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
-      const updatedAsset = rewards[asset.tokenId];
-      updatedAsset.unclaimedAmount += asset.unclaimedAmount;
-      updatedAsset.dailyAmount += asset.dailyAmount;
-      updatedAsset.newDailyAmount += asset.newDailyAmount;
-      return { ...rewards, [asset.tokenId]: updatedAsset };
-    }, {});
+    const sumArrays = (array) => {
+      const clonedArray = cloneObj(array);
+      return clonedArray.reduce((rewards, asset) => {
+        if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
+        const updatedAsset = rewards[asset.tokenId];
+        updatedAsset.unclaimedAmount += asset.unclaimedAmount;
+        updatedAsset.dailyAmount += asset.dailyAmount;
+        updatedAsset.newDailyAmount += asset.newDailyAmount;
+        return { ...rewards, [asset.tokenId]: updatedAsset };
+      }, {});
+    };
 
+    const allRewards = [...suppliedRewards, ...borrowedRewards, ...netLiquidityRewards];
+    const sumRewards = sumArrays(allRewards);
+    const poolRewards = sumArrays([...suppliedRewards, ...borrowedRewards]);
+    let totalUnClaimUSD = 0;
+    allRewards.forEach((d) => {
+      totalUnClaimUSD += d.unclaimedAmountUSD;
+    });
     return {
-      brrr: sumRewards[brrrTokenId] || {},
-      extra: omit(sumRewards, brrrTokenId) || {},
+      brrr: poolRewards[brrrTokenId] || {},
+      extra: omit(poolRewards, brrrTokenId) || {},
       net: netLiquidityRewards.reduce(
         (rewards, asset) => ({ ...rewards, [asset.tokenId]: asset }),
         {},

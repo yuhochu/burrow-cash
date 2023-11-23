@@ -18,8 +18,12 @@ export default function Controls({
   const dispatch = useAppDispatch();
 
   const handleInputChange = (e) => {
-    const value = e.target.value || 0;
-    if (new Decimal(value).gt(available)) return;
+    const { value } = e.target;
+    const numRegex = /^([0-9]*\.?[0-9]*$)/;
+    if (!numRegex.test(value) || Number(value) > Number(available)) {
+      e.preventDefault();
+      return;
+    }
     dispatch(updateAmount({ isMax: false, amount: value }));
   };
 
@@ -65,11 +69,10 @@ export default function Controls({
           <input
             type="number"
             placeholder="0.0"
-            step="0.01"
+            step="any"
             value={inputAmount}
             onChange={handleInputChange}
-            onFocus={handleFocus}
-            className="text-white"
+            className="text-white noselect"
           />
         </div>
         <TokenBox asset={asset} action={action} />

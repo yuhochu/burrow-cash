@@ -22,6 +22,11 @@ body {
   color: #fff;
 }
 
+#__next{
+  background: #14162b;
+  height: 100%;
+}
+
 .sans-bold {
   font-family: "work-sans-bold";
 }
@@ -107,14 +112,18 @@ body,
   position: fixed;
   top: 0;
   left: 0;
-  /*z-index: 1055;*/
-  /*display: none;*/
+  /* z-index: 1055; */
+  /* display: none; */
   z-index: -99;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
 }
 
 .modal.show {
@@ -123,8 +132,8 @@ body,
 
 .modal-dialog {
   position: relative;
-  width: auto;
-  margin: 0.5rem;
+  width: 100%;
+  margin: auto 0;
   pointer-events: none;
 }
 
@@ -274,7 +283,6 @@ body,
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 800px;
-    margin: 10% auto;
   }
 
   .modal-dialog-scrollable {
@@ -721,4 +729,14 @@ options-list::-webkit-scrollbar {
 
 .nws-modal-wrapper .nws-modal .connecting-details span {
   color: #fff;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
