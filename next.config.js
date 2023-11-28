@@ -14,6 +14,16 @@ module.exports = {
       issuer: /\.[jt]sx?$/,
       use: ["@svgr/webpack"],
     });
+    config.module.rules.push({
+      test: /.js$/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          presets: ["@babel/preset-env"],
+        },
+      },
+      // exclude: /node_modules/,
+    });
 
     if (!isServer) {
       config.resolve.fallback.fs = false;

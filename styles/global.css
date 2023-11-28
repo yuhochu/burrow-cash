@@ -730,6 +730,47 @@ options-list::-webkit-scrollbar {
 .nws-modal-wrapper .nws-modal .connecting-details span {
   color: #fff;
 }
+.nws-form-control .account label {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nws-form-control .account br {
+  display: none;
+}
+.nws-modal-wrapper
+  .nws-modal
+  .choose-ledger-account-form-wrapper
+  .nws-form-control
+  .account {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid #42525c;
+}
+.nws-modal-wrapper
+  .nws-modal
+  .choose-ledger-account-form-wrapper
+  .nws-form-control
+  .account
+  input[type='checkbox'] {
+  transform: scale(1.2);
+}
+.nws-modal-wrapper .nws-modal .overview-wrapper .account {
+  border-bottom: 1px solid #42525c;
+}
+.nws-modal-wrapper .nws-modal .overview-wrapper .account span {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nws-modal-wrapper .nws-modal .modal-right::-webkit-scrollbar {
+  width: 2px;
+}
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
