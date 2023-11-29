@@ -21,6 +21,7 @@ import DashboardOverview from "./dashboardOverview";
 import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import SupplyBorrowListMobile from "./supplyBorrowListMobile";
 import { AdjustButton, WithdrawButton, RepayButton, MarketButton } from "./supplyBorrowButtons";
+import { hiddenAssets } from "../../utils/config";
 
 const Index = () => {
   const accountId = useAccountId();
@@ -194,7 +195,9 @@ const YourSupplied = ({ suppliedRows, accountId, total }) => {
         selectedRowIndex={selected?.index}
         actionRow={
           <div className="flex gap-2 pb-6 table-action-row">
-            <MarketButton tokenId={selected?.data?.tokenId} />
+            {hiddenAssets.includes(selected?.data?.tokenId || "") ? null : (
+              <MarketButton tokenId={selected?.data?.tokenId} />
+            )}
             <WithdrawButton tokenId={selected?.data?.tokenId} />
             {canUseAsCollateral && <AdjustButton tokenId={selected?.data?.tokenId} />}
           </div>

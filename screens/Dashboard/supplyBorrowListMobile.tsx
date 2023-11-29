@@ -7,6 +7,7 @@ import DashboardReward from "./dashboardReward";
 import { formatTokenValue, formatUSDValue, millifyNumber } from "../../helpers/helpers";
 import { AdjustButton, MarketButton, RepayButton, WithdrawButton } from "./supplyBorrowButtons";
 import { NoDataMascot } from "../../components/Icons/Icons";
+import { hiddenAssets } from "../../utils/config";
 
 const SupplyBorrowListMobile = ({ suppliedRows, borrowedRows, accountId }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -135,14 +136,16 @@ const SupplyItem = ({ data }) => {
           <img src={data?.icon} width={26} height={26} alt="token" className="rounded-full" />
           <div className="flex flex-col">
             <div className="truncate h4b">{data?.symbol}</div>
-            <MarketButton
-              tokenId={data?.tokenId}
-              style={{
-                border: 0,
-                padding: 0,
-                fontSize: 12,
-              }}
-            />
+            {hiddenAssets.includes(data?.tokenId || "") ? null : (
+              <MarketButton
+                tokenId={data?.tokenId}
+                style={{
+                  border: 0,
+                  padding: 0,
+                  fontSize: 12,
+                }}
+              />
+            )}
           </div>
         </div>
 
