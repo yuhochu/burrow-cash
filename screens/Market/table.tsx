@@ -5,6 +5,8 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowLineDownIcon, CheckIcon, NewTagIcon } 
 import type { UIAsset } from "../../interfaces";
 import { isMobileDevice } from "../../helpers/helpers";
 import { useAPY } from "../../hooks/useAPY";
+import { IToken } from "../../interfaces/asset";
+import { standardizeAsset } from "../../utils";
 import {
   toInternationalCurrencySystem_number,
   toInternationalCurrencySystem_usd,
@@ -296,6 +298,60 @@ function TableRowPc({
   is_native: boolean;
   is_new: boolean;
 }) {
+  function getIcons() {
+    const { isLpToken, tokens } = row;
+    return (
+      <div className="flex items-center justify-center flex-wrap w-[34px] flex-shrink-0">
+        {isLpToken ? (
+          tokens.map((token: IToken, index) => {
+            const metadata = standardizeAsset(token.metadata);
+            return (
+              <img
+                key={token.token_id}
+                src={metadata.icon}
+                alt=""
+                className={`w-[20px] h-[20px] rounded-full relative ${
+                  index !== 0 && index !== 2 ? "-ml-1.5" : ""
+                } ${index > 1 ? "-mt-1.5" : "z-10"}`}
+              />
+            );
+          })
+        ) : (
+          <img src={row.icon} alt="" className="w-[27px] h-[27px] rounded-full" />
+        )}
+      </div>
+    );
+  }
+  function getSymbols() {
+    const { isLpToken, tokens } = row;
+    return (
+      <div className="flex items-center flex-wrap max-w-[146px] flex-shrink-0">
+        {isLpToken ? (
+          tokens.map((token: IToken, index) => {
+            const metadata = standardizeAsset(token.metadata);
+            return (
+              <span className="text-sm text-white text-justify" key={token.token_id}>
+                {metadata.symbol}
+                {index === tokens.length - 1 ? "" : "-"}
+                {index === tokens.length - 1 ? (
+                  <span className="text-gray-300 italic text-xs transform ml-1">LP token</span>
+                ) : null}
+              </span>
+            );
+          })
+        ) : (
+          <span className="text-sm text-white">
+            {row.symbol}
+            {is_native ? (
+              <span className="text-gray-300 italic text-xs transform -translate-y-0.5 ml-0.5">
+                Native
+              </span>
+            ) : null}
+          </span>
+        )}
+      </div>
+    );
+  }
   return (
     <Link key={row.tokenId} href={`/tokenDetail/${row.tokenId}`}>
       <div
@@ -304,22 +360,21 @@ function TableRowPc({
         }`}
       >
         <div className="relative col-span-1 flex items-center justify-self-start pl-5">
-          <img src={row.icon} alt="" className="w-[27px] h-[27px] rounded-full" />
+          {getIcons()}
           <div className="flex flex-col items-start ml-3">
-            <div className="flex">
-              <span className="text-sm text-white">{row.symbol}</span>
-              {is_native ? (
-                <span className="text-gray-300 italic text-xs transform translate-y-0.5 ml-0.5">
-                  Native
-                </span>
-              ) : null}
-            </div>
+            <div className="flex items-end">{getSymbols()}</div>
             <span className="text-xs text-gray-300">${row.price}</span>
           </div>
-          {is_new ? <NewTagIcon className="absolute bottom-2 transform -translate-x-1" /> : null}
+          {is_new ? (
+            <NewTagIcon
+              className={`absolute transform -translate-x-[1px] z-20 ${
+                row.isLpToken && row.tokens.length > 2 ? "bottom-1" : "bottom-2"
+              }`}
+            />
+          ) : null}
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-          {row.can_deposit ? (
+          {row.can_deposit || row.isLpToken ? (
             <>
               <span className="text-sm text-white">
                 {toInternationalCurrencySystem_number(row.totalSupply)}
@@ -334,7 +389,7 @@ function TableRowPc({
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
           <span className="text-sm text-white">
-            {row.can_deposit ? (
+            {row.can_deposit || row.isLpToken ? (
               <APYCell
                 rewards={row.depositRewards}
                 baseAPY={row.supplyApy}

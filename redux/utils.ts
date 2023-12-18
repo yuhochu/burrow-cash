@@ -117,7 +117,7 @@ export const transformAsset = (
   }
   return standardizeAsset({
     tokenId,
-    ...pick(["icon", "symbol", "name", "decimals"], asset.metadata),
+    ...pick(["icon", "symbol", "name", "decimals", "tokens"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
@@ -149,6 +149,7 @@ export const transformAsset = (
     borrowRewards: getRewards("borrowed", asset, assets),
     can_borrow: asset.config.can_borrow,
     can_deposit: asset.config.can_deposit,
+    isLpToken: asset.isLpToken,
   });
 };
 

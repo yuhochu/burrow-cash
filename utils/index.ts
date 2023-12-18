@@ -2,7 +2,7 @@ import { Contract } from "near-api-js";
 import BN from "bn.js";
 import Decimal from "decimal.js";
 
-import { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+import { defaultNetwork, LOGIC_CONTRACT_NAME, REFV1_CONTRACT_NAME } from "./config";
 import { nearMetadata, wooMetadata } from "../components/Assets";
 
 import {
@@ -10,6 +10,8 @@ import {
   ChangeMethodsOracle,
   ViewMethodsLogic,
   ViewMethodsOracle,
+  ViewMethodsREFV1,
+  ChangeMethodsREFV1,
 } from "../interfaces/contract-methods";
 import { IBurrow, IConfig } from "../interfaces/burrow";
 import { getContract } from "../store";
@@ -138,6 +140,12 @@ export const getBurrow = async ({
     ViewMethodsLogic,
     ChangeMethodsLogic,
   );
+  const refv1Contract: Contract = await getContract(
+    account,
+    REFV1_CONTRACT_NAME,
+    ViewMethodsREFV1,
+    ChangeMethodsREFV1,
+  );
 
   // get oracle address from
   const config = (await view(
@@ -171,6 +179,7 @@ export const getBurrow = async ({
     account,
     logicContract,
     oracleContract,
+    refv1Contract,
     view,
     call,
     config,
@@ -215,12 +224,13 @@ export function decimalMin(a: string | number | Decimal, b: string | number | De
   return a.lt(b) ? a : b;
 }
 export function standardizeAsset(asset) {
-  if (asset.symbol === "wNEAR") {
-    asset.symbol = nearMetadata.symbol;
-    asset.icon = nearMetadata.icon;
+  const serializationAsset = JSON.parse(JSON.stringify(asset || {}));
+  if (serializationAsset.symbol === "wNEAR") {
+    serializationAsset.symbol = nearMetadata.symbol;
+    serializationAsset.icon = nearMetadata.icon;
   }
-  if (asset.symbol === "WOO") {
-    asset.icon = wooMetadata.icon;
+  if (serializationAsset.symbol === "WOO") {
+    serializationAsset.icon = wooMetadata.icon;
   }
-  return asset;
+  return serializationAsset;
 }

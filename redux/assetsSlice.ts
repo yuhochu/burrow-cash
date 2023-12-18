@@ -19,7 +19,6 @@ export const fetchRefPrices = createAsyncThunk("assets/fetchRefPrices", async ()
 
   return prices;
 });
-
 export const assetSlice = createSlice({
   name: "assets",
   initialState,

@@ -4,6 +4,7 @@ export const LOGIC_CONTRACT_NAME = process.env.NEXT_PUBLIC_CONTRACT_NAME as stri
 export const DUST_THRESHOLD = 0.001;
 
 export const hiddenAssets = ["meta-token.near", "usn"];
+export const lpTokenPrefix = "shadow_ref_v1";
 
 export const defaultNetwork = (process.env.NEXT_PUBLIC_DEFAULT_NETWORK ||
   process.env.NODE_ENV ||
@@ -43,7 +44,8 @@ const getConfig = (env: string = defaultNetwork) => {
           "usdt.tether-token.near",
           "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
         ],
-      } as unknown as ConnectConfig;
+        REF_FI_CONTRACT_ID: "v2.ref-finance.near",
+      } as unknown as ConnectConfig & { REF_FI_CONTRACT_ID: string };
 
     case "development":
     case "testnet":
@@ -59,8 +61,9 @@ const getConfig = (env: string = defaultNetwork) => {
           "3e2210e1184b45b64c8a434c0a7e7b23cc04ea7eb7a6c3c32520d03d4afcb8af",
         ],
         NATIVE_TOKENS: ["usdc.fakes.testnet"],
-        NEW_TOKENS: ["usdc.fakes.testnet"],
-      } as unknown as ConnectConfig;
+        NEW_TOKENS: ["usdc.fakes.testnet", "shadow_ref_v1-0", "shadow_ref_v1-2"],
+        REF_FI_CONTRACT_ID: "dev-1702262174571-14898860791369",
+      } as unknown as ConnectConfig & { REF_FI_CONTRACT_ID: string };
     case "betanet":
       return {
         networkId: "betanet",
@@ -69,32 +72,33 @@ const getConfig = (env: string = defaultNetwork) => {
         helperUrl: "https://helper.betanet.near.org",
         explorerUrl: "https://explorer.betanet.near.org",
         SPECIAL_REGISTRATION_TOKEN_IDS: [],
-      } as unknown as ConnectConfig;
+      } as unknown as ConnectConfig & { REF_FI_CONTRACT_ID: string };
     case "local":
       return {
         networkId: "local",
         nodeUrl: "http://localhost:3030",
         keyPath: `${process.env.HOME}/.near/validator_key.json`,
         walletUrl: "http://localhost:4000/wallet",
-      } as ConnectConfig;
+      } as ConnectConfig & { REF_FI_CONTRACT_ID: string };
     case "test":
     case "ci":
       return {
         networkId: "shared-test",
         nodeUrl: "https://rpc.ci-testnet.near.org",
         masterAccount: "test.near",
-      } as ConnectConfig;
+      } as ConnectConfig & { REF_FI_CONTRACT_ID: string };
     case "ci-betanet":
       return {
         networkId: "shared-test-staging",
         nodeUrl: "https://rpc.ci-betanet.near.org",
         masterAccount: "test.near",
-      } as ConnectConfig;
+      } as ConnectConfig & { REF_FI_CONTRACT_ID: string };
     default:
       throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`);
   }
 };
 
 export const isTestnet = getConfig(defaultNetwork).networkId === "testnet";
+export const REFV1_CONTRACT_NAME = getConfig().REF_FI_CONTRACT_ID;
 
 export default getConfig;
