@@ -401,11 +401,10 @@ function TokenOverview() {
       <div className="flex items-center justify-center flex-wrap flex-shrink-0">
         {isLpToken ? (
           tokens.map((token: IToken, index) => {
-            const metadata = standardizeAsset(token.metadata);
             return (
               <img
                 key={token.token_id}
-                src={metadata.icon}
+                src={token?.metadata?.icon}
                 alt=""
                 className={`w-6 h-6 rounded-full relative ${index !== 0 ? "-ml-1.5" : ""}`}
               />
@@ -423,10 +422,9 @@ function TokenOverview() {
       <div className="flex items-center flex-wrap flex-shrink-0">
         {isLpToken ? (
           tokens.map((token: IToken, index) => {
-            const metadata = standardizeAsset(token.metadata);
             return (
               <span className="text-[20px] text-white font-bold" key={token.token_id}>
-                {metadata.symbol}
+                {token?.metadata?.symbol}
                 {index === tokens.length - 1 ? "" : "-"}
                 {index === tokens.length - 1 ? (
                   <span className="text-gray-300 italic text-xs transform ml-1 -translate-y-0.5">
@@ -731,11 +729,10 @@ function TokenUserInfo() {
       <div className="flex items-center justify-center flex-wrap flex-shrink-0">
         {isLpToken ? (
           tokens.map((token: IToken, index) => {
-            const metadata = standardizeAsset(token.metadata);
             return (
               <img
                 key={token.token_id}
-                src={metadata.icon}
+                src={token?.metadata?.icon}
                 alt=""
                 className={`w-5 h-5 rounded-full relative ${index !== 0 ? "-ml-1.5" : ""}`}
               />

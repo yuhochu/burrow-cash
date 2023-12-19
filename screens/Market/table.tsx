@@ -327,10 +327,9 @@ function TableRowPc({
       <div className="flex items-center flex-wrap max-w-[146px] flex-shrink-0">
         {isLpToken ? (
           tokens.map((token: IToken, index) => {
-            const metadata = standardizeAsset(token.metadata);
             return (
               <span className="text-sm text-white" key={token.token_id}>
-                {metadata.symbol}
+                {token?.metadata?.symbol}
                 {index === tokens.length - 1 ? "" : "-"}
                 {index === tokens.length - 1 ? (
                   <span className="text-gray-300 italic text-xs transform ml-1">LP token</span>
@@ -373,7 +372,7 @@ function TableRowPc({
           ) : null}
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
-          {row.can_deposit || row.isLpToken ? (
+          {row.can_deposit ? (
             <>
               <span className="text-sm text-white">
                 {toInternationalCurrencySystem_number(row.totalSupply)}
@@ -388,7 +387,7 @@ function TableRowPc({
         </div>
         <div className="col-span-1 flex flex-col justify-center pl-6 xl:pl-14 whitespace-nowrap">
           <span className="text-sm text-white">
-            {row.can_deposit || row.isLpToken ? (
+            {row.can_deposit ? (
               <APYCell
                 rewards={row.depositRewards}
                 baseAPY={row.supplyApy}

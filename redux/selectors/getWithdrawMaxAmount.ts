@@ -17,15 +17,24 @@ export const getAdjustedSum = (
   return Object.keys(portfolio[type])
     .map((id) => {
       const asset = assets[id];
+      let pricedBalance;
+      if (!asset.isLpToken) {
+        const price = asset.price
+          ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
+          : new Decimal(0);
 
-      const price = asset.price
-        ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
-        : new Decimal(0);
-
-      const pricedBalance = new Decimal(portfolio[type][id].balance)
-        .div(expandTokenDecimal(1, asset.config.extra_decimals))
-        .mul(price);
-
+        pricedBalance = new Decimal(portfolio[type][id].balance)
+          .div(expandTokenDecimal(1, asset.config.extra_decimals))
+          .mul(price);
+      } else {
+        const price = asset.price ? asset.price.usd : new Decimal(0);
+        pricedBalance = new Decimal(
+          shrinkToken(
+            portfolio[type][id].balance,
+            asset.metadata.decimals + asset.config.extra_decimals,
+          ),
+        ).mul(price);
+      }
       return type === "borrowed"
         ? pricedBalance.div(asset.config.volatility_ratio).mul(MAX_RATIO)
         : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);

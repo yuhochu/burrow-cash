@@ -13,6 +13,9 @@ export function transformAssets({
   const data = assets.reduce((map, asset) => {
     const assetMetadata = metadata.find((m) => m.token_id === asset.token_id) as IMetadata;
     if (!asset.config) return map;
+    if (asset.isLpToken) {
+      asset.config.can_deposit = true;
+    }
     map[asset.token_id] = omit(
       {
         metadata: asset.isLpToken ? asset.lptMetadata : assetMetadata,
