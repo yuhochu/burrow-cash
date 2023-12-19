@@ -64,6 +64,7 @@ module.exports = {
     "react/jsx-no-bind": "off",
     "jsx-a11y/no-noninteractive-tabindex": "off",
     "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-inferrable-types": ["off"],
   },
   settings: {
     react: {

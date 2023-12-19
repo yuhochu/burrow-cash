@@ -29,6 +29,7 @@ import {
   formatWithCommas_number,
   formatWithCommas_usd,
   isInvalid,
+  digitalProcess,
 } from "../../utils/uiNumber";
 import { UIAsset } from "../../interfaces";
 import { YellowSolidButton, RedSolidButton, YellowLineButton, RedLineButton } from "./button";
@@ -54,6 +55,7 @@ import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
 import { standardizeAsset } from "../../utils";
 import { IToken } from "../../interfaces/asset";
+import LPTokenCell from "./LPTokenCell";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -718,12 +720,36 @@ function TokenRateModeChart({
 
 function TokenUserInfo() {
   const { tokenRow } = useContext(DetailData) as any;
-  const { tokenId } = tokenRow;
+  const { tokenId, tokens, isLpToken, price } = tokenRow;
   const accountId = useAccountId();
   const isWrappedNear = tokenRow.symbol === "NEAR";
   const { supplyBalance, borrowBalance } = useUserBalance(tokenId, isWrappedNear);
   const handleSupplyClick = useSupplyTrigger(tokenId);
   const handleBorrowClick = useBorrowTrigger(tokenId);
+  function getIcons() {
+    return (
+      <div className="flex items-center justify-center flex-wrap flex-shrink-0">
+        {isLpToken ? (
+          tokens.map((token: IToken, index) => {
+            const metadata = standardizeAsset(token.metadata);
+            return (
+              <img
+                key={token.token_id}
+                src={metadata.icon}
+                alt=""
+                className={`w-5 h-5 rounded-full relative ${index !== 0 ? "-ml-1.5" : ""}`}
+              />
+            );
+          })
+        ) : (
+          <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+        )}
+      </div>
+    );
+  }
+  function getUserLpUsd() {
+    return `$${digitalProcess(new Decimal(supplyBalance || 0).mul(price || 0).toFixed(), 2)}`;
+  }
   return (
     <UserBox className="mb-[29px] xsm:mb-2.5">
       <span className="text-lg text-white font-bold">Your Info</span>
@@ -733,17 +759,28 @@ function TokenUserInfo() {
           <span className="text-sm text-white mr-2.5">
             {accountId ? formatWithCommas_number(supplyBalance) : "-"}
           </span>
-          <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+          <LPTokenCell asset={tokenRow} balance={supplyBalance}>
+            {getIcons()}
+          </LPTokenCell>
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-300">Available to Borrow</span>
-        <div className="flex items-center">
-          <span className="text-sm text-white mr-2.5">
-            {accountId && tokenRow?.can_borrow ? formatWithCommas_number(borrowBalance) : "-"}
-          </span>
-          <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
-        </div>
+        {isLpToken ? (
+          <>
+            <span className="text-sm text-gray-300">USD Value</span>
+            <div>{getUserLpUsd()}</div>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-gray-300">Available to Borrow</span>
+            <div className="flex items-center">
+              <span className="text-sm text-white mr-2.5">
+                {accountId && tokenRow?.can_borrow ? formatWithCommas_number(borrowBalance) : "-"}
+              </span>
+              <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+            </div>
+          </>
+        )}
       </div>
       <div className="flex items-center gap-2 mt-[35px]">
         {accountId ? (

@@ -3,6 +3,7 @@ import { getAllMetadata, getAssetsDetailed, getPrices, getUnitLptAssets } from "
 import { shrinkToken } from "../store/helper";
 import { lpTokenPrefix } from "../utils/config";
 import { IToken, IUnitLptAssetDetail, IMetadata } from "../interfaces/asset";
+import { standardizeAsset } from "../utils";
 
 const getPrice = (tokenId, priceResponse, metadata) => {
   const price = priceResponse.prices.find((p) => p.asset_id === tokenId)?.price || undefined;
@@ -26,7 +27,7 @@ const getLptMetadata = (lp_token_details: IUnitLptAssetDetail, priceMap, metadat
       acc.push({
         ...cur,
         price: priceMap[cur.token_id],
-        metadata: metadataMap[cur.token_id],
+        metadata: standardizeAsset(metadataMap[cur.token_id]),
       });
       return acc;
     },

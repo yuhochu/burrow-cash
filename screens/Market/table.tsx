@@ -304,11 +304,10 @@ function TableRowPc({
       <div className="flex items-center justify-center flex-wrap w-[34px] flex-shrink-0">
         {isLpToken ? (
           tokens.map((token: IToken, index) => {
-            const metadata = standardizeAsset(token.metadata);
             return (
               <img
                 key={token.token_id}
-                src={metadata.icon}
+                src={token.metadata?.icon}
                 alt=""
                 className={`w-[20px] h-[20px] rounded-full relative ${
                   index !== 0 && index !== 2 ? "-ml-1.5" : ""
