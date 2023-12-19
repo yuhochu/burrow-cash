@@ -330,7 +330,7 @@ function TableRowPc({
           tokens.map((token: IToken, index) => {
             const metadata = standardizeAsset(token.metadata);
             return (
-              <span className="text-sm text-white text-justify" key={token.token_id}>
+              <span className="text-sm text-white" key={token.token_id}>
                 {metadata.symbol}
                 {index === tokens.length - 1 ? "" : "-"}
                 {index === tokens.length - 1 ? (

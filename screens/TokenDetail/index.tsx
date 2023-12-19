@@ -52,6 +52,8 @@ import getConfig from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
 import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
+import { standardizeAsset } from "../../utils";
+import { IToken } from "../../interfaces/asset";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -391,22 +393,69 @@ function TokenOverviewMobile() {
 function TokenOverview() {
   const { suppliers_number, borrowers_number, tokenRow, depositAPY, borrowAPY, is_native, is_new } =
     useContext(DetailData) as any;
-  return (
-    <Box className="mb-7">
-      <div className="flex items-center">
-        <div className="relative">
+  function getIcons() {
+    const { isLpToken, tokens } = tokenRow;
+    return (
+      <div className="flex items-center justify-center flex-wrap flex-shrink-0">
+        {isLpToken ? (
+          tokens.map((token: IToken, index) => {
+            const metadata = standardizeAsset(token.metadata);
+            return (
+              <img
+                key={token.token_id}
+                src={metadata.icon}
+                alt=""
+                className={`w-6 h-6 rounded-full relative ${index !== 0 ? "-ml-1.5" : ""}`}
+              />
+            );
+          })
+        ) : (
           <img src={tokenRow?.icon} className="w-9 h-9 rounded-full" alt="" />
-          {is_new ? <NewTagIcon className="absolute -bottom-1 transform -translate-x-0" /> : null}
-        </div>
-        <div className="flex flex-col ml-3">
-          <div className="flex">
-            <span className="text-[26px] text-white font-bold">{tokenRow?.symbol}</span>
+        )}
+      </div>
+    );
+  }
+  function getSymbols() {
+    const { isLpToken, tokens } = tokenRow;
+    return (
+      <div className="flex items-center flex-wrap flex-shrink-0">
+        {isLpToken ? (
+          tokens.map((token: IToken, index) => {
+            const metadata = standardizeAsset(token.metadata);
+            return (
+              <span className="text-[20px] text-white font-bold" key={token.token_id}>
+                {metadata.symbol}
+                {index === tokens.length - 1 ? "" : "-"}
+                {index === tokens.length - 1 ? (
+                  <span className="text-gray-300 italic text-xs transform ml-1 -translate-y-0.5">
+                    LP token
+                  </span>
+                ) : null}
+              </span>
+            );
+          })
+        ) : (
+          <span className="text-[26px] text-white font-bold">
+            {tokenRow?.symbol}
             {is_native ? (
-              <span className="text-gray-300 italic text-sm transform translate-y-3 ml-1">
+              <span className="text-gray-300 italic text-sm transform ml-1 -translate-y-0.5">
                 Native
               </span>
             ) : null}
-          </div>
+          </span>
+        )}
+      </div>
+    );
+  }
+  return (
+    <Box className="mb-7">
+      <div className="flex items-center">
+        <div className="relative flex flex-col items-center">
+          {getIcons()}
+          {is_new ? <NewTagIcon className="transform -translate-y-0.5 z-10" /> : null}
+        </div>
+        <div className="flex flex-col ml-3">
+          <div className="flex">{getSymbols()}</div>
           <span className="text-xs text-gray-300 transform -translate-y-1.5">
             ${tokenRow?.price}
           </span>

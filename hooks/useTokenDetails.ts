@@ -108,7 +108,7 @@ export const useTokenDetails = () => {
       });
       const supplies = getSupplyDetails(tokenDetails);
 
-      const interestRatesCal = interestRate?.utilization.map((n, i) => {
+      const interestRatesCal = interestRate?.utilization?.map((n, i) => {
         const percent = n * 100;
         // const rateIndex = interestRate?.utilization.findIndex((i) => i === percent);
         const borrowRateRaw = interestRate.burrow_apr[i] * 100;
