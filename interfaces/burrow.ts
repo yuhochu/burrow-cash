@@ -2,7 +2,15 @@ import { Account, Contract } from "near-api-js";
 import type { WalletSelector } from "@near-wallet-selector/core";
 
 import { IPrices } from "./oracle";
-import { IMetadata, AssetEntry, IAssetDetailed, Balance, NetTvlFarm, IUnitLptAsset } from "./asset";
+import {
+  IMetadata,
+  AssetEntry,
+  IAssetDetailed,
+  Balance,
+  NetTvlFarm,
+  IUnitLptAsset,
+  IShadowRecordInfo,
+} from "./asset";
 import { IAccount, IAccountDetailed } from "./account";
 
 export interface IConfig {
@@ -42,6 +50,7 @@ export interface IBurrow {
     | IAssetDetailed
     | IAccountDetailed
     | IUnitLptAsset
+    | IShadowRecordInfo
     | IAccount[]
     | Balance
     | IConfig

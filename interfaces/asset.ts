@@ -200,3 +200,11 @@ export interface IUnitLptAssetDetail {
 export interface IUnitLptAsset {
   [lp_token_id: string]: IUnitLptAssetDetail;
 }
+
+export interface IShadowRecord {
+  shadow_in_farm: string;
+  shadow_in_burrow: string;
+}
+export interface IShadowRecordInfo {
+  [pool_id: string]: IShadowRecord;
+}

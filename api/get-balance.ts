@@ -1,8 +1,14 @@
 import { Contract } from "near-api-js";
 
+import Decimal from "decimal.js";
 import { getBurrow } from "../utils";
 import { getContract } from "../store";
-import { ChangeMethodsToken, ViewMethodsToken, ViewMethodsREFV1 } from "../interfaces";
+import {
+  ChangeMethodsToken,
+  ViewMethodsToken,
+  ViewMethodsREFV1,
+  IShadowRecordInfo,
+} from "../interfaces";
 import { lpTokenPrefix } from "../utils/config";
 
 export const getTokenContract = async (tokenContractAddress: string): Promise<Contract> => {
@@ -10,7 +16,11 @@ export const getTokenContract = async (tokenContractAddress: string): Promise<Co
   return getContract(account, tokenContractAddress, ViewMethodsToken, ChangeMethodsToken);
 };
 
-const getBalance = async (tokenId: string, accountId: string): Promise<string> => {
+const getBalance = async (
+  tokenId: string,
+  accountId: string,
+  shadowRecords?: IShadowRecordInfo,
+): Promise<string> => {
   const { view, refv1Contract } = await getBurrow();
 
   try {
@@ -18,14 +28,17 @@ const getBalance = async (tokenId: string, accountId: string): Promise<string> =
     let balanceInYocto;
     const isLpToken = tokenId.indexOf(lpTokenPrefix) > -1;
     if (isLpToken) {
-      balanceInYocto = (await view(
+      const pool_id = tokenId.split("-")[1];
+      const poolShares = (await view(
         refv1Contract,
         ViewMethodsREFV1[ViewMethodsREFV1.get_pool_shares],
         {
           account_id: accountId,
-          pool_id: +tokenId.split("-")[1],
+          pool_id: +pool_id,
         },
       )) as string;
+      const shadow_in_burrow = shadowRecords?.[pool_id]["shadow_in_burrow"] || "0";
+      balanceInYocto = new Decimal(poolShares).minus(shadow_in_burrow);
     } else {
       balanceInYocto = (await view(
         tokenContract,
@@ -41,5 +54,4 @@ const getBalance = async (tokenId: string, accountId: string): Promise<string> =
     return "0";
   }
 };
-
 export default getBalance;

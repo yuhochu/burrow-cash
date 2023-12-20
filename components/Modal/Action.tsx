@@ -12,6 +12,7 @@ import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
 import { borrow } from "../../store/actions/borrow";
 import { withdraw } from "../../store/actions/withdraw";
+import { shadow_action } from "../../store/actions/shadow";
 import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
@@ -24,7 +25,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
-  const { action = "Deposit", tokenId } = asset;
+  const { action = "Deposit", tokenId, isLpToken, decimals } = asset;
   const { isRepayFromDeposits } = useDegenMode();
 
   const { available, canUseAsCollateral, extraDecimals, collateral, disabled } = getModalData({
@@ -57,6 +58,14 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
       case "Supply":
         if (tokenId === nearTokenId) {
           await deposit({ amount, useAsCollateral, isMax });
+        } else if (isLpToken) {
+          await shadow_action({
+            tokenId,
+            decimals: +(decimals || 0) + +extraDecimals,
+            useAsCollateral,
+            amount,
+            isMax,
+          });
         } else {
           await supply({
             tokenId,
