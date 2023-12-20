@@ -88,16 +88,48 @@ const yourSuppliedColumns = [
   {
     header: "Assets",
     cell: ({ originalData }) => {
-      return (
-        <div className="flex gap-2 items-center">
+      const { metadata } = originalData || {};
+      const { icon, tokens, symbol } = metadata || {};
+      let iconImg;
+      let symbolNode = "";
+      if (icon) {
+        symbolNode = symbol;
+        iconImg = (
           <img
-            src={originalData?.icon}
+            src={icon}
             width={26}
             height={26}
             alt="token"
-            className="rounded-full w-[26px] h-[26px]"
+            className="rounded-full w-[26px] h-[26px] ml-1"
           />
-          <div className="truncate">{originalData?.symbol}</div>
+        );
+      } else if (tokens?.length) {
+        iconImg = (
+          <div className="grid" style={{ marginRight: 2, gridTemplateColumns: "15px 12px" }}>
+            {tokens?.map((d, i) => {
+              const isLast = i === tokens.length - 1;
+              symbolNode += `${d.metadata.symbol}${!isLast ? "-" : ""}`;
+              return (
+                <img
+                  key={d.metadata.symbol}
+                  src={d.metadata?.icon}
+                  width={20}
+                  height={20}
+                  alt="token"
+                  className="rounded-full w-[20px] h-[20px] -m-1"
+                  style={{ maxWidth: "none" }}
+                />
+              );
+            })}
+          </div>
+        );
+      }
+      return (
+        <div className="flex gap-2 items-center">
+          {iconImg}
+          <div className="truncate" title={symbolNode}>
+            {symbolNode}
+          </div>
         </div>
       );
     },

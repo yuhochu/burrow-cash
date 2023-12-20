@@ -87,6 +87,7 @@ export const getPortfolioAssets = createSelector(
         totalSuppliedUSD += suppliedUSD;
         return standardizeAsset({
           tokenId,
+          metadata: asset.metadata,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price?.usd ?? 0,
@@ -125,6 +126,7 @@ export const getPortfolioAssets = createSelector(
         totalBorrowedUSD += borrowedUSD;
         return standardizeAsset({
           tokenId,
+          metadata: asset.metadata,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price?.usd ?? 0,
