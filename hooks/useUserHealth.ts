@@ -1,7 +1,12 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { getDailyReturns } from "../redux/selectors/getDailyReturns";
 import { getNetAPY, getNetTvlAPY } from "../redux/selectors/getNetAPY";
-import { getHealthFactor } from "../redux/selectors/getHealthFactor";
+import {
+  DANGER_HEALTH_FACTOR,
+  LOW_HEALTH_FACTOR,
+  getHealthFactor,
+  getLPHealthFactor,
+} from "../redux/selectors/getHealthFactor";
 import { getAppState } from "../redux/appSelectors";
 import { toggleShowDailyReturns } from "../redux/appSlice";
 import { trackShowDailyReturns } from "../utils/telemetry";
@@ -15,11 +20,9 @@ export function useUserHealth() {
   const netLiquidityAPY = useAppSelector(getNetTvlAPY({ isStaking: false }));
   const dailyReturns = useAppSelector(getDailyReturns);
   const healthFactor = useAppSelector(getHealthFactor);
-
+  const LPHealthFactor = useAppSelector(getLPHealthFactor);
   const { fullDigits, setDigits } = useFullDigits();
   const slimStats = useSlimStats();
-  const lowHealthFactor = 180;
-  const dangerHealthFactor = 100;
 
   const toggleDailyReturns = () => {
     trackShowDailyReturns({ showDailyReturns });
@@ -41,7 +44,7 @@ export function useUserHealth() {
   const label =
     healthFactor === -1 || healthFactor === null
       ? "n/a"
-      : healthFactor < lowHealthFactor
+      : healthFactor < LOW_HEALTH_FACTOR
       ? "Low"
       : healthFactor < 200
       ? "Medium"
@@ -52,8 +55,9 @@ export function useUserHealth() {
     netLiquidityAPY,
     dailyReturns,
     healthFactor,
-    lowHealthFactor,
-    dangerHealthFactor,
+    LPHealthFactor,
+    lowHealthFactor: LOW_HEALTH_FACTOR,
+    dangerHealthFactor: DANGER_HEALTH_FACTOR,
     slimStats,
     fullDigits,
     toggleDigits,

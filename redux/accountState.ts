@@ -35,6 +35,9 @@ export interface Portfolio {
   borrowed: {
     [tokenId: string]: PortfolioAsset;
   };
+  positions: {
+    [tokenId: string]: any;
+  };
   farms: {
     supplied: {
       [tokenId: string]: Farm;
@@ -78,6 +81,7 @@ export const initialState: AccountState = {
       borrowed: {},
       netTvl: {},
     },
+    positions: {},
     staking: initialStaking,
     hasNonFarmedAssets: false,
   },

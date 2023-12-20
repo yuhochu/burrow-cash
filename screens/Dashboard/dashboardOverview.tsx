@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
 import SemiCircleProgressBar from "../../components/SemiCircleProgressBar/SemiCircleProgressBar";
@@ -17,6 +17,7 @@ import { UserLiquidity } from "../../components/Header/stats/liquidity";
 import { APY } from "../../components/Header/stats/apy";
 import { ContentBox } from "../../components/ContentBox/ContentBox";
 import ToolTip from "../../components/ToolTip";
+import { StatLabel } from "../../components/Header/stats/components";
 
 const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   const [modal, setModal] = useState<modalProps>({
@@ -175,8 +176,31 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
               {recordsButton}
             </div>
 
-            <div className="relative lg3:mr-10">
+            <div className="relative lg3:mr-10 flex flex-col items-center">
               <HealthFactor userHealth={userHealth} />
+              {userHealth?.LPHealthFactor ? (
+                <div className="lp-healths flex items-center gap-2 mt-4">
+                  {Object.entries(userHealth.LPHealthFactor).map(([key, value]: [string, any]) => {
+                    const healthColor = {
+                      good: "text-primary",
+                      warning: "text-warning",
+                      danger: "text-red-100",
+                    };
+                    return (
+                      <StatLabel
+                        title={{ text: key }}
+                        row={[
+                          {
+                            value: `${value?.healthFactor}%`,
+                            valueClass: `${healthColor[value.healthStatus]}`,
+                          },
+                        ]}
+                        key={key}
+                      />
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
