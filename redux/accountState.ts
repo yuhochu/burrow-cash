@@ -24,7 +24,16 @@ export interface FarmData {
 export interface Farm {
   [reward_token_id: string]: FarmData;
 }
-
+export interface IPositions {
+  [shadow_id: string]: {
+    collateral: {
+      [tokenId: string]: PortfolioAsset;
+    };
+    borrowed: {
+      [tokenId: string]: PortfolioAsset;
+    };
+  };
+}
 export interface Portfolio {
   supplied: {
     [tokenId: string]: PortfolioAsset;
@@ -35,9 +44,7 @@ export interface Portfolio {
   borrowed: {
     [tokenId: string]: PortfolioAsset;
   };
-  positions: {
-    [tokenId: string]: any;
-  };
+  positions: IPositions;
   farms: {
     supplied: {
       [tokenId: string]: Farm;
@@ -76,12 +83,12 @@ export const initialState: AccountState = {
     supplied: {},
     collateral: {},
     borrowed: {},
+    positions: {},
     farms: {
       supplied: {},
       borrowed: {},
       netTvl: {},
     },
-    positions: {},
     staking: initialStaking,
     hasNonFarmedAssets: false,
   },

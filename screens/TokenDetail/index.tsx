@@ -993,23 +993,44 @@ function YouBorrowed() {
 
 function OuterLink() {
   const { tokenRow } = useContext(DetailData) as any;
-  const { symbol } = tokenRow;
+  const { symbol, isLpToken, tokenId } = tokenRow;
   return (
     <div className="mt-7 outline-none">
-      <LabelOuterLink
-        title="Acquire token from"
-        content={
-          <LabelOuterLinkIcon>
-            <REFIcon
-              key="1"
-              className="lg:opacity-60 lg:hover:opacity-100"
-              onClick={() => {
-                window.open("https://app.ref.finance/");
-              }}
-            />
-          </LabelOuterLinkIcon>
-        }
-      />
+      {!isLpToken && (
+        <LabelOuterLink
+          title="Acquire token from"
+          content={
+            <LabelOuterLinkIcon>
+              <REFIcon
+                key="1"
+                className="lg:opacity-60 lg:hover:opacity-100"
+                onClick={() => {
+                  window.open("https://app.ref.finance/");
+                }}
+              />
+            </LabelOuterLinkIcon>
+          }
+        />
+      )}
+      {isLpToken && (
+        <LabelOuterLink
+          title="Acquire LP token from"
+          content={
+            <LabelOuterLinkIcon>
+              <REFIcon
+                key="1"
+                className="lg:opacity-60 lg:hover:opacity-100"
+                onClick={() => {
+                  const pool_id = tokenId.split("-")[1];
+                  // TODO need to judge is or not stable pool
+                  window.open(`https://app.ref.finance/pool/${pool_id}`);
+                  // window.open(`https://app.ref.finance/sauce/${pool_id}`);
+                }}
+              />
+            </LabelOuterLinkIcon>
+          }
+        />
+      )}
       {OuterLinkConfig[symbol] && (
         <LabelOuterLink
           title="Deposit from"
@@ -1093,7 +1114,7 @@ function OuterLink() {
           }
         />
       )}
-      {symbol !== "USDt" && symbol !== "USDC" && (
+      {symbol !== "USDt" && symbol !== "USDC" && !isLpToken && (
         <LabelOuterLink
           title="Bridge from"
           content={

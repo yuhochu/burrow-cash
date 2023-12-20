@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import Decimal from "decimal.js";
 
+import { omit } from "lodash";
 import { RootState } from "../store";
 import { emptySuppliedAsset, emptyBorrowedAsset, hasAssets, getRewards, toUsd } from "../utils";
 import { shrinkToken, expandToken } from "../../store";
@@ -49,17 +50,28 @@ export const getPortfolioAssets = createSelector(
   (app, assets, account) => {
     if (!hasAssets(assets)) return [[], [], 0, 0];
     const brrrTokenId = app.config.booster_token_id;
+    const lpPositions = omit(account.portfolio.positions, "REGULAR");
+    let portfolioLpAssets = {};
+    Object.keys(lpPositions).forEach((shadow_id: string) => {
+      portfolioLpAssets = {
+        ...lpPositions[shadow_id].collateral,
+      };
+    });
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
+      ...portfolioLpAssets,
     };
     let totalSuppliedUSD = 0;
     let totalBorrowedUSD = 0;
     const supplied = Object.keys(portfolioAssets)
       .map((tokenId) => {
         const asset = assets.data[tokenId];
+        const { isLpToken } = asset;
         const collateral = shrinkToken(
-          account.portfolio.collateral[tokenId]?.balance || 0,
+          (isLpToken
+            ? account.portfolio.positions[tokenId].collateral[tokenId]?.balance
+            : account.portfolio.collateral[tokenId]?.balance) || 0,
           asset.metadata.decimals + asset.config.extra_decimals,
         );
         const suppliedBalance = account.portfolio.supplied[tokenId]?.balance || 0;
