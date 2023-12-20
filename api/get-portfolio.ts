@@ -6,7 +6,7 @@ const getPortfolio = async (account_id: string): Promise<IAccountDetailed> => {
 
   const accountDetailed = (await view(
     logicContract,
-    ViewMethodsLogic[ViewMethodsLogic.get_account],
+    ViewMethodsLogic[ViewMethodsLogic.get_account_all_positions],
     {
       account_id,
     },

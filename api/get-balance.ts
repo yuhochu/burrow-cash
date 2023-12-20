@@ -38,7 +38,7 @@ const getBalance = async (
         },
       )) as string;
       const shadow_in_burrow = shadowRecords?.[pool_id]["shadow_in_burrow"] || "0";
-      balanceInYocto = new Decimal(poolShares).minus(shadow_in_burrow);
+      balanceInYocto = new Decimal(poolShares).minus(shadow_in_burrow).toFixed();
     } else {
       balanceInYocto = (await view(
         tokenContract,
