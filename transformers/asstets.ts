@@ -15,6 +15,7 @@ export function transformAssets({
     if (!asset.config) return map;
     if (asset.isLpToken) {
       asset.config.can_deposit = true;
+      asset.config.can_withdraw = true;
     }
     map[asset.token_id] = omit(
       {
