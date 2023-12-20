@@ -2,6 +2,7 @@ export enum ViewMethodsLogic {
   // accounts
   get_account,
   get_accounts_paged,
+  get_account_all_positions,
   // assets
   get_asset,
   get_assets,
