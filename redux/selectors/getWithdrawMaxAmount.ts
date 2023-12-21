@@ -6,6 +6,7 @@ import { shrinkToken, expandTokenDecimal, MAX_RATIO } from "../../store";
 import { decimalMax, decimalMin } from "../../utils";
 import { Assets } from "../assetState";
 import { Portfolio } from "../accountState";
+import { DEFAULT_POSITION } from "../../utils/config";
 
 const sumReducerDecimal = (sum: Decimal, cur: Decimal) => sum.add(cur);
 
@@ -13,8 +14,10 @@ export const getAdjustedSum = (
   type: "borrowed" | "collateral",
   portfolio: Portfolio,
   assets: Assets,
+  position?: string,
 ) => {
-  return Object.keys(portfolio[type])
+  const positionId = position || DEFAULT_POSITION;
+  return Object.keys(portfolio.positions[positionId][type])
     .map((id) => {
       const asset = assets[id];
       let pricedBalance;
@@ -30,7 +33,7 @@ export const getAdjustedSum = (
         const price = asset.price ? asset.price.usd : new Decimal(0);
         pricedBalance = new Decimal(
           shrinkToken(
-            portfolio[type][id].balance,
+            portfolio.positions[positionId][type][id]?.balance,
             asset.metadata.decimals + asset.config.extra_decimals,
           ),
         ).mul(price);

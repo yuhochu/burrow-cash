@@ -8,6 +8,7 @@ import { shrinkToken, expandToken } from "../../store";
 import { Asset, Assets } from "../assetState";
 import { Farm } from "../accountState";
 import { standardizeAsset } from "../../utils";
+import { DEFAULT_POSITION } from "../../utils/config";
 
 export const getPortfolioRewards = (
   type: "supplied" | "borrowed",
@@ -50,7 +51,7 @@ export const getPortfolioAssets = createSelector(
   (app, assets, account) => {
     if (!hasAssets(assets)) return [[], [], 0, 0];
     const brrrTokenId = app.config.booster_token_id;
-    const lpPositions = omit(account.portfolio.positions, "REGULAR");
+    const lpPositions = omit(account.portfolio.positions, DEFAULT_POSITION);
     let portfolioLpAssets = {};
     Object.keys(lpPositions).forEach((shadow_id: string) => {
       portfolioLpAssets = {

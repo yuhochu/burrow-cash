@@ -4,6 +4,7 @@ import { MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getAdjustedSum } from "./getWithdrawMaxAmount";
+import { DEFAULT_POSITION } from "../../utils/config";
 
 export const LOW_HEALTH_FACTOR = 180;
 export const DANGER_HEALTH_FACTOR = 100;
@@ -15,7 +16,7 @@ export const getHealthFactor = createSelector(
     if (!hasAssets(assets)) return null;
     if (!portfolio) return null;
     if (!Object.keys(portfolio.borrowed).length) return -1;
-    const regularToken = portfolio?.positions?.REGULAR;
+    const regularToken = portfolio?.positions?.[DEFAULT_POSITION];
     return calHealthFactor(regularToken, assets);
   },
 );
@@ -29,8 +30,7 @@ export const getLPHealthFactor = createSelector(
     if (!Object.keys(portfolio.borrowed).length) return -1;
     const LPToken = {};
     Object.entries(portfolio?.positions).forEach(([key, value]) => {
-      if (key !== "REGULAR") {
-        const asset = assets?.data?.[key];
+      if (key !== DEFAULT_POSITION) {
         const healthFactor = calHealthFactor(value, assets);
         const isDanger = healthFactor !== -1 && healthFactor < DANGER_HEALTH_FACTOR;
         const isWarning = healthFactor !== -1 && healthFactor < LOW_HEALTH_FACTOR;

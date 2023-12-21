@@ -58,7 +58,13 @@ export default function TokenBox({ asset, action }: { asset: UIAsset; action: st
     );
   }
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      tabIndex={0}
+      onBlur={() => {
+        setOpen(false);
+      }}
+    >
       <div
         onClick={swithToken}
         className={`flex items-center gap-2.5 h-[40px] ${

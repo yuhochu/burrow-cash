@@ -3,10 +3,12 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { getAssetDataByTokenId } from "../redux/appSelectors";
 import { getBorrowMaxAmount } from "../redux/selectors/getBorrowMaxAmount";
 import { NEAR_STORAGE_DEPOSIT } from "../store";
+import { DEFAULT_POSITION } from "../utils/config";
 
 export function useUserBalance(tokenId: string, isWrappedNear: boolean) {
   const asset = useAppSelector(getAssetDataByTokenId(tokenId));
-  const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
+  const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
+  const maxBorrowAmount = maxBorrowAmountPositions[DEFAULT_POSITION]; // TODO
   const { available, availableNEAR, availableLiquidity } = asset;
   // get supply balance
   let supplyBalance = "0";

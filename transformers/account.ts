@@ -1,6 +1,7 @@
 import { initialStaking } from "../redux/accountState";
 import { hasOnlyBurrowFarmRewards, hasZeroSharesFarmRewards, listToMap } from "../redux/utils";
 import { transformAccountFarms } from "./farms";
+import { DEFAULT_POSITION } from "../utils/config";
 
 export const transformPortfolio = (account) => {
   const { portfolio } = account;
@@ -29,9 +30,8 @@ export const transformPortfolio = (account) => {
   });
   return {
     supplied: listToMap(supplied),
-    borrowed: positions["REGULAR"].borrowed,
-    collateral: positions["REGULAR"].collateral,
-    collateralAll,
+    borrowed: positions[DEFAULT_POSITION].borrowed,
+    collateral: positions[DEFAULT_POSITION].collateral,
     positions,
     farms: transformAccountFarms(farms),
     staking: booster_staking || initialStaking,
