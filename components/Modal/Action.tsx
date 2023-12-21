@@ -20,7 +20,7 @@ import { trackActionButton, trackUseAsCollateral } from "../../utils/telemetry";
 import { useDegenMode } from "../../hooks/hooks";
 import { SubmitButton, AlertWarning } from "./components";
 
-export default function Action({ maxBorrowAmount, healthFactor }) {
+export default function Action({ maxBorrowAmount, healthFactor, collateralType }) {
   const [loading, setLoading] = useState(false);
   const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
@@ -77,7 +77,7 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
         }
         break;
       case "Borrow": {
-        await borrow({ tokenId, extraDecimals, amount });
+        await borrow({ tokenId, extraDecimals, amount, collateralType });
         break;
       }
       case "Withdraw": {

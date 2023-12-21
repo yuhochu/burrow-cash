@@ -63,7 +63,7 @@ const Modal = () => {
   // TODO 计算出每一类资产的最大可借出余额
   const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
-  const maxBorrowAmount = maxBorrowAmountPositions[selectedCollateralType]; // TODO
+  const maxBorrowAmount = maxBorrowAmountPositions[selectedCollateralType];
   const {
     symbol,
     apy,
@@ -142,7 +142,11 @@ const Modal = () => {
             )}
           </div>
           <Alerts data={alerts} />
-          <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />
+          <Action
+            maxBorrowAmount={maxBorrowAmount}
+            healthFactor={healthFactor}
+            collateralType={selectedCollateralType}
+          />
         </Box>
       </Wrapper>
     </MUIModal>

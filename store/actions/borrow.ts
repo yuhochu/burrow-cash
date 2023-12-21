@@ -6,17 +6,19 @@ import { ChangeMethodsNearToken, ChangeMethodsOracle, ChangeMethodsToken } from 
 import { Transaction, isRegistered, isRegisteredNew } from "../wallet";
 import { prepareAndExecuteTransactions, getMetadata, getTokenContract } from "../tokens";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
-import getConfig from "../../utils/config";
+import getConfig, { DEFAULT_POSITION } from "../../utils/config";
 
 const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 export async function borrow({
   tokenId,
   extraDecimals,
   amount,
+  collateralType,
 }: {
   tokenId: string;
   extraDecimals: number;
   amount: string;
+  collateralType: string;
 }) {
   const { oracleContract, logicContract, account } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
@@ -69,25 +71,43 @@ export async function borrow({
       });
     }
   }
-
-  const borrowTemplate = {
-    Execute: {
-      actions: [
-        {
-          Borrow: {
-            token_id: tokenId,
-            amount: expandedAmount.toFixed(0),
+  let borrowTemplate;
+  if (!collateralType || collateralType === DEFAULT_POSITION) {
+    borrowTemplate = {
+      Execute: {
+        actions: [
+          {
+            Borrow: {
+              token_id: tokenId,
+              amount: expandedAmount.toFixed(0),
+            },
           },
-        },
-        {
-          Withdraw: {
-            token_id: tokenId,
-            max_amount: expandedAmount.toFixed(0),
+          {
+            Withdraw: {
+              token_id: tokenId,
+              max_amount: expandedAmount.toFixed(0),
+            },
           },
-        },
-      ],
-    },
-  };
+        ],
+      },
+    };
+  } else {
+    borrowTemplate = {
+      Execute: {
+        actions: [
+          {
+            PositionBorrow: {
+              position: collateralType,
+              asset_amount: {
+                token_id: tokenId,
+                amount: expandedAmount.toFixed(0),
+              },
+            },
+          },
+        ],
+      },
+    };
+  }
 
   transactions.push({
     receiverId: oracleContract.contractId,
