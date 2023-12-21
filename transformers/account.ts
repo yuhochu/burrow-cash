@@ -32,6 +32,7 @@ export const transformPortfolio = (account) => {
     supplied: listToMap(supplied),
     borrowed: positions[DEFAULT_POSITION].borrowed,
     collateral: positions[DEFAULT_POSITION].collateral,
+    collateralAll,
     positions,
     farms: transformAccountFarms(farms),
     staking: booster_staking || initialStaking,

@@ -31,6 +31,7 @@ export const getLPHealthFactor = createSelector(
     const LPToken = {};
     Object.entries(portfolio?.positions).forEach(([key, value]) => {
       if (key !== DEFAULT_POSITION) {
+        const asset = assets?.data?.[key];
         const healthFactor = calHealthFactor(value, assets);
         const isDanger = healthFactor !== -1 && healthFactor < DANGER_HEALTH_FACTOR;
         const isWarning = healthFactor !== -1 && healthFactor < LOW_HEALTH_FACTOR;
