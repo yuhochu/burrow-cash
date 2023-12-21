@@ -45,19 +45,22 @@ export const getGains = (
   assets: AssetsState,
   source: "supplied" | "collateral" | "borrowed",
   withNetTvlMultiplier = false,
-) =>
-  Object.keys(portfolio[source])
+) => {
+  const sourceType = source === "collateral" ? "collateralAll" : source;
+  const data = portfolio[sourceType];
+  return Object.keys(data)
     .map((id) => {
       const asset = assets.data[id];
       const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
 
-      const { balance } = portfolio[source][id];
-      const apr = Number(portfolio[source][id].apr);
+      const { balance } = data[id];
+      const apr = Number(data[id].apr);
       const balanceUSD = toUsd(balance, asset);
 
       return [balanceUSD * (withNetTvlMultiplier ? netTvlMultiplier : 1), apr];
     })
     .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+};
 
 export const computePoolsDailyAmount = (
   type: "supplied" | "borrowed",

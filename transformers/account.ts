@@ -17,10 +17,21 @@ export const transformPortfolio = (account) => {
     positions[shadow_id].borrowed = listToMap(borrowed);
     positions[shadow_id].collateral = listToMap(collateral);
   });
+
+  let collateralAll = {};
+  Object.entries(positions).forEach(([key, value]: [string, any]) => {
+    if (value?.collateral) {
+      collateralAll = {
+        ...collateralAll,
+        ...value.collateral,
+      };
+    }
+  });
   return {
     supplied: listToMap(supplied),
     borrowed: positions["REGULAR"].borrowed,
     collateral: positions["REGULAR"].collateral,
+    collateralAll,
     positions,
     farms: transformAccountFarms(farms),
     staking: booster_staking || initialStaking,

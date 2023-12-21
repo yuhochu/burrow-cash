@@ -100,7 +100,8 @@ const yourSuppliedColumns = [
             width={26}
             height={26}
             alt="token"
-            className="rounded-full w-[26px] h-[26px] ml-1"
+            className="rounded-full w-[26px] h-[26px]"
+            style={{ marginRight: 3 }}
           />
         );
       } else if (tokens?.length) {

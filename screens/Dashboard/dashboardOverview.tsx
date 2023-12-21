@@ -186,9 +186,15 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
                       warning: "text-warning",
                       danger: "text-red-100",
                     };
+
+                    let tokensName = "";
+                    value?.metadata?.tokens?.forEach((d, i) => {
+                      const isLast = i === value.metadata.tokens.length - 1;
+                      tokensName += `${d.metadata.symbol}${!isLast ? "-" : ""}`;
+                    });
                     return (
                       <StatLabel
-                        title={{ text: key }}
+                        title={{ text: tokensName || key }}
                         row={[
                           {
                             value: `${value?.healthFactor}%`,

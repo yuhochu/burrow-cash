@@ -11,14 +11,13 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
       const allTokens = {
-        ...account.portfolio.collateral,
+        ...account.portfolio.collateralAll,
         ...account.portfolio.supplied,
         ...account.portfolio.borrowed,
       };
-
       const sourceTokens = account.portfolio[source];
-      const { collateral } = account.portfolio;
 
+      const { collateral, collateralAll } = account.portfolio;
       return Object.keys(allTokens)
         .map((tokenId) => {
           const { price, metadata, config } = assets.data[tokenId];
@@ -33,7 +32,7 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
           const totalCollateral =
             Number(
               shrinkToken(
-                collateral[tokenId]?.balance || 0,
+                collateralAll[tokenId]?.balance || 0,
                 metadata.decimals + config.extra_decimals,
               ),
             ) * (price?.usd || 0);

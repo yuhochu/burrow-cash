@@ -41,6 +41,9 @@ export interface Portfolio {
   collateral: {
     [tokenId: string]: PortfolioAsset;
   };
+  collateralAll: {
+    [tokenId: string]: PortfolioAsset;
+  };
   borrowed: {
     [tokenId: string]: PortfolioAsset;
   };
@@ -82,6 +85,7 @@ export const initialState: AccountState = {
   portfolio: {
     supplied: {},
     collateral: {},
+    collateralAll: {},
     borrowed: {},
     positions: {},
     farms: {
