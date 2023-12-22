@@ -108,7 +108,7 @@ export const getPortfolioAssets = createSelector(
         });
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
-
+    // borrow from regular position
     const borrowed = Object.keys(account.portfolio.borrowed)
       .map((tokenId) => {
         const asset = assets.data[tokenId];
@@ -148,7 +148,49 @@ export const getPortfolioAssets = createSelector(
         });
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
+    // borrow from lp position
+    const borrowed_LP = Object.keys(lpPositions).reduce((acc, shadow_id: string) => {
+      const b = Object.keys(lpPositions[shadow_id].borrowed)
+        .map((tokenId) => {
+          const asset = assets.data[tokenId];
+          const borrowedBalance = lpPositions[shadow_id].borrowed[tokenId].balance;
+          const brrrUnclaimedAmount =
+            account.portfolio.farms.borrowed[tokenId]?.[brrrTokenId]?.unclaimed_amount || "0";
+          const totalSupplyD = new Decimal(asset.supplied.balance)
+            .plus(new Decimal(asset.reserved))
+            .toFixed();
 
-    return [supplied, borrowed, totalSuppliedUSD, totalBorrowedUSD];
+          const borrowedToken = Number(
+            shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+          );
+          const borrowedUSD = borrowedToken * (asset.price?.usd || 0);
+          totalBorrowedUSD += borrowedUSD;
+          return standardizeAsset({
+            tokenId,
+            metadata: asset.metadata,
+            symbol: asset.metadata.symbol,
+            icon: asset.metadata.icon,
+            price: asset.price?.usd ?? 0,
+            supplyApy: Number(asset.supply_apr) * 100,
+            borrowApy: Number(asset.borrow_apr) * 100,
+            borrowed: borrowedToken,
+            brrrUnclaimedAmount: Number(
+              shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
+            ),
+            rewards: getPortfolioRewards(
+              "borrowed",
+              asset,
+              account.portfolio.farms.borrowed[tokenId],
+              assets.data,
+            ),
+            borrowRewards: getRewards("borrowed", asset, assets.data),
+            totalSupplyMoney: toUsd(totalSupplyD, asset),
+          });
+        })
+        .filter(app.showDust ? Boolean : emptyBorrowedAsset);
+      return { ...acc, [shadow_id]: b };
+    }, {});
+
+    return [supplied, borrowed, totalSuppliedUSD, totalBorrowedUSD, borrowed_LP];
   },
 );

@@ -36,7 +36,6 @@ export const getBorrowMaxAmount = (tokenId: string) =>
     (assets, account) => {
       if (!account.accountId || !tokenId) return { [DEFAULT_POSITION]: 0 };
       if (!hasAssets(assets)) return { [DEFAULT_POSITION]: 0 };
-
       const maxBorrowAmount = computeBorrowMaxAmount(tokenId, assets.data, account.portfolio);
       return maxBorrowAmount;
     },

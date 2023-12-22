@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Decimal from "decimal.js";
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext, useContext, useMemo } from "react";
 import { Modal as MUIModal } from "@mui/material";
 import { twMerge } from "tailwind-merge";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
@@ -49,7 +49,7 @@ import { ConnectWalletButton } from "../../components/Header/WalletButton";
 import { OuterLinkConfig } from "./config";
 import { APYCell } from "../Market/APYCell";
 import { RewardsV2 } from "../../components/Rewards";
-import getConfig from "../../utils/config";
+import getConfig, { DEFAULT_POSITION } from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
 import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
@@ -66,10 +66,10 @@ const TokenDetail = () => {
     return row.tokenId === id;
   });
   if (!tokenRow) return null;
-  return <TokenDetailView tokenRow={tokenRow} />;
+  return <TokenDetailView tokenRow={tokenRow} assets={rows} />;
 };
 
-function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
+function TokenDetailView({ tokenRow, assets }: { tokenRow: UIAsset; assets: UIAsset[] }) {
   const [suppliers_number, set_suppliers_number] = useState<number>();
   const [borrowers_number, set_borrowers_number] = useState<number>();
   const isMobile = isMobileDevice();
@@ -91,14 +91,28 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
   });
   const tokenDetails = useTokenDetails();
   const { fetchTokenDetails, changePeriodDisplay } = tokenDetails || {};
-
-  const [suppliedRows, borrowedRows] = usePortfolioAssets() as [any[], any[]];
+  const [suppliedRows, borrowedRows, , , borrowedLPRows] = usePortfolioAssets() as [
+    any[],
+    any[],
+    number,
+    number,
+    Record<string, any[]>,
+  ];
   const supplied = suppliedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
   });
   const borrowed = borrowedRows?.find((row) => {
     return row.tokenId === tokenRow.tokenId;
   });
+  const borrowedLp = Object.keys(borrowedLPRows).reduce((acc, cur) => {
+    const b = borrowedLPRows[cur]?.find((row) => {
+      return row.tokenId === tokenRow.tokenId;
+    });
+    if (b) {
+      return { ...acc, [cur]: b };
+    }
+    return acc;
+  }, {});
 
   useEffect(() => {
     fetchTokenDetails(tokenRow.tokenId, 365).catch();
@@ -137,6 +151,8 @@ function TokenDetailView({ tokenRow }: { tokenRow: UIAsset }) {
         borrowers_number,
         is_native,
         is_new,
+        borrowedLp,
+        assets,
       }}
     >
       {isMobile ? (
@@ -929,7 +945,8 @@ function YouSupplied() {
 }
 
 function YouBorrowed() {
-  const { tokenRow, borrowed } = useContext(DetailData) as any;
+  // todo
+  const { tokenRow, borrowed, borrowedLp, assets } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
   const [icons, totalDailyRewardsMoney] = borrowed?.rewards?.reduce(
     (acc, cur) => {
@@ -955,7 +972,21 @@ function YouBorrowed() {
     "-"
   );
   const handleRepayClick = useRepayTrigger(tokenId);
-  const is_empty = !borrowed;
+  const is_empty = !borrowed && !Object.keys(borrowedLp).length;
+  const borrowedList = { ...borrowedLp };
+  if (borrowed) {
+    borrowedList[DEFAULT_POSITION] = borrowed;
+  }
+  function getName(position) {
+    if (position === DEFAULT_POSITION) return "(Single token)";
+    const a = assets.find((asset: UIAsset) => asset.tokenId === position);
+    const symbols = a.tokens.reduce(
+      (acc, cur, index) =>
+        acc + (cur.metadata?.symbol || "") + (index !== a.tokens.length - 1 ? "-" : ""),
+      "",
+    );
+    return `(${symbols})`;
+  }
   return (
     <div className="relative overflow-hidden">
       {is_empty ? (
@@ -987,23 +1018,46 @@ function YouBorrowed() {
               </span>
             </div>
           </div>
-          <Label
-            title="Your APY"
-            content={
-              <APYCell
-                rewards={tokenRow.borrowRewards}
-                baseAPY={tokenRow.borrowApy}
-                page="borrow"
-                tokenId={tokenRow.tokenId}
+          {Object.entries(borrowedList).map(([position, borrowedData]: [string, any]) => (
+            <div key={position}>
+              <Label
+                title={`Borrowed ${getName(position)}`}
+                content={
+                  <div className="flex items-center">
+                    <span className="text-sm text-white mr-0.5">
+                      {formatWithCommas_number(borrowedData?.borrowed || 0)}
+                    </span>
+                    <span className="text-xs text-gray-300">
+                      (
+                      {formatWithCommas_usd(
+                        new Decimal(borrowedData?.borrowed || 0)
+                          .mul(borrowedData?.price || 0)
+                          .toFixed(),
+                      )}
+                      )
+                    </span>
+                  </div>
+                }
               />
-            }
-          />
-          <Label title="Daily rewards" content={RewardsReactNode} />
-          <div className="flex items-center justify-between gap-2 mt-[35px]">
-            <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
-              Repay
-            </RedLineButton>
-          </div>
+              <Label
+                title="Your APY"
+                content={
+                  <APYCell
+                    rewards={tokenRow.borrowRewards}
+                    baseAPY={tokenRow.borrowApy}
+                    page="borrow"
+                    tokenId={tokenRow.tokenId}
+                  />
+                }
+              />
+              <Label title="Daily rewards" content={RewardsReactNode} />
+              <div className="flex items-center justify-between gap-2 mt-[35px]">
+                <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
+                  Repay
+                </RedLineButton>
+              </div>
+            </div>
+          ))}
         </UserBox>
       )}
       <RedLinearGradient className="absolute left-0 top-0 pointer-events-none" />
