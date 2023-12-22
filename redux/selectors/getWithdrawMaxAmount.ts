@@ -25,8 +25,7 @@ export const getAdjustedSum = (
         const price = asset.price
           ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
           : new Decimal(0);
-
-        pricedBalance = new Decimal(portfolio[type][id].balance)
+        pricedBalance = new Decimal(portfolio.positions[positionId][type][id].balance)
           .div(expandTokenDecimal(1, asset.config.extra_decimals))
           .mul(price);
       } else {
