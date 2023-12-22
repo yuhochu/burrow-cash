@@ -945,7 +945,6 @@ function YouSupplied() {
 }
 
 function YouBorrowed() {
-  // todo
   const { tokenRow, borrowed, borrowedLp, assets } = useContext(DetailData) as any;
   const { tokenId } = tokenRow;
   const [icons, totalDailyRewardsMoney] = borrowed?.rewards?.reduce(
@@ -961,22 +960,15 @@ function YouBorrowed() {
     },
     [[], 0],
   ) || [[], 0];
-  const RewardsReactNode = borrowed?.rewards?.length ? (
-    <div className="flex items-center">
-      {icons.map((icon, index) => {
-        return <img key={index} src={icon} className="w-4 h-4 rounded-full -ml-0.5" alt="" />;
-      })}
-      <span className="ml-2">{formatWithCommas_usd(totalDailyRewardsMoney)}</span>
-    </div>
-  ) : (
-    "-"
-  );
   const handleRepayClick = useRepayTrigger(tokenId);
   const is_empty = !borrowed && !Object.keys(borrowedLp).length;
   const borrowedList = { ...borrowedLp };
   if (borrowed) {
     borrowedList[DEFAULT_POSITION] = borrowed;
   }
+  const totalBorrowedAmount = useMemo(() => {
+    return Object.values(borrowedList).reduce((acc, b: any) => acc + b.borrowed || 0, 0);
+  }, [Object.keys(borrowedList).length]) as number;
   function getName(position) {
     if (position === DEFAULT_POSITION) return "(Single token)";
     const a = assets.find((asset: UIAsset) => asset.tokenId === position);
@@ -986,6 +978,27 @@ function YouBorrowed() {
       "",
     );
     return `(${symbols})`;
+  }
+  function getRewardsReactNode(position) {
+    const b = borrowedList[position];
+    let positionDailyRewardsMoney = "0";
+    if (totalBorrowedAmount > 0) {
+      positionDailyRewardsMoney = new Decimal(b.borrowed)
+        .div(totalBorrowedAmount)
+        .mul(totalDailyRewardsMoney)
+        .toFixed();
+    }
+    const RewardsReactNode = b?.rewards?.length ? (
+      <div className="flex items-center">
+        {icons.map((icon, index) => {
+          return <img key={index} src={icon} className="w-4 h-4 rounded-full -ml-0.5" alt="" />;
+        })}
+        <span className="ml-2">{formatWithCommas_usd(totalDailyRewardsMoney)}</span>
+      </div>
+    ) : (
+      "-"
+    );
+    return RewardsReactNode;
   }
   return (
     <div className="relative overflow-hidden">
@@ -1007,14 +1020,12 @@ function YouBorrowed() {
             <span className="text-lg text-white font-bold">You Borrowed</span>
             <div className="flex flex-col items-end">
               <span className="text-lg text-white font-bold">
-                {formatWithCommas_number(borrowed?.borrowed)}
+                {digitalProcess(totalBorrowedAmount, 2)}
               </span>
               <span className="text-xs text-gray-300">
-                {borrowed
-                  ? formatWithCommas_usd(
-                      new Decimal(borrowed?.borrowed || 0).mul(borrowed?.price || 0).toFixed(),
-                    )
-                  : "-"}
+                {formatWithCommas_usd(
+                  new Decimal(totalBorrowedAmount).mul(tokenRow?.price || 0).toFixed(),
+                )}
               </span>
             </div>
           </div>
@@ -1050,7 +1061,7 @@ function YouBorrowed() {
                   />
                 }
               />
-              <Label title="Daily rewards" content={RewardsReactNode} />
+              <Label title="Daily rewards" content={getRewardsReactNode(position)} />
               <div className="flex items-center justify-between gap-2 mt-[35px]">
                 <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
                   Repay
