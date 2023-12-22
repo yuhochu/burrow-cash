@@ -47,7 +47,7 @@ export const getGains = (
   withNetTvlMultiplier = false,
 ) => {
   const sourceType = source === "collateral" ? "collateralAll" : source;
-  const data = portfolio[source];
+  const data = portfolio[sourceType]; // TODO
   return Object.keys(data)
     .map((id) => {
       const asset = assets.data[id];

@@ -13,7 +13,7 @@ import { isMobileDevice } from "../../helpers/helpers";
 import { CloseIcon } from "../Modal/svg";
 import { toggleUseAsCollateral } from "../../redux/appSlice";
 import { IToken } from "../../interfaces/asset";
-import { standardizeAsset } from "../../utils";
+import { DEFAULT_POSITION } from "../../utils/config";
 
 export type IAssetType = "borrow" | "supply";
 type IBalance = { supply_balance?: string; borrow_balance?: string };
@@ -205,7 +205,8 @@ function GetBalance({
 }) {
   const { symbol, tokenId } = asset;
   const isWrappedNear = symbol === "NEAR";
-  const { supplyBalance, borrowBalance } = useUserBalance(tokenId, isWrappedNear);
+  const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
+  const borrowBalance = maxBorrowAmountPositions[DEFAULT_POSITION]?.toString(); // TODO
   updateAsset[tokenId] = {
     ...asset,
     supply_balance: supplyBalance,

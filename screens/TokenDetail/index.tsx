@@ -53,9 +53,9 @@ import getConfig from "../../utils/config";
 import InterestRateChart, { LabelText } from "./interestRateChart";
 import TokenBorrowSuppliesChart from "./tokenBorrowSuppliesChart";
 import { useTokenDetails } from "../../hooks/useTokenDetails";
-import { standardizeAsset } from "../../utils";
 import { IToken } from "../../interfaces/asset";
 import LPTokenCell from "./LPTokenCell";
+import AvailableBorrowCell from "./AvailableBorrowCell";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -721,7 +721,7 @@ function TokenUserInfo() {
   const { tokenId, tokens, isLpToken, price } = tokenRow;
   const accountId = useAccountId();
   const isWrappedNear = tokenRow.symbol === "NEAR";
-  const { supplyBalance, borrowBalance } = useUserBalance(tokenId, isWrappedNear);
+  const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
   const handleSupplyClick = useSupplyTrigger(tokenId);
   const handleBorrowClick = useBorrowTrigger(tokenId);
   function getIcons() {
@@ -747,6 +747,10 @@ function TokenUserInfo() {
   function getUserLpUsd() {
     return `$${digitalProcess(new Decimal(supplyBalance || 0).mul(price || 0).toFixed(), 2)}`;
   }
+  const totalBorrowAmount = Object.values(maxBorrowAmountPositions)?.reduce(
+    (acc, amount) => acc + amount,
+    0,
+  );
   return (
     <UserBox className="mb-[29px] xsm:mb-2.5">
       <span className="text-lg text-white font-bold">Your Info</span>
@@ -761,7 +765,11 @@ function TokenUserInfo() {
           </LPTokenCell>
         </div>
       </div>
-      <div className="flex items-center justify-between">
+      <div
+        className={`flex justify-between ${
+          !isLpToken && accountId && tokenRow?.can_borrow ? "items-start" : "items-center "
+        }`}
+      >
         {isLpToken ? (
           <>
             <span className="text-sm text-gray-300">USD Value</span>
@@ -770,12 +778,24 @@ function TokenUserInfo() {
         ) : (
           <>
             <span className="text-sm text-gray-300">Available to Borrow</span>
-            <div className="flex items-center">
-              <span className="text-sm text-white mr-2.5">
-                {accountId && tokenRow?.can_borrow ? formatWithCommas_number(borrowBalance) : "-"}
-              </span>
-              <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
-            </div>
+            {accountId && tokenRow?.can_borrow ? (
+              <div className="flex flex-col items-end gap-2">
+                {Object.entries(maxBorrowAmountPositions).map(([position, amount]) => {
+                  return (
+                    <AvailableBorrowCell
+                      key={position}
+                      asset={tokenRow}
+                      borrowData={[position, amount]}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex items-center">
+                <span className="text-sm text-white mr-2.5">-</span>
+                <img src={tokenRow?.icon} className="w-5 h-5 rounded-full" alt="" />
+              </div>
+            )}
           </>
         )}
       </div>
@@ -791,7 +811,7 @@ function TokenUserInfo() {
             </YellowSolidButton>
             {tokenRow?.can_borrow && (
               <RedSolidButton
-                disabled={!+borrowBalance}
+                disabled={!+totalBorrowAmount}
                 className="w-1 flex-grow"
                 onClick={handleBorrowClick}
               >
