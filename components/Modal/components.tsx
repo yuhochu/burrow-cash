@@ -70,11 +70,8 @@ export const CloseButton = ({ onClose, ...props }) => (
   </Box>
 );
 
-export const TokenInfo = ({ apy, asset, onClose }) => {
-  const { action, symbol, tokenId, icon, depositRewards, borrowRewards } = asset;
-  const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
-  const isRepay = action === "Repay";
-  const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
+export const ModalTitle = ({ asset, onClose }) => {
+  const { action, symbol } = asset;
   return (
     <div className="mb-[20px]">
       <div className="flex items-center justify-between text-lg text-white">
@@ -83,6 +80,15 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
         </div>
         <CloseIcon onClick={onClose} />
       </div>
+    </div>
+  );
+};
+export const RepayTab = ({ asset }) => {
+  const { action } = asset;
+  const isRepay = action === "Repay";
+  const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
+  return (
+    <div className="mb-[20px]">
       {isRepay && degenMode.enabled && (
         <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-12 mt-5 p-1.5">
           <span

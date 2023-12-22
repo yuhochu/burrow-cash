@@ -22,7 +22,8 @@ import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {
   NotConnected,
-  TokenInfo,
+  ModalTitle,
+  RepayTab,
   HealthFactor,
   Rates,
   Alerts,
@@ -110,7 +111,7 @@ const Modal = () => {
       >
         <Box sx={{ p: ["20px", "20px"] }}>
           {!accountId && <NotConnected />}
-          <TokenInfo apy={apy} asset={asset} onClose={handleClose} />
+          <ModalTitle asset={asset} onClose={handleClose} />
           {action === "Borrow" || action === "Repay" ? (
             <CollateralTypeSelector
               maxBorrowAmountPositions={maxBorrowAmountPositions}
@@ -118,7 +119,7 @@ const Modal = () => {
               setSelectedCollateralType={setSelectedCollateralType}
             />
           ) : null}
-
+          <RepayTab asset={asset} />
           <Controls
             amount={amount}
             available={available}
