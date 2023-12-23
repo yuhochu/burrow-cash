@@ -17,31 +17,55 @@ export const getAdjustedSum = (
   position?: string,
 ) => {
   const positionId = position || DEFAULT_POSITION;
-  return Object.keys(portfolio.positions[positionId][type])
-    .map((id) => {
-      const asset = assets[id];
-      let pricedBalance;
-      if (!asset.isLpToken) {
-        const price = asset.price
-          ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
-          : new Decimal(0);
-        pricedBalance = new Decimal(portfolio.positions[positionId][type][id].balance)
-          .div(expandTokenDecimal(1, asset.config.extra_decimals))
-          .mul(price);
-      } else {
-        const price = asset.price ? asset.price.usd : new Decimal(0);
-        pricedBalance = new Decimal(
-          shrinkToken(
-            portfolio.positions[positionId][type][id]?.balance,
-            asset.metadata.decimals + asset.config.extra_decimals,
-          ),
-        ).mul(price);
-      }
-      return type === "borrowed"
-        ? pricedBalance.div(asset.config.volatility_ratio).mul(MAX_RATIO)
-        : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);
-    })
-    .reduce(sumReducerDecimal, new Decimal(0));
+  const result = Object.keys(portfolio.positions[positionId][type]).map((id) => {
+    const asset = assets[id];
+    const positionData = portfolio.positions[positionId][type][id];
+    let pricedBalance;
+    if (asset?.isLpToken) {
+      const assetSuppliedBorrow = asset[type === "collateral" ? "supplied" : "borrowed"];
+      const lpTokensBalance = new Decimal(assetSuppliedBorrow.balance)
+        .mul(positionData.shares)
+        .div(assetSuppliedBorrow.shares)
+        .round();
+      const unitShare = new Decimal(10).pow(asset.metadata.decimals);
+      pricedBalance = asset.metadata.tokens.reduce((sum, tokenValue) => {
+        const tokenAsset = assets[tokenValue.token_id];
+        const tokenPrice = tokenValue.price || tokenAsset.price;
+        const tokenStddAmount = expandTokenDecimal(
+          tokenValue.amount,
+          tokenAsset.config.extra_decimals,
+        );
+        const tokenBalance = new Decimal(tokenStddAmount)
+          .mul(shrinkToken(lpTokensBalance.toFixed(), asset.config.extra_decimals))
+          .div(new Decimal(unitShare));
+        const tokenAssetVolatilitRatio = tokenAsset.config.volatility_ratio;
+        const priceViotility = tokenBalance
+          .mul(tokenPrice.multiplier)
+          .div(
+            new Decimal(10).pow(
+              Number(tokenPrice.decimals) + Number(tokenAsset.config.extra_decimals),
+            ),
+          )
+          .mul(tokenAssetVolatilitRatio)
+          .div(MAX_RATIO);
+        return sum.add(priceViotility);
+      }, new Decimal(0));
+    } else {
+      const price = asset.price
+        ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
+        : new Decimal(0);
+      pricedBalance = new Decimal(portfolio.positions[positionId][type][id].balance)
+        .div(expandTokenDecimal(1, asset.config.extra_decimals))
+        .mul(price);
+    }
+
+    return type === "borrowed"
+      ? pricedBalance.div(asset.config.volatility_ratio).mul(MAX_RATIO)
+      : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);
+  });
+
+  const sumResult = result.reduce(sumReducerDecimal, new Decimal(0));
+  return sumResult;
 };
 
 export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfolio: Portfolio) => {
