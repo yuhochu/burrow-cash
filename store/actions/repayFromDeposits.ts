@@ -12,10 +12,12 @@ export async function repayFromDeposits({
   tokenId,
   amount,
   extraDecimals,
+  position,
 }: {
   tokenId: string;
   amount: string;
   extraDecimals: number;
+  position?: string;
 }) {
   const { logicContract, oracleContract } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;

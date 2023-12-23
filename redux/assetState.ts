@@ -1,7 +1,7 @@
 import { IAssetDetailed, IMetadata, IAssetFarmReward, INetTvlFarmRewards } from "../interfaces";
 
 export type Asset = Omit<IAssetDetailed, "farms"> & {
-  metadata: IMetadata;
+  metadata: IMetadata | any;
   farms: {
     supplied: {
       [token: string]: IAssetFarmReward;
