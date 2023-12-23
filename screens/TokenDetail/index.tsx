@@ -4,6 +4,7 @@ import { useEffect, useState, createContext, useContext, useMemo } from "react";
 import { Modal as MUIModal } from "@mui/material";
 import { twMerge } from "tailwind-merge";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
+import { showModal } from "../../redux/appSlice";
 import {
   ArrowLeft,
   SuppliedEmptyIcon,
@@ -56,6 +57,8 @@ import { useTokenDetails } from "../../hooks/useTokenDetails";
 import { IToken } from "../../interfaces/asset";
 import LPTokenCell from "./LPTokenCell";
 import AvailableBorrowCell from "./AvailableBorrowCell";
+import { useAppDispatch } from "../../redux/hooks";
+import { getRepayTemplate, getBorrowTemplate } from "../../components/Modal/actionTemplate";
 
 const DetailData = createContext(null) as any;
 const TokenDetail = () => {
@@ -739,7 +742,7 @@ function TokenUserInfo() {
   const isWrappedNear = tokenRow.symbol === "NEAR";
   const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
   const handleSupplyClick = useSupplyTrigger(tokenId);
-  const handleBorrowClick = useBorrowTrigger(tokenId);
+  const dispatch = useAppDispatch();
   function getIcons() {
     return (
       <div className="flex items-center justify-center flex-wrap flex-shrink-0">
@@ -829,7 +832,9 @@ function TokenUserInfo() {
               <RedSolidButton
                 disabled={!+totalBorrowAmount}
                 className="w-1 flex-grow"
-                onClick={handleBorrowClick}
+                onClick={() => {
+                  dispatch(showModal(getBorrowTemplate(tokenId, DEFAULT_POSITION)));
+                }}
               >
                 Borrow
               </RedSolidButton>
@@ -960,7 +965,7 @@ function YouBorrowed() {
     },
     [[], 0],
   ) || [[], 0];
-  const handleRepayClick = useRepayTrigger(tokenId);
+  const dispatch = useAppDispatch();
   const is_empty = !borrowed && !Object.keys(borrowedLp).length;
   const borrowedList = { ...borrowedLp };
   if (borrowed) {
@@ -1063,7 +1068,12 @@ function YouBorrowed() {
               />
               <Label title="Daily rewards" content={getRewardsReactNode(position)} />
               <div className="flex items-center justify-between gap-2 mt-[35px]">
-                <RedLineButton className="w-1 flex-grow" onClick={handleRepayClick}>
+                <RedLineButton
+                  className="w-1 flex-grow"
+                  onClick={() => {
+                    dispatch(showModal(getRepayTemplate(tokenId, position)));
+                  }}
+                >
                   Repay
                 </RedLineButton>
               </div>

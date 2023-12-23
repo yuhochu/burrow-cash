@@ -3,7 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { getConfig } from "../api";
 import { IConfig } from "../interfaces";
 
-type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
+export type TokenAction = "Supply" | "Borrow" | "Repay" | "Adjust" | "Withdraw";
 
 export type IOrder = "asc" | "desc";
 
@@ -45,6 +45,7 @@ export interface AppState {
     useAsCollateral: boolean;
     amount: string;
     isMax: boolean;
+    position?: string;
   };
   staking: {
     amount: number;
@@ -143,7 +144,12 @@ export const appSlice = createSlice({
     },
     showModal(
       state,
-      action: PayloadAction<{ action: TokenAction; amount: string; tokenId: string }>,
+      action: PayloadAction<{
+        action: TokenAction;
+        amount: string;
+        tokenId: string;
+        position?: string;
+      }>,
     ) {
       state.selected = { ...state.selected, isMax: false, ...action.payload };
       state.showModal = true;

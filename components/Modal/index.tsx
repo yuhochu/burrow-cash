@@ -7,6 +7,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal, updateAmount } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
 import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
+import { getRepayPositions } from "../../redux/selectors/getRepayPositions";
 import { getAccountId } from "../../redux/accountSelectors";
 import { getBorrowMaxAmount } from "../../redux/selectors/getBorrowMaxAmount";
 import { recomputeHealthFactor } from "../../redux/selectors/recomputeHealthFactor";
@@ -17,7 +18,6 @@ import { recomputeHealthFactorRepay } from "../../redux/selectors/recomputeHealt
 import { recomputeHealthFactorRepayFromDeposits } from "../../redux/selectors/recomputeHealthFactorRepayFromDeposits";
 import { formatWithCommas_number } from "../../utils/uiNumber";
 import { DEFAULT_POSITION } from "../../utils/config";
-
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {
@@ -34,7 +34,10 @@ import Controls from "./Controls";
 import Action from "./Action";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
 import { useDegenMode } from "../../hooks/hooks";
-import CollateralTypeSelector from "./CollateralTypeSelector";
+import {
+  CollateralTypeSelectorBorrow,
+  CollateralTypeSelectorRepay,
+} from "./CollateralTypeSelector";
 
 const Modal = () => {
   const isOpen = useAppSelector(getModalStatus);
@@ -46,7 +49,7 @@ const Modal = () => {
   const theme = useTheme();
   const [selectedCollateralType, setSelectedCollateralType] = useState(DEFAULT_POSITION);
 
-  const { action = "Deposit", tokenId } = asset;
+  const { action = "Deposit", tokenId, position } = asset;
 
   const healthFactor = useAppSelector(
     action === "Withdraw"
@@ -64,7 +67,9 @@ const Modal = () => {
   // TODO 计算出每一类资产的最大可借出余额
   const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
+  const repayPositions = useAppSelector(getRepayPositions(tokenId));
   const maxBorrowAmount = maxBorrowAmountPositions[selectedCollateralType];
+  const repayAmount = repayPositions[selectedCollateralType];
   const {
     symbol,
     apy,
@@ -82,14 +87,17 @@ const Modal = () => {
     isRepayFromDeposits,
     healthFactor,
     amount,
+    borrowed: repayAmount,
   });
-  const total = (price * +amount).toLocaleString(undefined, USD_FORMAT);
   const handleClose = () => dispatch(hideModal());
   useEffect(() => {
     if (isOpen) {
       dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
     }
   }, [isOpen]);
+  useEffect(() => {
+    setSelectedCollateralType(position || DEFAULT_POSITION);
+  }, [position]);
   useEffect(() => {
     dispatch(updateAmount({ isMax: false, amount: "0" }));
   }, [selectedCollateralType]);
@@ -112,9 +120,16 @@ const Modal = () => {
         <Box sx={{ p: ["20px", "20px"] }}>
           {!accountId && <NotConnected />}
           <ModalTitle asset={asset} onClose={handleClose} />
-          {action === "Borrow" || action === "Repay" ? (
-            <CollateralTypeSelector
+          {action === "Borrow" ? (
+            <CollateralTypeSelectorBorrow
               maxBorrowAmountPositions={maxBorrowAmountPositions}
+              selectedCollateralType={selectedCollateralType}
+              setSelectedCollateralType={setSelectedCollateralType}
+            />
+          ) : null}
+          {action === "Repay" ? (
+            <CollateralTypeSelectorRepay
+              repayPositions={repayPositions}
               selectedCollateralType={selectedCollateralType}
               setSelectedCollateralType={setSelectedCollateralType}
             />

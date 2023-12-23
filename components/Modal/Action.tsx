@@ -103,6 +103,7 @@ export default function Action({ maxBorrowAmount, healthFactor, collateralType }
             tokenId,
             amount,
             extraDecimals,
+            position: collateralType,
           });
         } else {
           await repay({
@@ -110,6 +111,7 @@ export default function Action({ maxBorrowAmount, healthFactor, collateralType }
             amount,
             extraDecimals,
             isMax,
+            position: collateralType,
           });
         }
         break;
