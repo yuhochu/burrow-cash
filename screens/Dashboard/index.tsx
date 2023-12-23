@@ -25,7 +25,8 @@ import { hiddenAssets } from "../../utils/config";
 
 const Index = () => {
   const accountId = useAccountId();
-  const [suppliedRows, borrowedRows, totalSuppliedUSD, totalBorrowedUSD] = usePortfolioAssets();
+  const [suppliedRows, borrowedRows, totalSuppliedUSD, totalBorrowedUSD, borrowed_LP, borrowedAll] =
+    usePortfolioAssets();
   const isMobile = isMobileDevice();
 
   let overviewNode;
@@ -55,7 +56,7 @@ const Index = () => {
     supplyBorrowNode = (
       <SupplyBorrowListMobile
         suppliedRows={suppliedRows}
-        borrowedRows={borrowedRows}
+        borrowedRows={borrowedAll}
         accountId={accountId}
       />
     );
@@ -63,7 +64,7 @@ const Index = () => {
     supplyBorrowNode = (
       <StyledSupplyBorrow className="gap-6 lg:flex mb-10">
         <YourSupplied suppliedRows={suppliedRows} accountId={accountId} total={totalSuppliedUSD} />
-        <YourBorrowed borrowedRows={borrowedRows} accountId={accountId} total={totalBorrowedUSD} />
+        <YourBorrowed borrowedRows={borrowedAll} accountId={accountId} total={totalBorrowedUSD} />
       </StyledSupplyBorrow>
     );
   }
@@ -284,6 +285,23 @@ const yourBorrowedColumns = [
             className="rounded-full w-[26px] h-[26px]"
           />
           <div className="truncate">{originalData?.symbol}</div>
+        </div>
+      );
+    },
+  },
+  {
+    header: "Collateral Type",
+    cell: ({ originalData }) => {
+      const { collateralType, metadataLP } = originalData || {};
+      let tokenNames = "";
+      metadataLP?.tokens?.forEach((d, i) => {
+        const isLast = i === metadataLP.tokens.length - 1;
+        tokenNames += `${d.metadata.symbol}${!isLast ? "-" : ""}`;
+      });
+      return (
+        <div>
+          <div>{collateralType}</div>
+          <div className="h6 text-gray-300">{tokenNames}</div>
         </div>
       );
     },

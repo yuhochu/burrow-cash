@@ -44,7 +44,7 @@ export const getLPHealthFactor = createSelector(
         LPToken[key] = {
           ...value,
           metadata: asset?.metadata,
-          healthFactor,
+          healthFactor: Math.trunc(healthFactor),
           healthStatus,
         };
       }

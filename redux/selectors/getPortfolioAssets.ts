@@ -9,6 +9,7 @@ import { Asset, Assets } from "../assetState";
 import { Farm } from "../accountState";
 import { standardizeAsset } from "../../utils";
 import { DEFAULT_POSITION } from "../../utils/config";
+import { CONST_COLLATERAL_TYPE } from "../../const/constCommon";
 
 export const getPortfolioRewards = (
   type: "supplied" | "borrowed",
@@ -127,6 +128,7 @@ export const getPortfolioAssets = createSelector(
         totalBorrowedUSD += borrowedUSD;
         return standardizeAsset({
           tokenId,
+          collateralType: CONST_COLLATERAL_TYPE.SINGLE_TOKEN,
           metadata: asset.metadata,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
@@ -153,13 +155,13 @@ export const getPortfolioAssets = createSelector(
       const b = Object.keys(lpPositions[shadow_id].borrowed)
         .map((tokenId) => {
           const asset = assets.data[tokenId];
+          const lpAsset = assets.data[shadow_id];
           const borrowedBalance = lpPositions[shadow_id].borrowed[tokenId].balance;
           const brrrUnclaimedAmount =
             account.portfolio.farms.borrowed[tokenId]?.[brrrTokenId]?.unclaimed_amount || "0";
           const totalSupplyD = new Decimal(asset.supplied.balance)
             .plus(new Decimal(asset.reserved))
             .toFixed();
-
           const borrowedToken = Number(
             shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
           );
@@ -167,7 +169,9 @@ export const getPortfolioAssets = createSelector(
           totalBorrowedUSD += borrowedUSD;
           return standardizeAsset({
             tokenId,
+            collateralType: CONST_COLLATERAL_TYPE.LP_TOKEN,
             metadata: asset.metadata,
+            metadataLP: lpAsset.metadata,
             symbol: asset.metadata.symbol,
             icon: asset.metadata.icon,
             price: asset.price?.usd ?? 0,
@@ -191,6 +195,10 @@ export const getPortfolioAssets = createSelector(
       return { ...acc, [shadow_id]: b };
     }, {});
 
-    return [supplied, borrowed, totalSuppliedUSD, totalBorrowedUSD, borrowed_LP];
+    const borrowedAll = borrowed;
+    Object.entries(borrowed_LP).forEach(([positionId, value]: [string, any]) => {
+      borrowedAll.push(...value);
+    });
+    return [supplied, borrowed, totalSuppliedUSD, totalBorrowedUSD, borrowed_LP, borrowedAll];
   },
 );
