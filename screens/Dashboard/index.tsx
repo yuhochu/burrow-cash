@@ -291,6 +291,7 @@ const yourBorrowedColumns = [
   },
   {
     header: "Collateral Type",
+    size: 140,
     cell: ({ originalData }) => {
       const { collateralType, metadataLP } = originalData || {};
       let tokenNames = "";
@@ -301,7 +302,7 @@ const yourBorrowedColumns = [
       return (
         <div>
           <div>{collateralType}</div>
-          <div className="h6 text-gray-300">{tokenNames}</div>
+          <div className="h6 text-gray-300 truncate">{tokenNames}</div>
         </div>
       );
     },
