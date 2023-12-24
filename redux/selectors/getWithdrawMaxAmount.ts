@@ -70,30 +70,33 @@ export const getAdjustedSum = (
 
 export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfolio: Portfolio) => {
   const asset = assets[tokenId];
-
-  const assetPrice = asset.price
-    ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
-    : new Decimal(0);
-
+  // const assetPrice = asset.price
+  //   ? new Decimal(asset.price.multiplier).div(new Decimal(10).pow(asset.price.decimals))
+  //   : new Decimal(0);
+  const assetPrice = asset.price ? new Decimal(asset.price.usd) : new Decimal(0);
   const suppliedBalance = new Decimal(portfolio.supplied[tokenId]?.balance || 0);
   const collateralBalance = new Decimal(portfolio.collateral[tokenId]?.balance || 0);
 
   let maxAmount = suppliedBalance;
 
   if (collateralBalance.gt(0)) {
-    const adjustedCollateralSum = getAdjustedSum("collateral", portfolio, assets);
-    const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets);
+    const position = asset.isLpToken ? tokenId : DEFAULT_POSITION;
+    const adjustedCollateralSum = getAdjustedSum("collateral", portfolio, assets, position);
+    const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets, position);
 
     const adjustedPricedDiff = decimalMax(0, adjustedCollateralSum.sub(adjustedBorrowedSum));
     const safeAdjustedPricedDiff = adjustedPricedDiff.mul(999).div(1000);
 
     const safePricedDiff = safeAdjustedPricedDiff.div(asset.config.volatility_ratio).mul(10000);
 
+    // const safeDiff = safePricedDiff
+    //   .div(assetPrice)
+    //   .mul(expandTokenDecimal(1, asset.config.extra_decimals))
+    //   .trunc();
     const safeDiff = safePricedDiff
       .div(assetPrice)
-      .mul(expandTokenDecimal(1, asset.config.extra_decimals))
+      .mul(expandTokenDecimal(1, asset.config.extra_decimals + asset.metadata.decimals))
       .trunc();
-
     maxAmount = maxAmount.add(decimalMin(safeDiff, collateralBalance));
   }
 
