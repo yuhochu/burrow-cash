@@ -12,7 +12,7 @@ import { supply } from "../../store/actions/supply";
 import { deposit } from "../../store/actions/deposit";
 import { borrow } from "../../store/actions/borrow";
 import { withdraw } from "../../store/actions/withdraw";
-import { shadow_action } from "../../store/actions/shadow";
+import { shadow_action_supply } from "../../store/actions/shadow";
 import { adjustCollateral } from "../../store/actions/adjustCollateral";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
@@ -59,7 +59,7 @@ export default function Action({ maxBorrowAmount, healthFactor, collateralType }
         if (tokenId === nearTokenId) {
           await deposit({ amount, useAsCollateral, isMax });
         } else if (isLpToken) {
-          await shadow_action({
+          await shadow_action_supply({
             tokenId,
             decimals: +(decimals || 0) + +extraDecimals,
             useAsCollateral,
