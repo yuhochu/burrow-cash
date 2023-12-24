@@ -56,6 +56,7 @@ export const getPortfolioAssets = createSelector(
     let portfolioLpAssets = {};
     Object.keys(lpPositions).forEach((shadow_id: string) => {
       portfolioLpAssets = {
+        ...portfolioLpAssets,
         ...lpPositions[shadow_id].collateral,
       };
     });

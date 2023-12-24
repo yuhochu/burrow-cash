@@ -94,14 +94,20 @@ export const transformAsset = (
   // TODO: refactor this without conditional
   if (account.accountId) {
     const decimals = asset.metadata.decimals + asset.config.extra_decimals;
-
     const supplied = Number(
       shrinkToken(account.portfolio.supplied[tokenId]?.balance || 0, decimals),
     );
     const collateral = Number(
-      shrinkToken(account.portfolio.collateral[tokenId]?.balance || 0, decimals),
+      shrinkToken(
+        asset.isLpToken
+          ? account.portfolio.positions[tokenId].collateral[tokenId]?.balance || 0
+          : account.portfolio.collateral[tokenId]?.balance || 0,
+        decimals,
+      ),
     );
-    const borrowed = account.portfolio.borrowed[tokenId]?.balance || 0;
+    const borrowed = asset.isLpToken
+      ? account.portfolio.positions[tokenId].borrowed[tokenId]?.balance || 0
+      : account.portfolio.borrowed[tokenId]?.balance || 0;
     const available = account.balances[tokenId] || 0;
     const availableNEAR = account.balances["near"] || 0;
 

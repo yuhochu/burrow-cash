@@ -26,14 +26,6 @@ export default function Controls({
     dispatch(updateAmount({ isMax: false, amount: value }));
   };
 
-  const handleMaxClick = () => {
-    dispatch(updateAmount({ isMax: true, amount: available }));
-  };
-
-  const handleFocus = (e) => {
-    e.target.select();
-  };
-
   const handleSliderChange = (percent) => {
     const p = percent < 1 ? 0 : percent > 99 ? 100 : percent;
     const value = new Decimal(available).mul(p).div(100).toFixed();

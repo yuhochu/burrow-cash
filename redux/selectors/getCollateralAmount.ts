@@ -11,11 +11,17 @@ export const getCollateralAmount = (tokenId: string) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!hasAssets(assets)) return "0";
-      const collateral = account.portfolio.collateral[tokenId];
+      const { metadata, config, isLpToken } = assets.data[tokenId];
+      const collateral = isLpToken
+        ? account.portfolio.positions[tokenId].collateral[tokenId]
+        : account.portfolio.collateral[tokenId];
       if (!collateral) return "0";
-      const { metadata, config } = assets.data[tokenId];
       return toDecimal(
-        shrinkToken(collateral.balance, metadata.decimals + config.extra_decimals, PERCENT_DIGITS),
+        shrinkToken(
+          collateral.balance || 0,
+          metadata.decimals + config.extra_decimals,
+          PERCENT_DIGITS,
+        ),
       );
     },
   );

@@ -7,6 +7,10 @@ import { ChangeMethodsLogic, ChangeMethodsOracle } from "../../interfaces";
 import { Transaction } from "../wallet";
 import { getMetadata, prepareAndExecuteTransactions } from "../tokens";
 import { getAccountDetailed } from "../accounts";
+import getAssets from "../../api/get-assets";
+import { transformAssets } from "../../transformers/asstets";
+import getAccount from "../../api/get-account";
+import { transformAccount } from "../../transformers/account";
 
 export async function adjustCollateral({
   tokenId,
@@ -19,16 +23,18 @@ export async function adjustCollateral({
   amount: string;
   isMax: boolean;
 }) {
-  const { oracleContract, logicContract, account, call } = await getBurrow();
-  const { decimals } = (await getMetadata(tokenId))!;
-  const detailedAccount = (await getAccountDetailed(account.accountId))!;
+  const { oracleContract, logicContract } = await getBurrow();
+  const assets = await getAssets().then(transformAssets);
+  const asset = assets[tokenId];
+  const { decimals } = asset.metadata;
+  const account = await getAccount().then(transformAccount);
+  if (!account) return;
 
-  const suppliedBalance = new Decimal(
-    detailedAccount.supplied.find((a) => a.token_id === tokenId)?.balance || 0,
-  );
-
+  const suppliedBalance = new Decimal(account.portfolio?.supplied[tokenId]?.balance || 0);
   const collateralBalance = new Decimal(
-    detailedAccount.collateral.find((a) => a.token_id === tokenId)?.balance || 0,
+    asset.isLpToken
+      ? account.portfolio?.positions[tokenId].collateral[tokenId]?.balance || 0
+      : account.portfolio?.collateral[tokenId]?.balance || 0,
   );
 
   const totalBalance = suppliedBalance.add(collateralBalance);
@@ -38,16 +44,25 @@ export async function adjustCollateral({
     : decimalMin(totalBalance, expandTokenDecimal(amount, decimals + extraDecimals));
 
   if (expandedAmount.gt(collateralBalance)) {
-    // await call(logicContract, ChangeMethodsLogic[ChangeMethodsLogic.execute], {
-    //   actions: [
-    //     {
-    //       IncreaseCollateral: {
-    //         token_id: tokenId,
-    //         max_amount: !isMax ? expandedAmount.sub(collateralBalance).toFixed(0) : undefined,
-    //       },
-    //     },
-    //   ],
-    // });
+    let increaseCollateralTemplate;
+    if (asset.isLpToken) {
+      increaseCollateralTemplate = {
+        PositionIncreaseCollateral: {
+          position: tokenId,
+          asset_amount: {
+            token_id: tokenId,
+            amount: !isMax ? expandedAmount.sub(collateralBalance).toFixed(0) : undefined,
+          },
+        },
+      };
+    } else {
+      increaseCollateralTemplate = {
+        IncreaseCollateral: {
+          token_id: tokenId,
+          max_amount: !isMax ? expandedAmount.sub(collateralBalance).toFixed(0) : undefined,
+        },
+      };
+    }
     await prepareAndExecuteTransactions([
       {
         receiverId: logicContract.contractId,
@@ -56,22 +71,36 @@ export async function adjustCollateral({
             methodName: ChangeMethodsLogic[ChangeMethodsLogic.execute],
             gas: new BN("100000000000000"),
             args: {
-              actions: [
-                {
-                  IncreaseCollateral: {
-                    token_id: tokenId,
-                    max_amount: !isMax
-                      ? expandedAmount.sub(collateralBalance).toFixed(0)
-                      : undefined,
-                  },
-                },
-              ],
+              actions: [increaseCollateralTemplate],
             },
           },
         ],
       } as Transaction,
     ]);
   } else if (expandedAmount.lt(collateralBalance)) {
+    let decreaseCollateralTemplate;
+    if (asset.isLpToken) {
+      decreaseCollateralTemplate = {
+        PositionDecreaseCollateral: {
+          position: tokenId,
+          asset_amount: {
+            token_id: tokenId,
+            amount: expandedAmount.gt(0)
+              ? collateralBalance.sub(expandedAmount).toFixed(0)
+              : undefined, // TODO is can undefined?
+          },
+        },
+      };
+    } else {
+      decreaseCollateralTemplate = {
+        DecreaseCollateral: {
+          token_id: tokenId,
+          max_amount: expandedAmount.gt(0)
+            ? collateralBalance.sub(expandedAmount).toFixed(0)
+            : undefined,
+        },
+      };
+    }
     await prepareAndExecuteTransactions([
       {
         receiverId: oracleContract.contractId,
@@ -83,16 +112,7 @@ export async function adjustCollateral({
               receiver_id: logicContract.contractId,
               msg: JSON.stringify({
                 Execute: {
-                  actions: [
-                    {
-                      DecreaseCollateral: {
-                        token_id: tokenId,
-                        max_amount: expandedAmount.gt(0)
-                          ? collateralBalance.sub(expandedAmount).toFixed(0)
-                          : undefined,
-                      },
-                    },
-                  ],
+                  actions: [decreaseCollateralTemplate],
                 },
               }),
             },
