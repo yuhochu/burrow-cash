@@ -206,7 +206,7 @@ function GetBalance({
   const { symbol, tokenId } = asset;
   const isWrappedNear = symbol === "NEAR";
   const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
-  const borrowBalance = maxBorrowAmountPositions[DEFAULT_POSITION]?.toString(); // TODO
+  const borrowBalance = maxBorrowAmountPositions[DEFAULT_POSITION]?.maxBorrowAmount?.toString(); // TODO
   updateAsset[tokenId] = {
     ...asset,
     supply_balance: supplyBalance,

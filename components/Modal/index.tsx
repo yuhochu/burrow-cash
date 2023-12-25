@@ -75,7 +75,7 @@ const Modal = () => {
   const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
   const repayPositions = useAppSelector(getRepayPositions(tokenId));
-  const { maxBorrowAmount, maxBorrowValue } = maxBorrowAmountPositions[selectedCollateralType];
+  const { maxBorrowAmount } = maxBorrowAmountPositions[selectedCollateralType];
   const repayAmount = repayPositions[selectedCollateralType];
   const {
     symbol,
