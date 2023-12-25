@@ -13,7 +13,7 @@ import { toggleUseAsCollateral, hideModal, showModal } from "../../redux/appSlic
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
-import { TipIcon, CloseIcon, WarnIcon } from "./svg";
+import { TipIcon, CloseIcon, WarnIcon, ArrowRight } from "./svg";
 import ReactToolTip from "../ToolTip";
 
 export const USNInfo = () => (
@@ -121,7 +121,7 @@ export const Available = ({ totalAvailable, available$ }) => (
   </Box>
 );
 
-export const HealthFactor = ({ value }) => {
+export const HealthFactor = ({ value, title }: { value: number; title?: string }) => {
   const healthFactorColor =
     value === -1
       ? "text-primary"
@@ -134,8 +134,20 @@ export const HealthFactor = ({ value }) => {
 
   return (
     <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-300">Health Factor</span>
+      <span className="text-sm text-gray-300">{title || "Health Factor"}</span>
       <span className={`text-sm ${healthFactorColor}`}>{healthFactorDisplayValue}</span>
+    </div>
+  );
+};
+export const BorrowLimit = ({ from, to }: { from: string | number; to: string | number }) => {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-300">Borrow limit</span>
+      <div className="flex items-center text-sm">
+        <span className="text-gray-300 line-through">{formatWithCommas_usd(from)}</span>
+        <ArrowRight className="mx-1.5" />
+        <span className="text-white">{formatWithCommas_usd(to)}</span>
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ export function CollateralTypeSelectorBorrow({
   selectedCollateralType,
   setSelectedCollateralType,
 }: {
-  maxBorrowAmountPositions: Record<string, number>;
+  maxBorrowAmountPositions: Record<string, { maxBorrowAmount; maxBorrowValue }>;
   selectedCollateralType: string;
   setSelectedCollateralType: any;
 }) {
@@ -82,7 +82,9 @@ export function CollateralTypeSelectorBorrow({
                 <span className="mr-1.5">{getName(position)}</span>
                 {selectedCollateralType === position ? <CheckedIcon /> : null}
               </div>
-              <span>{digitalProcess(maxBorrowAmountPositions[position] || 0, 2)}</span>
+              <span>
+                {digitalProcess(maxBorrowAmountPositions[position].maxBorrowAmount || 0, 2)}
+              </span>
             </div>
           );
         })}

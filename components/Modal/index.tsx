@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Modal as MUIModal, Typography, Box, Stack, useTheme } from "@mui/material";
 
 import Decimal from "decimal.js";
-import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal, updateAmount } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
@@ -16,6 +15,7 @@ import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHe
 import { recomputeHealthFactorSupply } from "../../redux/selectors/recomputeHealthFactorSupply";
 import { recomputeHealthFactorRepay } from "../../redux/selectors/recomputeHealthFactorRepay";
 import { recomputeHealthFactorRepayFromDeposits } from "../../redux/selectors/recomputeHealthFactorRepayFromDeposits";
+import { recomputeHealthFactorRepayFromDepositsLp } from "../../redux/selectors/recomputeHealthFactorRepayFromDepositsLp";
 import { formatWithCommas_number } from "../../utils/uiNumber";
 import { DEFAULT_POSITION } from "../../utils/config";
 import { Wrapper } from "./style";
@@ -29,6 +29,7 @@ import {
   Alerts,
   CollateralSwitch,
   CollateralTip,
+  BorrowLimit,
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
@@ -60,15 +61,21 @@ const Modal = () => {
       ? recomputeHealthFactorSupply(tokenId, +amount)
       : action === "Repay" && isRepayFromDeposits
       ? recomputeHealthFactorRepayFromDeposits(tokenId, +amount)
-      : action === "Repay"
-      ? recomputeHealthFactorRepay(tokenId, +amount)
-      : recomputeHealthFactor(tokenId, +amount),
+      : action === "Repay" && !isRepayFromDeposits
+      ? recomputeHealthFactorRepay(tokenId, +amount, selectedCollateralType)
+      : recomputeHealthFactor(tokenId, +amount, selectedCollateralType),
   );
-  // TODO 计算出每一类资产的最大可借出余额
+  const healthFactor_repay_lp = useAppSelector(
+    action === "Repay" && isRepayFromDeposits && selectedCollateralType !== DEFAULT_POSITION
+      ? recomputeHealthFactorRepayFromDepositsLp(tokenId, +amount, selectedCollateralType)
+      : () => {
+          return 0;
+        },
+  );
   const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
   const repayPositions = useAppSelector(getRepayPositions(tokenId));
-  const maxBorrowAmount = maxBorrowAmountPositions[selectedCollateralType];
+  const { maxBorrowAmount, maxBorrowValue } = maxBorrowAmountPositions[selectedCollateralType];
   const repayAmount = repayPositions[selectedCollateralType];
   const {
     symbol,
@@ -146,6 +153,12 @@ const Modal = () => {
           />
           <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />
+            {action === "Repay" &&
+            isRepayFromDeposits &&
+            selectedCollateralType !== DEFAULT_POSITION ? (
+              <HealthFactor value={healthFactor_repay_lp} title="LP token Health Factor" />
+            ) : null}
+
             <Rates rates={rates} />
             {!canUseAsCollateral ? (
               <CollateralTip />
@@ -156,6 +169,7 @@ const Modal = () => {
                 tokenId={asset.tokenId}
               />
             )}
+            {/* <BorrowLimit from={maxBorrowValue} to="50" /> */}
           </div>
           <Alerts data={alerts} />
           <Action

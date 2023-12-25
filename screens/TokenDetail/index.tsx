@@ -767,7 +767,7 @@ function TokenUserInfo() {
     return `$${digitalProcess(new Decimal(supplyBalance || 0).mul(price || 0).toFixed(), 2)}`;
   }
   const totalBorrowAmount = Object.values(maxBorrowAmountPositions)?.reduce(
-    (acc, amount) => acc + amount,
+    (acc, { maxBorrowAmount }) => acc + maxBorrowAmount,
     0,
   );
   return (
@@ -799,12 +799,12 @@ function TokenUserInfo() {
             <span className="text-sm text-gray-300">Available to Borrow</span>
             {accountId && tokenRow?.can_borrow ? (
               <div className="flex flex-col items-end gap-2">
-                {Object.entries(maxBorrowAmountPositions).map(([position, amount]) => {
+                {Object.entries(maxBorrowAmountPositions).map(([position, { maxBorrowAmount }]) => {
                   return (
                     <AvailableBorrowCell
                       key={position}
                       asset={tokenRow}
-                      borrowData={[position, amount]}
+                      borrowData={[position, maxBorrowAmount]}
                     />
                   );
                 })}

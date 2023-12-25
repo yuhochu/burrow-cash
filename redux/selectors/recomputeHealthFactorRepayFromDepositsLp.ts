@@ -6,8 +6,13 @@ import { expandTokenDecimal, MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getAdjustedSum } from "./getWithdrawMaxAmount";
+import { decimalMax } from "../../utils";
 
-export const recomputeHealthFactorRepay = (tokenId: string, amount: number, position: string) =>
+export const recomputeHealthFactorRepayFromDepositsLp = (
+  tokenId: string,
+  amount: number,
+  position: string,
+) =>
   createSelector(
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
@@ -22,18 +27,17 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number, posi
       const asset = assets.data[tokenId];
       const { metadata, config } = asset;
       const decimals = metadata.decimals + config.extra_decimals;
-
+      const amountDecimal = expandTokenDecimal(amount, decimals);
+      // new borrowed balance on LP
       const borrowedBalance = new Decimal(
         account.portfolio.positions[position].borrowed[tokenId].balance,
       );
-      const newBalance = Decimal.max(
-        0,
-        borrowedBalance.minus(expandTokenDecimal(amount, decimals)),
-      );
+      const newBorrowedBalance = decimalMax(0, borrowedBalance.minus(amountDecimal));
 
       const clonedAccount = clone(account);
-      clonedAccount.portfolio.positions[position].borrowed[tokenId].balance = newBalance.toFixed();
-
+      // update borrowed balance in position
+      clonedAccount.portfolio.positions[position].borrowed[tokenId].balance =
+        newBorrowedBalance.toFixed();
       const adjustedCollateralSum = getAdjustedSum(
         "collateral",
         account.portfolio,
@@ -47,7 +51,6 @@ export const recomputeHealthFactorRepay = (tokenId: string, amount: number, posi
         position,
       );
       const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
-
       return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
     },
   );
