@@ -4,7 +4,7 @@ import { useEffect, useState, createContext, useContext, useMemo } from "react";
 import { Modal as MUIModal } from "@mui/material";
 import { twMerge } from "tailwind-merge";
 import { LayoutBox } from "../../components/LayoutContainer/LayoutContainer";
-import { showModal } from "../../redux/appSlice";
+import { updatePosition } from "../../redux/appSlice";
 import {
   ArrowLeft,
   SuppliedEmptyIcon,
@@ -742,6 +742,7 @@ function TokenUserInfo() {
   const isWrappedNear = tokenRow.symbol === "NEAR";
   const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
   const handleSupplyClick = useSupplyTrigger(tokenId);
+  const handleBorrowClick = useBorrowTrigger(tokenId);
   const dispatch = useAppDispatch();
   function getIcons() {
     return (
@@ -833,7 +834,8 @@ function TokenUserInfo() {
                 disabled={!+totalBorrowAmount}
                 className="w-1 flex-grow"
                 onClick={() => {
-                  dispatch(showModal(getBorrowTemplate(tokenId, DEFAULT_POSITION)));
+                  handleBorrowClick();
+                  dispatch(updatePosition({ position: DEFAULT_POSITION }));
                 }}
               >
                 Borrow
@@ -966,6 +968,7 @@ function YouBorrowed() {
     [[], 0],
   ) || [[], 0];
   const dispatch = useAppDispatch();
+  const handleRepayClick = useRepayTrigger(tokenId);
   const is_empty = !borrowed && !Object.keys(borrowedLp).length;
   const borrowedList = { ...borrowedLp };
   if (borrowed) {
@@ -1071,7 +1074,8 @@ function YouBorrowed() {
                 <RedLineButton
                   className="w-1 flex-grow"
                   onClick={() => {
-                    dispatch(showModal(getRepayTemplate(tokenId, position)));
+                    handleRepayClick();
+                    dispatch(updatePosition({ position }));
                   }}
                 >
                   Repay

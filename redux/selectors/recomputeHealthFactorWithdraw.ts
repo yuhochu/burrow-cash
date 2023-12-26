@@ -66,8 +66,13 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
         decimalMin(collateralBalance, collateralBalance.plus(suppliedBalance).minus(amountDecimal)),
       );
 
-      clonedAccount.portfolio.positions[position].collateral[tokenId].balance =
-        newCollateralBalance.toFixed();
+      clonedAccount.portfolio.positions[position].collateral[tokenId] = {
+        ...clonedAccount.portfolio.positions[position].collateral[tokenId],
+        shares: newCollateralBalance.toFixed(),
+        balance: newCollateralBalance.toFixed(),
+      };
+      // clonedAccount.portfolio.positions[position].collateral[tokenId].balance =
+      //   newCollateralBalance.toFixed();
 
       const adjustedCollateralSum = getAdjustedSum(
         "collateral",

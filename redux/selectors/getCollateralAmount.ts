@@ -11,10 +11,8 @@ export const getCollateralAmount = (tokenId: string) =>
     (state: RootState) => state.account,
     (assets, account) => {
       if (!hasAssets(assets)) return "0";
-      const { metadata, config, isLpToken } = assets.data[tokenId];
-      const collateral = isLpToken
-        ? account.portfolio.positions[tokenId].collateral[tokenId]
-        : account.portfolio.collateral[tokenId];
+      const { metadata, config } = assets.data[tokenId];
+      const collateral = account.portfolio.positions[tokenId]?.collateral?.[tokenId];
       if (!collateral) return "0";
       return toDecimal(
         shrinkToken(

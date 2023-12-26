@@ -104,6 +104,12 @@ export async function borrow({
               },
             },
           },
+          {
+            Withdraw: {
+              token_id: tokenId,
+              max_amount: expandedAmount.toFixed(0),
+            },
+          },
         ],
       },
     };

@@ -44,8 +44,13 @@ export const recomputeHealthFactorSupply = (tokenId: string, amount: number) =>
         clonedAccount.portfolio.positions[position].collateral[tokenId].balance,
       );
       const newBalance = collateralBalance.plus(app.selected.useAsCollateral ? amountDecimal : 0);
-      clonedAccount.portfolio.positions[position].collateral[tokenId].balance =
-        newBalance.toFixed();
+      clonedAccount.portfolio.positions[position].collateral[tokenId] = {
+        ...clonedAccount.portfolio.positions[position].collateral[tokenId],
+        shares: newBalance.toFixed(),
+        balance: newBalance.toFixed(),
+      };
+      // clonedAccount.portfolio.positions[position].collateral[tokenId].balance =
+      //   newBalance.toFixed();
       // if (!clonedAccount.portfolio.collateral[tokenId]) {
       //   clonedAccount.portfolio.collateral[tokenId] = {
       //     balance: "0",

@@ -3,7 +3,7 @@ import { Modal as MUIModal, Typography, Box, Stack, useTheme } from "@mui/materi
 
 import Decimal from "decimal.js";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { hideModal, updateAmount } from "../../redux/appSlice";
+import { hideModal, updateAmount, updatePosition } from "../../redux/appSlice";
 import { getModalStatus, getAssetData, getSelectedValues } from "../../redux/appSelectors";
 import { getWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
 import { getRepayPositions } from "../../redux/selectors/getRepayPositions";
@@ -106,10 +106,13 @@ const Modal = () => {
     }
   }, [isOpen]);
   useEffect(() => {
-    setSelectedCollateralType(position || DEFAULT_POSITION);
+    if (position) {
+      setSelectedCollateralType(position);
+    }
   }, [position]);
   useEffect(() => {
     dispatch(updateAmount({ isMax: false, amount: "0" }));
+    dispatch(updatePosition({ position: selectedCollateralType }));
   }, [selectedCollateralType]);
   if (action === "Adjust") {
     rates.push({

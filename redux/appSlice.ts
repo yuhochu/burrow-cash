@@ -96,6 +96,7 @@ export const initialState: AppState = {
     useAsCollateral: false,
     amount: "0",
     isMax: false,
+    position: undefined,
   },
   staking: {
     amount: 0,
@@ -148,7 +149,6 @@ export const appSlice = createSlice({
         action: TokenAction;
         amount: string;
         tokenId: string;
-        position?: string;
       }>,
     ) {
       state.selected = { ...state.selected, isMax: false, ...action.payload };
@@ -157,6 +157,9 @@ export const appSlice = createSlice({
     updateAmount(state, action: PayloadAction<{ amount: string; isMax: boolean }>) {
       state.selected.amount = action.payload.amount;
       state.selected.isMax = action.payload.isMax;
+    },
+    updatePosition(state, action: PayloadAction<{ position: string }>) {
+      state.selected.position = action.payload.position;
     },
     toggleUseAsCollateral(state, action: PayloadAction<{ useAsCollateral: boolean }>) {
       state.selected.useAsCollateral = action.payload.useAsCollateral;
@@ -251,6 +254,7 @@ export const {
   setTheme,
   setUnreadLiquidation,
   setToastMessage,
+  updatePosition,
 } = appSlice.actions;
 
 export default appSlice.reducer;

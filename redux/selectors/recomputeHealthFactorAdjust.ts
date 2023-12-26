@@ -50,11 +50,11 @@ export const recomputeHealthFactorAdjust = (tokenId: string, amount: number) =>
       //     apr: "0",
       //   };
       // }
-
-      // clonedAccount.portfolio.collateral[tokenId] = {
-      //   ...clonedAccount.portfolio.collateral[tokenId],
-      //   balance: newBalance,
-      // };
+      clonedAccount.portfolio.positions[position].collateral[tokenId] = {
+        ...clonedAccount.portfolio.positions[position].collateral[tokenId],
+        balance: newBalance,
+        shares: newBalance,
+      };
 
       const adjustedCollateralSum = getAdjustedSum(
         "collateral",
