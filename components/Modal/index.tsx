@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext } from "react";
 import { Modal as MUIModal, Typography, Box, Stack, useTheme } from "@mui/material";
 
 import Decimal from "decimal.js";
@@ -40,6 +40,7 @@ import {
   CollateralTypeSelectorRepay,
 } from "./CollateralTypeSelector";
 
+export const ModalContext = createContext(null) as any;
 const Modal = () => {
   const isOpen = useAppSelector(getModalStatus);
   const accountId = useAppSelector(getAccountId);
@@ -124,60 +125,66 @@ const Modal = () => {
           },
         }}
       >
-        <Box sx={{ p: ["20px", "20px"] }}>
-          {!accountId && <NotConnected />}
-          <ModalTitle asset={asset} onClose={handleClose} />
-          {action === "Borrow" ? (
-            <CollateralTypeSelectorBorrow
-              maxBorrowAmountPositions={maxBorrowAmountPositions}
-              selectedCollateralType={selectedCollateralType}
-              setSelectedCollateralType={setSelectedCollateralType}
-            />
-          ) : null}
-          {action === "Repay" ? (
-            <CollateralTypeSelectorRepay
-              repayPositions={repayPositions}
-              selectedCollateralType={selectedCollateralType}
-              setSelectedCollateralType={setSelectedCollateralType}
-            />
-          ) : null}
-          <RepayTab asset={asset} />
-          <Controls
-            amount={amount}
-            available={available}
-            action={action}
-            tokenId={tokenId}
-            asset={asset}
-            totalAvailable={available}
-            available$={available$}
-          />
-          <div className="flex flex-col gap-4 mt-6">
-            <HealthFactor value={healthFactor} />
-            {action === "Repay" &&
-            isRepayFromDeposits &&
-            selectedCollateralType !== DEFAULT_POSITION ? (
-              <HealthFactor value={healthFactor_repay_lp} title="LP token Health Factor" />
-            ) : null}
-
-            <Rates rates={rates} />
-            {!canUseAsCollateral ? (
-              <CollateralTip />
-            ) : (
-              <CollateralSwitch
-                action={action}
-                canUseAsCollateral={canUseAsCollateral}
-                tokenId={asset.tokenId}
+        <ModalContext.Provider
+          value={{
+            position: selectedCollateralType,
+          }}
+        >
+          <Box sx={{ p: ["20px", "20px"] }}>
+            {!accountId && <NotConnected />}
+            <ModalTitle asset={asset} onClose={handleClose} />
+            {action === "Borrow" ? (
+              <CollateralTypeSelectorBorrow
+                maxBorrowAmountPositions={maxBorrowAmountPositions}
+                selectedCollateralType={selectedCollateralType}
+                setSelectedCollateralType={setSelectedCollateralType}
               />
-            )}
-            {/* <BorrowLimit from={maxBorrowValue} to="50" /> */}
-          </div>
-          <Alerts data={alerts} />
-          <Action
-            maxBorrowAmount={maxBorrowAmount}
-            healthFactor={healthFactor}
-            collateralType={selectedCollateralType}
-          />
-        </Box>
+            ) : null}
+            {action === "Repay" ? (
+              <CollateralTypeSelectorRepay
+                repayPositions={repayPositions}
+                selectedCollateralType={selectedCollateralType}
+                setSelectedCollateralType={setSelectedCollateralType}
+              />
+            ) : null}
+            <RepayTab asset={asset} />
+            <Controls
+              amount={amount}
+              available={available}
+              action={action}
+              tokenId={tokenId}
+              asset={asset}
+              totalAvailable={available}
+              available$={available$}
+            />
+            <div className="flex flex-col gap-4 mt-6">
+              <HealthFactor value={healthFactor} />
+              {action === "Repay" &&
+              isRepayFromDeposits &&
+              selectedCollateralType !== DEFAULT_POSITION ? (
+                <HealthFactor value={healthFactor_repay_lp} title="LP token Health Factor" />
+              ) : null}
+
+              <Rates rates={rates} />
+              {!canUseAsCollateral ? (
+                <CollateralTip />
+              ) : (
+                <CollateralSwitch
+                  action={action}
+                  canUseAsCollateral={canUseAsCollateral}
+                  tokenId={asset.tokenId}
+                />
+              )}
+              {/* <BorrowLimit from={maxBorrowValue} to="50" /> */}
+            </div>
+            <Alerts data={alerts} />
+            <Action
+              maxBorrowAmount={maxBorrowAmount}
+              healthFactor={healthFactor}
+              collateralType={selectedCollateralType}
+            />
+          </Box>
+        </ModalContext.Provider>
       </Wrapper>
     </MUIModal>
   );

@@ -113,8 +113,6 @@ export const getBurrow = async ({
       throw err;
     }
   };
-
-  /// TODO is this deprecated???
   const call = async (
     contract: Contract,
     methodName: string,

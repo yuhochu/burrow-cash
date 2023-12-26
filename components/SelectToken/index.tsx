@@ -14,6 +14,7 @@ import { CloseIcon } from "../Modal/svg";
 import { toggleUseAsCollateral } from "../../redux/appSlice";
 import { IToken } from "../../interfaces/asset";
 import { DEFAULT_POSITION } from "../../utils/config";
+import { ModalContext } from "../Modal/index";
 
 export type IAssetType = "borrow" | "supply";
 type IBalance = { supply_balance?: string; borrow_balance?: string };
@@ -40,7 +41,7 @@ export default function SelectToken({
       list.sort(sortByBalance);
       setAssetList(list);
     }
-  }, [Object.keys(updateAsset)?.length, rows?.length]);
+  }, [JSON.stringify(updateAsset), Object.keys(updateAsset)?.length, rows?.length]);
 
   const sortByBalance = assetType === "supply" ? sortBySupplyBalance : sortByBorrowBalance;
   function sortBySupplyBalance(b: IUIAsset, a: IUIAsset) {
@@ -198,15 +199,18 @@ function GetBalance({
   asset,
   updateAsset,
   setUpdateAsset,
+  position,
 }: {
   asset: IUIAsset;
   updateAsset: Record<string, IUIAsset>;
   setUpdateAsset: any;
+  position: string;
 }) {
   const { symbol, tokenId } = asset;
   const isWrappedNear = symbol === "NEAR";
   const { supplyBalance, maxBorrowAmountPositions } = useUserBalance(tokenId, isWrappedNear);
-  const borrowBalance = maxBorrowAmountPositions[DEFAULT_POSITION]?.maxBorrowAmount?.toString(); // TODO
+  const borrowBalance =
+    maxBorrowAmountPositions[position || DEFAULT_POSITION]?.maxBorrowAmount?.toString();
   updateAsset[tokenId] = {
     ...asset,
     supply_balance: supplyBalance,
@@ -221,6 +225,7 @@ function GetBalance({
 function TokenList() {
   const { rows, updateAsset, setUpdateAsset, assetList, assetType, handleClose, selectRef } =
     useContext(SelectTokenData) as any;
+  const { position } = useContext(ModalContext) as any;
   return (
     <>
       {rows.map((asset: IUIAsset) => (
@@ -229,6 +234,7 @@ function TokenList() {
           asset={asset}
           updateAsset={updateAsset}
           setUpdateAsset={setUpdateAsset}
+          position={position}
         />
       ))}
       {assetList.map((asset: IUIAsset) => (
