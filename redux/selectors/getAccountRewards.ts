@@ -43,23 +43,42 @@ export interface IAccountRewards {
 export const getGains = (
   portfolio: Portfolio,
   assets: AssetsState,
-  source: "supplied" | "collateral" | "borrowed",
+  source: "supplied" | "collateral" | "borrowed" | "collateralAll",
   withNetTvlMultiplier = false,
 ) => {
-  const sourceType = source === "collateral" ? "collateralAll" : source;
-  const data = portfolio[sourceType]; // TODO
-  return Object.keys(data)
-    .map((id) => {
-      const asset = assets.data[id];
-      const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
+  const data = portfolio[source];
+  const res = Object.keys(data).map((id) => {
+    const asset = assets.data[id];
+    const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
 
-      const { balance } = data[id];
-      const apr = Number(data[id].apr);
-      const balanceUSD = toUsd(balance, asset);
+    const { balance } = data[id];
+    const apr = Number(data[id].apr);
+    const balanceUSD = toUsd(balance, asset);
 
-      return [balanceUSD * (withNetTvlMultiplier ? netTvlMultiplier : 1), apr];
-    })
-    .reduce(([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance], [0, 0]);
+    return [balanceUSD * (withNetTvlMultiplier ? netTvlMultiplier : 1), apr];
+  });
+  const result = res.reduce(
+    ([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance],
+    [0, 0],
+  );
+  return result;
+};
+
+export const getGainsArr = (tokens: any[], assets: AssetsState, withNetTvlMultiplier = false) => {
+  const res = tokens.map((data) => {
+    const asset = assets.data[data.token_id];
+    const netTvlMultiplier = asset.config.net_tvl_multiplier / 10000;
+    const { balance } = data;
+    const apr = Number(data.apr);
+    const balanceUSD = toUsd(balance, asset);
+
+    return [balanceUSD * (withNetTvlMultiplier ? netTvlMultiplier : 1), apr];
+  });
+  const result = res.reduce(
+    ([gain, sum], [balance, apr]) => [gain + balance * apr, sum + balance],
+    [0, 0],
+  );
+  return result;
 };
 
 export const computePoolsDailyAmount = (
@@ -157,10 +176,14 @@ export const getAccountRewards = createSelector(
     const brrrTokenId = app.config.booster_token_id;
     const { xBRRR, extraXBRRRAmount } = staking;
     const xBRRRAmount = xBRRR + extraXBRRRAmount;
-
-    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+    const { borrows, collaterals } = account.portfolio || {};
     const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+    const [, totalCollateral] = collaterals
+      ? getGainsArr(account.portfolio.collaterals, assets)
+      : getGains(account.portfolio, assets, "collateral");
+    const [, totalBorrowed] = borrows
+      ? getGainsArr(account.portfolio.borrows, assets)
+      : getGains(account.portfolio, assets, "borrowed");
 
     const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
 
@@ -172,7 +195,6 @@ export const getAccountRewards = createSelector(
           const rewardAsset = assets.data[rewardTokenId];
           const rewardAssetDecimals =
             rewardAsset.metadata.decimals + rewardAsset.config.extra_decimals;
-
           const { icon, symbol, name } = rewardAsset.metadata;
 
           const unclaimedAmount = Number(
@@ -282,10 +304,14 @@ export const getWeightedNetLiquidity = createSelector(
   (state: RootState) => state.account,
   (assets, account) => {
     if (!hasAssets(assets)) return 0;
-
-    const [, totalCollateral] = getGains(account.portfolio, assets, "collateral", true);
+    const { borrows, collaterals } = account.portfolio || {};
     const [, totalSupplied] = getGains(account.portfolio, assets, "supplied", true);
-    const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed", true);
+    const [, totalCollateral] = collaterals
+      ? getGainsArr(account.portfolio.collaterals, assets, true)
+      : getGains(account.portfolio, assets, "collateral", true);
+    const [, totalBorrowed] = borrows
+      ? getGainsArr(account.portfolio.borrows, assets, true)
+      : getGains(account.portfolio, assets, "borrowed", true);
 
     const netLiquidity = totalCollateral + totalSupplied - totalBorrowed;
     return netLiquidity;

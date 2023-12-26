@@ -3,9 +3,8 @@ import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getExtraDailyTotals } from "./getExtraDailyTotals";
-import { getAccountRewards, getGains } from "./getAccountRewards";
+import { getAccountRewards, getGains, getGainsArr } from "./getAccountRewards";
 import { getProtocolRewards } from "./getProtocolRewards";
-import { getTotalBalance } from "./getTotalBalance";
 import { shrinkToken } from "../../store/helper";
 
 export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
@@ -15,11 +14,15 @@ export const getNetAPY = ({ isStaking = false }: { isStaking: boolean }) =>
     getExtraDailyTotals({ isStaking }),
     (assets, account, extraDaily) => {
       if (!hasAssets(assets)) return 0;
-
-      const [gainCollateral, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+      // check if new data borrows/collaterals exist, could be remove in next patch
+      const { borrows, collaterals } = account?.portfolio || {};
+      const [gainBorrowed, totalBorrowed] = borrows
+        ? getGainsArr(borrows, assets)
+        : getGains(account.portfolio, assets, "borrowed");
+      const [gainCollateral, totalCollateral] = collaterals
+        ? getGainsArr(collaterals, assets)
+        : getGains(account.portfolio, assets, "collateral");
       const [gainSupplied, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-      const [gainBorrowed, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
-
       const gainExtra = extraDaily * 365;
 
       const netGains = gainCollateral + gainSupplied + gainExtra - gainBorrowed;
@@ -37,10 +40,14 @@ export const getNetTvlAPY = ({ isStaking = false }) =>
     getAccountRewards,
     (assets, account, rewards) => {
       if (!hasAssets(assets)) return 0;
-
-      const [, totalCollateral] = getGains(account.portfolio, assets, "collateral");
+      const { borrows, collaterals } = account.portfolio || {};
       const [, totalSupplied] = getGains(account.portfolio, assets, "supplied");
-      const [, totalBorrowed] = getGains(account.portfolio, assets, "borrowed");
+      const [, totalCollateral] = collaterals
+        ? getGainsArr(account.portfolio.collaterals, assets)
+        : getGains(account.portfolio, assets, "collateral");
+      const [, totalBorrowed] = borrows
+        ? getGainsArr(account.portfolio.borrows, assets)
+        : getGains(account.portfolio, assets, "borrowed");
 
       const netTvlRewards = Object.values(rewards.net).reduce(
         (acc, r) => acc + (isStaking ? r.newDailyAmount : r.dailyAmount) * r.price,

@@ -20,15 +20,36 @@ export const transformPortfolio = (account) => {
   });
 
   let collateralAll = {};
-  Object.entries(positions).forEach(([key, value]: [string, any]) => {
+  const collaterals: any[] = [];
+  const borrows: any[] = [];
+
+  Object.entries(positions).forEach(([positionId, value]: [string, any]) => {
     if (value?.collateral) {
       collateralAll = {
         ...collateralAll,
         ...value.collateral,
       };
     }
+    Object.entries(value.borrowed).forEach(([tokenId, tokenObj]: [string, any]) => {
+      borrows.push({
+        ...tokenObj,
+        token_id: tokenId,
+        positionId,
+      });
+    });
+    Object.entries(value.collateral).forEach(([tokenId, tokenObj]: [string, any]) => {
+      collaterals.push({
+        ...tokenObj,
+        token_id: tokenId,
+        positionId,
+      });
+    });
   });
+
   return {
+    supplies: supplied,
+    borrows,
+    collaterals,
     supplied: listToMap(supplied),
     borrowed: positions[DEFAULT_POSITION].borrowed,
     collateral: positions[DEFAULT_POSITION].collateral,
