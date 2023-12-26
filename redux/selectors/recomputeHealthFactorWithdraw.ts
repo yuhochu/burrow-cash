@@ -14,8 +14,8 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
-      if (!hasAssets(assets)) return 0;
-      if (!account.portfolio || !tokenId) return 0;
+      if (!hasAssets(assets)) return { healthFactor: 0, maxBorrowValue: 0 };
+      if (!account.portfolio || !tokenId) return { healthFactor: 0, maxBorrowValue: 0 };
       const asset = assets.data[tokenId];
       const { metadata, config, isLpToken } = asset;
       const position = isLpToken ? tokenId : DEFAULT_POSITION;
@@ -81,9 +81,9 @@ export const recomputeHealthFactorWithdraw = (tokenId: string, amount: number) =
         assets.data,
         position,
       );
-
-      const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
-
-      return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
+      const maxBorrowValue = adjustedCollateralSum.sub(adjustedBorrowedSum).mul(95).div(100);
+      const healthFactorTemp = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+      const healthFactor = healthFactorTemp < MAX_RATIO ? healthFactorTemp : MAX_RATIO;
+      return { healthFactor, maxBorrowValue };
     },
   );

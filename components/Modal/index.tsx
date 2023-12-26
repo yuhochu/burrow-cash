@@ -34,7 +34,7 @@ import {
 import Controls from "./Controls";
 import Action from "./Action";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
-import { useDegenMode } from "../../hooks/hooks";
+import { useDegenMode, usePortfolioAssets } from "../../hooks/hooks";
 import {
   CollateralTypeSelectorBorrow,
   CollateralTypeSelectorRepay,
@@ -49,11 +49,12 @@ const Modal = () => {
   const dispatch = useAppDispatch();
   const { isRepayFromDeposits } = useDegenMode();
   const theme = useTheme();
+  const portfolioAssets = usePortfolioAssets();
   const [selectedCollateralType, setSelectedCollateralType] = useState(DEFAULT_POSITION);
 
   const { action = "Deposit", tokenId, position } = asset;
 
-  const healthFactor = useAppSelector(
+  const { healthFactor, maxBorrowValue: adjustedMaxBorrowValue } = useAppSelector(
     action === "Withdraw"
       ? recomputeHealthFactorWithdraw(tokenId, +amount)
       : action === "Adjust"
@@ -66,17 +67,18 @@ const Modal = () => {
       ? recomputeHealthFactorRepay(tokenId, +amount, selectedCollateralType)
       : recomputeHealthFactor(tokenId, +amount, selectedCollateralType),
   );
-  const healthFactor_repay_lp = useAppSelector(
-    action === "Repay" && isRepayFromDeposits && selectedCollateralType !== DEFAULT_POSITION
-      ? recomputeHealthFactorRepayFromDepositsLp(tokenId, +amount, selectedCollateralType)
-      : () => {
-          return 0;
-        },
-  );
+  const { healthFactor: healthFactor_repay_lp, maxBorrowValue: adjustedMaxBorrowValue_repay_lp } =
+    useAppSelector(
+      action === "Repay" && isRepayFromDeposits && selectedCollateralType !== DEFAULT_POSITION
+        ? recomputeHealthFactorRepayFromDepositsLp(tokenId, +amount, selectedCollateralType)
+        : () => {
+            return { healthFactor: 0, maxBorrowValue: 0 };
+          },
+    );
   const maxBorrowAmountPositions = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
   const repayPositions = useAppSelector(getRepayPositions(tokenId));
-  const { maxBorrowAmount } = maxBorrowAmountPositions[selectedCollateralType];
+  const { maxBorrowAmount, maxBorrowValue } = maxBorrowAmountPositions[selectedCollateralType];
   const repayAmount = repayPositions[selectedCollateralType];
   const {
     symbol,
@@ -116,6 +118,12 @@ const Modal = () => {
       value$: new Decimal(price * +amount).toFixed(),
     });
   }
+  const repay_to_lp =
+    action === "Repay" && isRepayFromDeposits && selectedCollateralType !== DEFAULT_POSITION;
+  const not_borrow_from_regular =
+    action === "Repay" &&
+    isRepayFromDeposits &&
+    !((portfolioAssets[1] || []) as any[]).find((a) => a.tokenId === tokenId);
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper
@@ -158,13 +166,13 @@ const Modal = () => {
               available$={available$}
             />
             <div className="flex flex-col gap-4 mt-6">
-              <HealthFactor value={healthFactor} />
-              {action === "Repay" &&
-              isRepayFromDeposits &&
-              selectedCollateralType !== DEFAULT_POSITION ? (
-                <HealthFactor value={healthFactor_repay_lp} title="LP token Health Factor" />
-              ) : null}
-
+              {repay_to_lp ? <HealthFactor value={healthFactor_repay_lp} /> : null}
+              {not_borrow_from_regular ? null : (
+                <HealthFactor
+                  value={healthFactor}
+                  title={`${repay_to_lp ? "Health Factor(Single)" : ""}`}
+                />
+              )}
               <Rates rates={rates} />
               {!canUseAsCollateral ? (
                 <CollateralTip />
@@ -175,7 +183,10 @@ const Modal = () => {
                   tokenId={asset.tokenId}
                 />
               )}
-              {/* <BorrowLimit from={maxBorrowValue} to="50" /> */}
+              <BorrowLimit
+                from={maxBorrowValue}
+                to={repay_to_lp ? adjustedMaxBorrowValue_repay_lp : adjustedMaxBorrowValue}
+              />
             </div>
             <Alerts data={alerts} />
             <Action

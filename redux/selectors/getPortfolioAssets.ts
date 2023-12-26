@@ -50,7 +50,7 @@ export const getPortfolioAssets = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (app, assets, account) => {
-    if (!hasAssets(assets)) return [[], [], 0, 0];
+    if (!hasAssets(assets)) return [[], [], 0, 0, {}, []];
     const brrrTokenId = app.config.booster_token_id;
     const lpPositions = omit(account.portfolio.positions, DEFAULT_POSITION);
     let portfolioLpAssets = {};
@@ -196,7 +196,7 @@ export const getPortfolioAssets = createSelector(
       return { ...acc, [shadow_id]: b };
     }, {});
 
-    const borrowedAll = borrowed;
+    const borrowedAll = Array.from(borrowed);
     Object.entries(borrowed_LP).forEach(([positionId, value]: [string, any]) => {
       borrowedAll.push(...value);
     });

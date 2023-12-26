@@ -153,14 +153,20 @@ export function CollateralTypeSelectorRepay({
           <span>Borrowed amount</span>
         </div>
         {[DEFAULT_POSITION, ...Object.keys(LPAssetMap)].map((position) => {
+          const borrowedAmount = repayPositions[position] || 0;
+          const disabled = +borrowedAmount <= 0;
           return (
             <div
               key={position}
               onClick={() => {
-                setSelectedCollateralType(position);
-                setShow(false);
+                if (!disabled) {
+                  setSelectedCollateralType(position);
+                  setShow(false);
+                }
               }}
-              className="flex items-center justify-between text-sm text-white h-[46px] hover:bg-gray-950 px-3.5 cursor-pointer"
+              className={`flex items-center justify-between text-sm text-white h-[46px] hover:bg-gray-950 px-3.5 ${
+                disabled ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               <div className="flex items-center">
                 <span className="mr-1.5">{getName(position)}</span>

@@ -13,8 +13,8 @@ export const recomputeHealthFactor = (tokenId: string, amount: number, position:
     (state: RootState) => state.assets,
     (state: RootState) => state.account,
     (assets, account) => {
-      if (!hasAssets(assets)) return 0;
-      if (!account.portfolio || !tokenId) return 0;
+      if (!hasAssets(assets)) return { healthFactor: 0, maxBorrowValue: 0 };
+      if (!account.portfolio || !tokenId) return { healthFactor: 0, maxBorrowValue: 0 };
       const asset = assets.data[tokenId];
       const { metadata, config } = asset;
       // if (!Object.keys(account.portfolio.borrowed).length && amount === 0) return -1;
@@ -67,8 +67,9 @@ export const recomputeHealthFactor = (tokenId: string, amount: number, position:
       );
       const adjustedBorrowedSum = getAdjustedSum("borrowed", portfolio, assets.data, position);
 
-      const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
-
-      return healthFactor < MAX_RATIO ? healthFactor : MAX_RATIO;
+      const maxBorrowValue = adjustedCollateralSum.sub(adjustedBorrowedSum).mul(95).div(100);
+      const healthFactorTemp = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
+      const healthFactor = healthFactorTemp < MAX_RATIO ? healthFactorTemp : MAX_RATIO;
+      return { healthFactor, maxBorrowValue };
     },
   );
