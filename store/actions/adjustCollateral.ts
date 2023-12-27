@@ -87,7 +87,7 @@ export async function adjustCollateral({
             token_id: tokenId,
             amount: expandedAmount.gt(0)
               ? collateralBalance.sub(expandedAmount).toFixed(0)
-              : undefined, // TODO is can undefined?
+              : undefined,
           },
         },
       };

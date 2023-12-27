@@ -17,7 +17,7 @@ export const getAdjustedSum = (
   position?: string,
 ) => {
   const positionId = position || DEFAULT_POSITION;
-  const result = Object.keys(portfolio.positions[positionId][type]).map((id) => {
+  const result = Object.keys(portfolio.positions[positionId]?.[type] || {}).map((id) => {
     const asset = assets[id];
     const positionData = portfolio.positions[positionId][type][id];
     let pricedBalance;
@@ -64,8 +64,8 @@ export const getAdjustedSum = (
       : pricedBalance.mul(asset.config.volatility_ratio).div(MAX_RATIO);
   });
 
-  const sumResult = result.reduce(sumReducerDecimal, new Decimal(0));
-  return sumResult;
+  const sumResult = result?.reduce(sumReducerDecimal, new Decimal(0));
+  return sumResult || new Decimal(0);
 };
 
 export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfolio: Portfolio) => {
@@ -77,7 +77,7 @@ export const computeWithdrawMaxAmount = (tokenId: string, assets: Assets, portfo
   const assetPrice = asset.price ? new Decimal(asset.price.usd) : new Decimal(0);
   const suppliedBalance = new Decimal(portfolio.supplied[tokenId]?.balance || 0);
   const collateralBalance = new Decimal(
-    portfolio.positions[position].collateral[tokenId]?.balance || 0,
+    portfolio.positions[position]?.collateral?.[tokenId]?.balance || 0,
   );
 
   let maxAmount = suppliedBalance;

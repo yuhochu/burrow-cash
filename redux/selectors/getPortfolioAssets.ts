@@ -73,11 +73,11 @@ export const getPortfolioAssets = createSelector(
         const { isLpToken } = asset;
         const collateral = shrinkToken(
           (isLpToken
-            ? account.portfolio.positions[tokenId].collateral[tokenId]?.balance
+            ? account.portfolio.positions[tokenId]?.collateral?.[tokenId]?.balance || 0
             : account.portfolio.collateral[tokenId]?.balance) || 0,
           asset.metadata.decimals + asset.config.extra_decimals,
         );
-        const suppliedBalance = account.portfolio.supplied[tokenId]?.balance || 0;
+        const suppliedBalance = account.portfolio.supplied?.[tokenId]?.balance || 0;
         const totalSupplyD = new Decimal(asset.supplied.balance)
           .plus(new Decimal(asset.reserved))
           .toFixed();

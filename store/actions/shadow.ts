@@ -69,7 +69,6 @@ export async function shadow_action_withdraw({
   const expandAmount = expandTokenDecimal(amount, decimals).toFixed(0);
   const pool_id = +tokenId.split("-")[1];
   if (decreaseCollateralAmount.gt(0)) {
-    // TODO 待验证
     transactions.push({
       receiverId: oracleContract.contractId,
       functionCalls: [

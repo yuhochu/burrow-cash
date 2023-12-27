@@ -83,7 +83,7 @@ export function CollateralTypeSelectorBorrow({
                 {selectedCollateralType === position ? <CheckedIcon /> : null}
               </div>
               <span>
-                {digitalProcess(maxBorrowAmountPositions[position].maxBorrowAmount || 0, 2)}
+                {digitalProcess(maxBorrowAmountPositions[position]?.maxBorrowAmount || 0, 2)}
               </span>
             </div>
           );
