@@ -51,8 +51,8 @@ export const getTotalAccountBalance = (source: "borrowed" | "supplied") =>
 
 const sumTokenAmounts = (account, assets, source) => {
   const { collateral, borrows, collaterals, supplies } = account.portfolio || {};
-  let tokens = source === "supplied" ? [...supplies, ...collaterals] : borrows;
-  tokens = _.uniqBy(tokens, "token_id");
+  const tokens = source === "supplied" ? [...supplies, ...collaterals] : borrows;
+
   const tokenAmounts = tokens.map((d) => {
     const { token_id } = d || {};
     const { price, metadata, config } = assets.data[token_id];
@@ -61,12 +61,14 @@ const sumTokenAmounts = (account, assets, source) => {
       Number(shrinkToken(d?.balance || 0, metadata.decimals + config.extra_decimals)) *
       (price?.usd || 0);
 
-    const totalCollateral =
-      Number(
-        shrinkToken(collateral[token_id]?.balance || 0, metadata.decimals + config.extra_decimals),
-      ) * (price?.usd || 0);
-    // console.log(`>> source:${source} tokenId:${token_id} total:${total} totalCollateral:${totalCollateral} metadata:${metadata}`)
-    return source === "supplied" ? total + totalCollateral : total;
+    // const totalCollateral =
+    //   Number(
+    //     shrinkToken(collateral[token_id]?.balance || 0, metadata.decimals + config.extra_decimals),
+    //   ) * (price?.usd || 0);
+    // if (source === "supplied") {
+    //   console.log(`>> source:${source} tokenId:${token_id} total:${total} totalCollateral:${totalCollateral} metadata:${metadata.decimals} price:${price?.usd}`)
+    // }
+    return source === "supplied" ? total : total;
   });
 
   return tokenAmounts;
