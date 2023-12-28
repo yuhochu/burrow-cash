@@ -74,7 +74,7 @@ export const getPortfolioAssets = createSelector(
         const collateral = shrinkToken(
           (isLpToken
             ? account.portfolio.positions[tokenId]?.collateral?.[tokenId]?.balance || 0
-            : account.portfolio.collateral[tokenId]?.balance) || 0,
+            : account.portfolio.collateral?.[tokenId]?.balance) || 0,
           asset.metadata.decimals + asset.config.extra_decimals,
         );
         const suppliedBalance = account.portfolio.supplied?.[tokenId]?.balance || 0;
@@ -111,7 +111,7 @@ export const getPortfolioAssets = createSelector(
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
     // borrow from regular position
-    const borrowed = Object.keys(account.portfolio.borrowed)
+    const borrowed = Object.keys(account.portfolio.borrowed || {})
       .map((tokenId) => {
         const asset = assets.data[tokenId];
 

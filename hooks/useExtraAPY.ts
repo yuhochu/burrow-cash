@@ -42,11 +42,11 @@ export function useExtraAPY({
   const assetPrice = assets.data[assetId].price?.usd || 0;
 
   const totalBorrowAssetUSD =
-    Number(shrinkToken(portfolio.borrowed[assetId]?.balance || 0, assetDecimals)) * assetPrice;
+    Number(shrinkToken(portfolio.borrowed?.[assetId]?.balance || 0, assetDecimals)) * assetPrice;
   const totalSupplyAssetUSD =
     Number(shrinkToken(portfolio.supplied[assetId]?.balance || 0, assetDecimals)) * assetPrice;
   const totalCollateralAssetUSD =
-    Number(shrinkToken(portfolio.collateral[assetId]?.balance || 0, assetDecimals)) * assetPrice;
+    Number(shrinkToken(portfolio.collateral?.[assetId]?.balance || 0, assetDecimals)) * assetPrice;
 
   const totalUserAssetUSD = isBorrow
     ? totalBorrowAssetUSD

@@ -33,7 +33,7 @@ export async function adjustCollateral({
   const suppliedBalance = new Decimal(account.portfolio?.supplied[tokenId]?.balance || 0);
   const collateralBalance = new Decimal(
     asset.isLpToken
-      ? account.portfolio?.positions[tokenId].collateral[tokenId]?.balance || 0
+      ? account.portfolio?.positions[tokenId]?.collateral[tokenId]?.balance || 0
       : account.portfolio?.collateral[tokenId]?.balance || 0,
   );
 
