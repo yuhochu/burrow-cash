@@ -1,3 +1,7 @@
 LICENSE
 yarn.lock
 tsconfig.tsbuildinfo
+.env
+.gitignore
+.prettierignore
+yarn-error.log

@@ -152,6 +152,7 @@ const Modal = () => {
                 setSelectedCollateralType={setSelectedCollateralType}
               />
             ) : null}
+            add prop here
             {action === "Repay" ? (
               <CollateralTypeSelectorRepay
                 repayPositions={repayPositions}

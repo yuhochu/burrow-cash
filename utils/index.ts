@@ -227,8 +227,15 @@ export function standardizeAsset(asset) {
     serializationAsset.symbol = nearMetadata.symbol;
     serializationAsset.icon = nearMetadata.icon;
   }
+  if (serializationAsset.metadata?.symbol === "wNEAR") {
+    serializationAsset.metadata.symbol = nearMetadata.symbol;
+    serializationAsset.metadata.icon = nearMetadata.icon;
+  }
   if (serializationAsset.symbol === "WOO") {
     serializationAsset.icon = wooMetadata.icon;
+  }
+  if (serializationAsset.metadata?.symbol === "WOO") {
+    serializationAsset.metadata.icon = wooMetadata.icon;
   }
   return serializationAsset;
 }

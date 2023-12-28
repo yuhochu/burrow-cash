@@ -25,6 +25,7 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
     data: null,
   });
   const userHealth = useUserHealth();
+  const [userHealthCur, setUserHealthCur] = useState<any>();
   const rewardsObj = useRewards();
   const { unreadLiquidation, fetchUnreadLiquidation } = useUnreadLiquidation();
   const isMobile = isMobileDevice();
@@ -32,6 +33,12 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
   useEffect(() => {
     fetchUnreadLiquidation().then();
   }, []);
+
+  useEffect(() => {
+    if (userHealth?.allHealths && !userHealthCur?.healthFactor) {
+      handleHealthClick(userHealth.allHealths[0]);
+    }
+  }, [userHealth?.allHealths]);
 
   let totalSuppliedUSD = 0;
   suppliedRows?.forEach((d) => {
@@ -92,6 +99,20 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
       </div>
     );
   });
+
+  const handleHealthClick = (o) => {
+    const valueLocale = o.healthFactor;
+    setUserHealthCur({
+      ...userHealth,
+      id: o.id,
+      healthFactor: valueLocale,
+      data: {
+        label: o.healthStatus,
+        valueLabel: `${valueLocale}%`,
+        valueLocale,
+      },
+    });
+  };
 
   return (
     <>
@@ -176,33 +197,49 @@ const DashboardOverview = ({ suppliedRows, borrowedRows }) => {
               {recordsButton}
             </div>
 
-            <div className="relative lg3:mr-10 flex flex-col items-center">
-              <HealthFactor userHealth={userHealth} />
-              {userHealth?.LPHealthFactor ? (
-                <div className="lp-healths flex items-center gap-2 mt-4">
-                  {Object.entries(userHealth.LPHealthFactor).map(([key, value]: [string, any]) => {
+            <div className="relative flex xsm2:flex-col xsm:items-center items-end gap-4">
+              <HealthFactor userHealth={userHealthCur} />
+              {userHealth?.allHealths ? (
+                <div className="lp-healths flex flex-col items-center gap-2 mt-4">
+                  {userHealth.allHealths.map((value: any) => {
+                    const isActive = value.id === userHealthCur?.id;
                     const healthColor = {
                       good: "text-primary",
                       warning: "text-warning",
                       danger: "text-red-100",
                     };
 
-                    let tokensName = "";
+                    let tokensName = value?.type;
                     value?.metadata?.tokens?.forEach((d, i) => {
                       const isLast = i === value.metadata.tokens.length - 1;
                       tokensName += `${d.metadata.symbol}${!isLast ? "-" : ""}`;
                     });
                     return (
-                      <StatLabel
-                        title={{ text: tokensName || key }}
-                        row={[
-                          {
-                            value: `${value?.healthFactor}%`,
-                            valueClass: `${healthColor[value.healthStatus]}`,
-                          },
-                        ]}
-                        key={key}
-                      />
+                      <div
+                        key={value.id}
+                        className={`cursor-pointer relative health-tab ${
+                          isActive && "health-tab-active"
+                        }`}
+                        onClick={() => handleHealthClick(value)}
+                      >
+                        {isActive && <div className="arrow-left" />}
+                        <StatLabel
+                          title={{ text: tokensName }}
+                          wrapStyle={{
+                            background: "none",
+                            border: "1px solid #2E304B",
+                            padding: "7px 8px",
+                          }}
+                          titleWrapClass="w-[158px] rounded-[4px] md:rounded-[4px]"
+                          titleClass="w-[118px] truncate"
+                          row={[
+                            {
+                              value: `${value?.healthFactor}%`,
+                              valueClass: `${healthColor[value.healthStatus]}`,
+                            },
+                          ]}
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -265,7 +302,7 @@ const HealthFactor = ({ userHealth }) => {
               <DangerIcon />
             </CustomTooltips>
           )}
-          {data.valueLabel}
+          {data?.valueLabel}
         </div>
         <div className="h5 text-gray-300 flex gap-1 items-center justify-center">
           Health Factor

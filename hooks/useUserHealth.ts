@@ -50,12 +50,33 @@ export function useUserHealth() {
       ? "Medium"
       : "Good";
 
+  let allHealths = [
+    {
+      id: `token${healthFactor}`,
+      type: "Single Token",
+      healthFactor: Math.floor(healthFactor),
+      healthStatus: label.toLowerCase(),
+    },
+  ];
+  if (LPHealthFactor) {
+    Object.entries(LPHealthFactor).forEach(([positionId, value]: [string, any]) => {
+      allHealths.push({
+        id: `lp${positionId}`,
+        type: "LP",
+        positionId,
+        ...value,
+      });
+    });
+  }
+  allHealths = allHealths.sort((a, b) => a.healthFactor - b.healthFactor);
+
   return {
     netAPY,
     netLiquidityAPY,
     dailyReturns,
     healthFactor,
     LPHealthFactor,
+    allHealths,
     lowHealthFactor: LOW_HEALTH_FACTOR,
     dangerHealthFactor: DANGER_HEALTH_FACTOR,
     slimStats,

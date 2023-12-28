@@ -777,3 +777,17 @@ options-list::-webkit-scrollbar {
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
+.health-tab:hover, .health-tab-active{
+  background: #2E304B;
+}
+
+.health-tab .arrow-left{
+  position: absolute;
+  right:100%;
+  width: 0;
+  height: 0;
+  border-top: 16px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right:10px solid #2E304B;
+}
