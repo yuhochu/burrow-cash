@@ -38,10 +38,10 @@ const Modal = () => {
   const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
   const { amount } = useAppSelector(getSelectedValues);
+  const assets = useAppSelector((state) => state.assets?.data || {});
   const dispatch = useAppDispatch();
   const { isRepayFromDeposits } = useDegenMode();
   const theme = useTheme();
-
   const { action = "Deposit", tokenId } = asset;
 
   const healthFactor = useAppSelector(
@@ -78,6 +78,7 @@ const Modal = () => {
     isRepayFromDeposits,
     healthFactor,
     amount,
+    poolAsset: assets[tokenId],
   });
 
   const total = (price * +amount).toLocaleString(undefined, USD_FORMAT);
@@ -129,7 +130,11 @@ const Modal = () => {
             )}
           </div>
           <Alerts data={alerts} />
-          <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />
+          <Action
+            maxBorrowAmount={maxBorrowAmount}
+            healthFactor={healthFactor}
+            poolAsset={assets[tokenId]}
+          />
         </Box>
       </Wrapper>
     </MUIModal>

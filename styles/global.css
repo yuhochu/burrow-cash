@@ -22,7 +22,7 @@ body {
   color: #fff;
 }
 
-#__next{
+#__next {
   background: #14162b;
   height: 100%;
 }
@@ -740,11 +740,7 @@ options-list::-webkit-scrollbar {
 .nws-form-control .account br {
   display: none;
 }
-.nws-modal-wrapper
-  .nws-modal
-  .choose-ledger-account-form-wrapper
-  .nws-form-control
-  .account {
+.nws-modal-wrapper .nws-modal .choose-ledger-account-form-wrapper .nws-form-control .account {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -755,7 +751,7 @@ options-list::-webkit-scrollbar {
   .choose-ledger-account-form-wrapper
   .nws-form-control
   .account
-  input[type='checkbox'] {
+  input[type="checkbox"] {
   transform: scale(1.2);
 }
 .nws-modal-wrapper .nws-modal .overview-wrapper .account {

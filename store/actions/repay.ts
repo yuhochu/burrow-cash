@@ -14,11 +14,15 @@ export async function repay({
   amount,
   extraDecimals,
   isMax,
+  usnMinRepay,
+  isUsn,
 }: {
   tokenId: string;
   amount: string;
   extraDecimals: number;
   isMax: boolean;
+  usnMinRepay: string;
+  isUsn: boolean;
 }) {
   const { account, logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
@@ -32,8 +36,9 @@ export async function repay({
   );
 
   const extraDecimalMultiplier = expandTokenDecimal(1, extraDecimals);
-
-  const tokenBorrowedBalance = borrowedBalance.divToInt(extraDecimalMultiplier);
+  const tokenBorrowedBalance = isUsn
+    ? Decimal.max(borrowedBalance.divToInt(extraDecimalMultiplier), usnMinRepay)
+    : borrowedBalance.divToInt(extraDecimalMultiplier);
 
   const tokenBalance = new Decimal(await getBalance(tokenId, account.accountId));
   const accountBalance = decimalMax(
@@ -43,7 +48,6 @@ export async function repay({
 
   const maxAvailableBalance = isNEAR ? tokenBalance.add(accountBalance) : tokenBalance;
   const maxAmount = decimalMin(tokenBorrowedBalance, maxAvailableBalance);
-
   const expandedAmountToken = isMax
     ? maxAmount
     : decimalMin(maxAmount, expandTokenDecimal(amount, decimals));
