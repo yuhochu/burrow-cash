@@ -98,15 +98,19 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
           let usnMinRepay = "0";
           const isUsn = tokenId === "usn";
           if (isUsn && poolAsset?.supplied?.shares) {
-            usnMinRepay = new Decimal(
-              expandToken(
-                new Decimal(poolAsset?.supplied?.balance)
-                  .div(poolAsset?.supplied?.shares)
-                  .mul(2)
-                  .toFixed(),
-                decimals,
-              ),
-            ).toFixed(0);
+            // usnMinRepay = new Decimal(
+            //   expandToken(
+            //     new Decimal(poolAsset?.supplied?.balance)
+            //       .div(poolAsset?.supplied?.shares)
+            //       .mul(2)
+            //       .toFixed(0, 2),
+            //     decimals,
+            //   ),
+            // ).toFixed(0);
+            usnMinRepay = new Decimal(poolAsset?.supplied?.balance)
+              .div(poolAsset?.supplied?.shares)
+              .mul(2)
+              .toFixed(0, 2);
           }
           await repay({
             tokenId,
