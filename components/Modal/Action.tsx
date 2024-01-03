@@ -1,8 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Typography, Switch, Tooltip, Alert, useTheme } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
-
-import { FcInfo } from "@react-icons/all-files/fc/FcInfo";
+import Decimal from "decimal.js";
 import { nearTokenId } from "../../utils";
 import { toggleUseAsCollateral, hideModal } from "../../redux/appSlice";
 import { getModalData } from "./utils";
@@ -18,8 +15,9 @@ import { getSelectedValues, getAssetData } from "../../redux/appSelectors";
 import { trackActionButton, trackUseAsCollateral } from "../../utils/telemetry";
 import { useDegenMode } from "../../hooks/hooks";
 import { SubmitButton, AlertWarning } from "./components";
+import { expandToken } from "../../store";
 
-export default function Action({ maxBorrowAmount, healthFactor }) {
+export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
   const [loading, setLoading] = useState(false);
   const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
@@ -27,13 +25,14 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
   const { action = "Deposit", tokenId } = asset;
   const { isRepayFromDeposits } = useDegenMode();
 
-  const { available, canUseAsCollateral, extraDecimals, collateral, disabled } = getModalData({
-    ...asset,
-    maxBorrowAmount,
-    healthFactor,
-    amount,
-    isRepayFromDeposits,
-  });
+  const { available, canUseAsCollateral, extraDecimals, collateral, disabled, decimals } =
+    getModalData({
+      ...asset,
+      maxBorrowAmount,
+      healthFactor,
+      amount,
+      isRepayFromDeposits,
+    });
 
   useEffect(() => {
     if (!canUseAsCollateral) {
@@ -96,11 +95,30 @@ export default function Action({ maxBorrowAmount, healthFactor }) {
             extraDecimals,
           });
         } else {
+          let usnMinRepay = "0";
+          const isUsn = tokenId === "usn";
+          if (isUsn && poolAsset?.supplied?.shares) {
+            // usnMinRepay = new Decimal(
+            //   expandToken(
+            //     new Decimal(poolAsset?.supplied?.balance)
+            //       .div(poolAsset?.supplied?.shares)
+            //       .mul(2)
+            //       .toFixed(0, 2),
+            //     decimals,
+            //   ),
+            // ).toFixed(0);
+            usnMinRepay = new Decimal(poolAsset?.supplied?.balance)
+              .div(poolAsset?.supplied?.shares)
+              .mul(2)
+              .toFixed(0, 2);
+          }
           await repay({
             tokenId,
             amount,
             extraDecimals,
             isMax,
+            isUsn,
+            usnMinRepay,
           });
         }
         break;

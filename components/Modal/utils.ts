@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { USD_FORMAT, TOKEN_FORMAT, PERCENT_DIGITS, NEAR_STORAGE_DEPOSIT } from "../../store";
 import type { UIAsset } from "../../interfaces";
 import { formatWithCommas_number, toDecimal } from "../../utils/uiNumber";
-import { expandToken } from "../../store/helper";
+import { expandToken, shrinkToken } from "../../store/helper";
 import { decimalMax } from "../../utils";
 
 interface Alert {
@@ -51,6 +51,8 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
     maxWithdrawAmount,
     isRepayFromDeposits,
     canUseAsCollateral,
+    tokenId,
+    poolAsset,
   } = asset;
   const data: any = {
     apy: borrowApy,
@@ -117,7 +119,22 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
       data.available = getAvailableWithdrawOrAdjust;
       data.rates = [];
       break;
-    case "Repay":
+    case "Repay": {
+      let minRepay = "0";
+      const isUsn = tokenId === "usn";
+      if (isUsn && poolAsset?.supplied?.shares) {
+        // minRepay = new Decimal(poolAsset?.supplied?.balance)
+        //   .div(poolAsset?.supplied?.shares)
+        //   .mul(2)
+        //   .toNumber();
+        minRepay = shrinkToken(
+          new Decimal(poolAsset?.supplied?.balance)
+            .div(poolAsset?.supplied?.shares)
+            .mul(2)
+            .toFixed(0, 2),
+          18,
+        );
+      }
       data.totalTitle = `Repay Borrow Amount`;
       data.available = toDecimal(
         isRepayFromDeposits
@@ -126,7 +143,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
               isWrappedNear
                 ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
                 : available,
-              borrowed,
+              isUsn ? Math.max(borrowed, +minRepay) : borrowed,
             ),
       );
       data.alerts = {};
@@ -146,7 +163,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
         });
       }
       break;
-
+    }
     default:
   }
   if (
