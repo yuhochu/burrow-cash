@@ -75,11 +75,24 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
   const isRepay = action === "Repay";
   const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
+  const actionDoc = {
+    Supply: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Withdraw: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Adjust: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Borrow: "https://docs.burrow.finance/product-docs/using-burrow/borrowing",
+    Repay: "https://docs.burrow.finance/product-docs/using-burrow/borrowing",
+  };
   return (
     <div className="mb-[20px]">
       <div className="flex items-center justify-between text-lg text-white">
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
           {actionMapTitle[action]} <span className="ml-1.5">{symbol}</span>
+          <WarnIcon
+            className="cursor-pointer"
+            onClick={() => {
+              window.open(actionDoc[action]);
+            }}
+          />
         </div>
         <CloseIcon onClick={onClose} />
       </div>
