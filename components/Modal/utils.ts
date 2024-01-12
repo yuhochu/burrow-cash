@@ -53,6 +53,8 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
     canUseAsCollateral,
     tokenId,
     poolAsset,
+    decimals,
+    extraDecimals,
   } = asset;
   const data: any = {
     apy: borrowApy,
@@ -120,30 +122,26 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
       data.rates = [];
       break;
     case "Repay": {
+      // TODO
       let minRepay = "0";
-      const isUsn = tokenId === "usn";
-      if (isUsn && poolAsset?.supplied?.shares) {
-        // minRepay = new Decimal(poolAsset?.supplied?.balance)
-        //   .div(poolAsset?.supplied?.shares)
-        //   .mul(2)
-        //   .toNumber();
+      if (poolAsset?.supplied?.shares) {
         minRepay = shrinkToken(
           new Decimal(poolAsset?.supplied?.balance)
             .div(poolAsset?.supplied?.shares)
             .mul(2)
             .toFixed(0, 2),
-          18,
+          extraDecimals + decimals,
         );
       }
       data.totalTitle = `Repay Borrow Amount`;
       data.available = toDecimal(
         isRepayFromDeposits
-          ? Math.min(maxWithdrawAmount, borrowed)
+          ? Math.min(maxWithdrawAmount, Math.max(borrowed, +minRepay))
           : Math.min(
               isWrappedNear
                 ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
                 : available,
-              isUsn ? Math.max(borrowed, +minRepay) : borrowed,
+              Math.max(borrowed, +minRepay),
             ),
       );
       data.alerts = {};

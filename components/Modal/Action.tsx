@@ -52,6 +52,13 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
       sliderValue: Math.round((+amount * 100) / available) || 0,
       isRepayFromDeposits,
     });
+    let minRepay = "0";
+    if (poolAsset?.supplied?.shares) {
+      minRepay = new Decimal(poolAsset?.supplied?.balance)
+        .div(poolAsset?.supplied?.shares)
+        .mul(2)
+        .toFixed(0, 2);
+    }
     switch (action) {
       case "Supply":
         if (tokenId === nearTokenId) {
@@ -95,30 +102,13 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
             extraDecimals,
           });
         } else {
-          let usnMinRepay = "0";
-          const isUsn = tokenId === "usn";
-          if (isUsn && poolAsset?.supplied?.shares) {
-            // usnMinRepay = new Decimal(
-            //   expandToken(
-            //     new Decimal(poolAsset?.supplied?.balance)
-            //       .div(poolAsset?.supplied?.shares)
-            //       .mul(2)
-            //       .toFixed(0, 2),
-            //     decimals,
-            //   ),
-            // ).toFixed(0);
-            usnMinRepay = new Decimal(poolAsset?.supplied?.balance)
-              .div(poolAsset?.supplied?.shares)
-              .mul(2)
-              .toFixed(0, 2);
-          }
+          // TODO
           await repay({
             tokenId,
             amount,
             extraDecimals,
             isMax,
-            isUsn,
-            usnMinRepay,
+            minRepay,
           });
         }
         break;

@@ -69,7 +69,6 @@ export const transformAsset = (
     shrinkToken(totalBorrowedD, asset.metadata.decimals + asset.config.extra_decimals),
   );
 
-  // TODO: refactor: remove temp vars using ramda
   const temp1 = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
     .plus(asset.prot_fee)
@@ -91,7 +90,6 @@ export const transformAsset = (
     extraDecimals: 0,
   };
 
-  // TODO: refactor this without conditional
   if (account.accountId) {
     const decimals = asset.metadata.decimals + asset.config.extra_decimals;
 
