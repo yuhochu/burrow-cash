@@ -13,7 +13,7 @@ import { toggleUseAsCollateral, hideModal, showModal } from "../../redux/appSlic
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
-import { TipIcon, CloseIcon, WarnIcon } from "./svg";
+import { TipIcon, CloseIcon, WarnIcon, JumpTipIcon } from "./svg";
 import ReactToolTip from "../ToolTip";
 
 export const USNInfo = () => (
@@ -85,9 +85,9 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
   return (
     <div className="mb-[20px]">
       <div className="flex items-center justify-between text-lg text-white">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {actionMapTitle[action]} <span className="ml-1.5">{symbol}</span>
-          <WarnIcon
+          <JumpTipIcon
             className="cursor-pointer"
             onClick={() => {
               window.open(actionDoc[action]);
