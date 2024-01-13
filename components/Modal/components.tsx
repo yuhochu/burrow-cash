@@ -88,7 +88,7 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
         <div className="flex items-center gap-2">
           {actionMapTitle[action]} <span className="ml-1.5">{symbol}</span>
           <JumpTipIcon
-            className="cursor-pointer"
+            className="cursor-pointer text-gray-400 hover:text-white hover:text-opacity-50"
             onClick={() => {
               window.open(actionDoc[action]);
             }}
