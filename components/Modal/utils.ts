@@ -133,15 +133,27 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
           extraDecimals + decimals,
         );
       }
+      let interestChargedIn1min = "0";
+      if (borrowApy && price && borrowed) {
+        interestChargedIn1min = new Decimal(borrowApy)
+          .div(365 * 24 * 60)
+          .div(100)
+          .mul(borrowed)
+          .toFixed();
+      }
+      const repayAmount = Decimal.max(
+        new Decimal(borrowed).plus(interestChargedIn1min),
+        minRepay,
+      ).toNumber();
       data.totalTitle = `Repay Borrow Amount`;
       data.available = toDecimal(
         isRepayFromDeposits
-          ? Math.min(maxWithdrawAmount, Math.max(borrowed, +minRepay))
+          ? Math.min(maxWithdrawAmount, repayAmount)
           : Math.min(
               isWrappedNear
                 ? Number(Math.max(0, available + availableNEAR - NEAR_STORAGE_DEPOSIT))
                 : available,
-              Math.max(borrowed, +minRepay),
+              repayAmount,
             ),
       );
       data.alerts = {};
