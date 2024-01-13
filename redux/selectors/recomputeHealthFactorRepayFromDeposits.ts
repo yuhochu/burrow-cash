@@ -48,7 +48,11 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
         }
       }
 
-      const adjustedCollateralSum = getAdjustedSum("collateral", account.portfolio, assets.data);
+      const adjustedCollateralSum = getAdjustedSum(
+        "collateral",
+        clonedAccount.portfolio,
+        assets.data,
+      );
       const adjustedBorrowedSum = getAdjustedSum("borrowed", clonedAccount.portfolio, assets.data);
 
       const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();
