@@ -42,8 +42,7 @@ export const assetSlice = createSlice({
     builder.addCase(fetchRefPrices.fulfilled, (state, action) => {
       missingPriceTokens.forEach((missingToken) => {
         const missingTokenId = missingToken[defaultNetwork];
-
-        if (missingTokenId && state.data[missingTokenId]) {
+        if (missingTokenId && state.data[missingTokenId] && !state.data[missingTokenId]["price"]) {
           state.data[missingTokenId]["price"] = {
             decimals: action.payload[missingToken.mainnet].decimal,
             usd: Number(action.payload[missingToken.mainnet].price),
