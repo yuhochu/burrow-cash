@@ -101,6 +101,9 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
             decimals,
             0,
           );
+          if (+interestChargedIn1min === 0) {
+            interestChargedIn1min = "1";
+          }
         }
         if (poolAsset?.supplied?.shares) {
           minRepay = new Decimal(poolAsset?.supplied?.balance)

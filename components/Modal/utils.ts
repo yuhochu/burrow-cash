@@ -130,7 +130,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
             .div(poolAsset?.supplied?.shares)
             .mul(2)
             .toFixed(0, 2),
-          extraDecimals + decimals,
+          decimals,
         );
       }
       let interestChargedIn1min = "0";
@@ -139,7 +139,7 @@ export const getModalData = (asset): UIAsset & Props & { disabled: boolean } => 
           .div(365 * 24 * 60)
           .div(100)
           .mul(borrowed)
-          .toFixed();
+          .toFixed(decimals, 2);
       }
       const repayAmount = Decimal.max(
         new Decimal(borrowed).plus(interestChargedIn1min),
