@@ -13,7 +13,7 @@ import { toggleUseAsCollateral, hideModal, showModal } from "../../redux/appSlic
 import { isInvalid, formatWithCommas_usd } from "../../utils/uiNumber";
 import { YellowSolidSubmitButton, RedSolidSubmitButton } from "./button";
 import { getCollateralAmount } from "../../redux/selectors/getCollateralAmount";
-import { TipIcon, CloseIcon, WarnIcon } from "./svg";
+import { TipIcon, CloseIcon, WarnIcon, JumpTipIcon } from "./svg";
 import ReactToolTip from "../ToolTip";
 
 export const USNInfo = () => (
@@ -75,11 +75,24 @@ export const TokenInfo = ({ apy, asset, onClose }) => {
   const page = ["Withdraw", "Adjust", "Supply"].includes(action) ? "deposit" : "borrow";
   const isRepay = action === "Repay";
   const { degenMode, isRepayFromDeposits, setRepayFromDeposits } = useDegenMode();
+  const actionDoc = {
+    Supply: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Withdraw: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Adjust: "https://docs.burrow.finance/product-docs/using-burrow/supplying",
+    Borrow: "https://docs.burrow.finance/product-docs/using-burrow/borrowing",
+    Repay: "https://docs.burrow.finance/product-docs/using-burrow/borrowing",
+  };
   return (
     <div className="mb-[20px]">
       <div className="flex items-center justify-between text-lg text-white">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {actionMapTitle[action]} <span className="ml-1.5">{symbol}</span>
+          <JumpTipIcon
+            className="cursor-pointer text-gray-400 hover:text-white hover:text-opacity-50"
+            onClick={() => {
+              window.open(actionDoc[action]);
+            }}
+          />
         </div>
         <CloseIcon onClick={onClose} />
       </div>

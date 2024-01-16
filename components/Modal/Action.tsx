@@ -22,7 +22,7 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
   const { amount, useAsCollateral, isMax } = useAppSelector(getSelectedValues);
   const dispatch = useAppDispatch();
   const asset = useAppSelector(getAssetData);
-  const { action = "Deposit", tokenId } = asset;
+  const { action = "Deposit", tokenId, borrowApy, price, borrowed } = asset;
   const { isRepayFromDeposits } = useDegenMode();
 
   const { available, canUseAsCollateral, extraDecimals, collateral, disabled, decimals } =
@@ -87,41 +87,49 @@ export default function Action({ maxBorrowAmount, healthFactor, poolAsset }) {
           isMax,
         });
         break;
-      case "Repay":
+      case "Repay": {
+        // TODO
+        let minRepay = "0";
+        let interestChargedIn1min = "0";
+        if (borrowApy && price && borrowed) {
+          interestChargedIn1min = expandToken(
+            new Decimal(borrowApy)
+              .div(365 * 24 * 60)
+              .div(100)
+              .mul(borrowed)
+              .toFixed(),
+            decimals,
+            0,
+          );
+          if (+interestChargedIn1min === 0) {
+            interestChargedIn1min = "1";
+          }
+        }
+        if (poolAsset?.supplied?.shares) {
+          minRepay = new Decimal(poolAsset?.supplied?.balance)
+            .div(poolAsset?.supplied?.shares)
+            .mul(2)
+            .toFixed(0, 2);
+        }
         if (isRepayFromDeposits) {
           await repayFromDeposits({
             tokenId,
             amount,
             extraDecimals,
+            isMax,
           });
         } else {
-          let usnMinRepay = "0";
-          const isUsn = tokenId === "usn";
-          if (isUsn && poolAsset?.supplied?.shares) {
-            // usnMinRepay = new Decimal(
-            //   expandToken(
-            //     new Decimal(poolAsset?.supplied?.balance)
-            //       .div(poolAsset?.supplied?.shares)
-            //       .mul(2)
-            //       .toFixed(0, 2),
-            //     decimals,
-            //   ),
-            // ).toFixed(0);
-            usnMinRepay = new Decimal(poolAsset?.supplied?.balance)
-              .div(poolAsset?.supplied?.shares)
-              .mul(2)
-              .toFixed(0, 2);
-          }
           await repay({
             tokenId,
             amount,
             extraDecimals,
             isMax,
-            isUsn,
-            usnMinRepay,
+            minRepay,
+            interestChargedIn1min,
           });
         }
         break;
+      }
       default:
         break;
     }

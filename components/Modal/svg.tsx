@@ -66,3 +66,21 @@ export function WarnIcon(props) {
     </svg>
   );
 }
+export function JumpTipIcon(props) {
+  return (
+    <svg
+      {...props}
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7 4C7 4.55234 6.55234 5 6 5C5.72422 5 5.47422 4.88828 5.29297 4.70703C5.11172 4.52578 5 4.27578 5 4C5 3.72422 5.11172 3.47422 5.29297 3.29297C5.47422 3.11172 5.72422 3 6 3C6.27578 3 6.52578 3.11172 6.70703 3.29297C6.88828 3.47422 7 3.72422 7 4ZM7 6V9.25C7 9.52578 6.77578 9.75 6.5 9.75H5.5C5.22422 9.75 5 9.52578 5 9.25V6C5 5.72344 5.22422 5.5 5.5 5.5H6.5C6.77578 5.5 7 5.72344 7 6Z"
+        fill="currentColor"
+      />
+      <circle cx="6" cy="6" r="5.5" stroke="currentColor" />
+    </svg>
+  );
+}
