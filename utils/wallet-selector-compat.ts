@@ -71,14 +71,14 @@ const myNearWallet = setupMyNearWallet({
 const KEYPOM_OPTIONS = {
   beginTrial: {
     landing: {
-      title: "Welcome To My Cool Example App!",
+      title: "Welcome!",
     },
   },
   wallets: [
     {
       name: "MyNEARWallet",
       description: "Secure your account with a Seed Phrase",
-      redirectUrl: "https://testnet.mynearwallet.com/linkdrop/ACCOUNT_ID/SECRET_KEY",
+      redirectUrl: `https://${defaultNetwork}.mynearwallet.com/linkdrop/ACCOUNT_ID/SECRET_KEY`,
       iconUrl: "INSERT_ICON_URL_HERE",
     },
   ],
@@ -108,7 +108,7 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
         },
       }),
       setupKeypom({
-        networkId: "testnet",
+        networkId: defaultNetwork,
         signInContractId: LOGIC_CONTRACT_NAME,
         trialAccountSpecs: {
           url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
