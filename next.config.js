@@ -31,13 +31,13 @@ module.exports = {
 
     return config;
   },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/markets",
-        permanent: true,
-      },
-    ];
-  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: "/",
+  //       destination: "/markets",
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
