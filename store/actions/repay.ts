@@ -60,7 +60,7 @@ export async function repay({
     functionCalls.push({
       methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
       gas: new BN("10000000000000"),
-      attachedDeposit: new BN(toWrapAmount.toFixed(0)),
+      attachedDeposit: new BN(toWrapAmount.toFixed(0, 2)),
     });
   }
 
