@@ -56,27 +56,30 @@ export const UserLiquidity = () => {
     ? userNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
     : `$${m(userNetLiquidity)}`;
 
-  const userWeightedNetLiquidityValue = fullDigits?.user
-    ? weightedNetLiquidity.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(weightedNetLiquidity)}`;
+  const userWeightedNetLiquidityValue =
+    weightedNetLiquidity > 0 ? `$${m(weightedNetLiquidity)}` : "$0";
 
-  const userDepositedValue = fullDigits?.user
-    ? userDeposited.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(userDeposited)}`;
-
-  const userBorrowedValue = fullDigits?.user
-    ? userBorrowed.toLocaleString(undefined, COMPACT_USD_FORMAT)
-    : `$${m(userBorrowed)}`;
+  const userDepositedValue = userDeposited > 0 ? `$${m(userDeposited)}` : `$0`;
+  const userBorrowedValue = userBorrowed > 0 ? `$${m(userBorrowed)}` : "$0";
+  const showLabels = userDeposited > 0 || userBorrowed > 0;
 
   const netLiquidityLabels = [
     [
       {
         value: userDepositedValue,
-        text: "Deposited",
+        text: "Supplied",
+        valueStyle: {
+          color: "#D2FF3A",
+        },
       },
+    ],
+    [
       {
         value: userBorrowedValue,
         text: "Borrowed",
+        valueStyle: {
+          color: "#FF68A7",
+        },
       },
     ],
   ];
@@ -87,14 +90,12 @@ export const UserLiquidity = () => {
     setDigits({ user });
   };
 
-  const title = <Typography>Weighted Net Liquidity</Typography>;
-
   return (
     <Stat
-      title={title}
+      title="Weighted Net Liquidity"
       titleTooltip={`Your unweighted net liquidity is: ${userNetLiquidityValue}`}
       amount={userWeightedNetLiquidityValue}
-      labels={netLiquidityLabels}
+      labels={showLabels ? netLiquidityLabels : []}
       onClick={toggleValues}
     />
   );

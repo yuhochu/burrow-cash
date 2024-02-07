@@ -14,7 +14,7 @@ export async function deposit({
   useAsCollateral,
   isMax,
 }: {
-  amount: number;
+  amount: string;
   useAsCollateral: boolean;
   isMax: boolean;
 }) {

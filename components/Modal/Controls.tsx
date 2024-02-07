@@ -1,36 +1,47 @@
-import { Box } from "@mui/material";
-
-import Input from "../Input";
-import Slider from "../Slider";
+import Decimal from "decimal.js";
 import { updateAmount } from "../../redux/appSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { trackMaxButton } from "../../utils/telemetry";
+import { formatWithCommas_number } from "../../utils/uiNumber";
+import RangeSlider from "./RangeSlider";
+import TokenBox from "./TokenBox";
 
-export default function Controls({ amount, available, action, tokenId }) {
+export default function Controls({
+  amount,
+  available,
+  action,
+  tokenId,
+  asset,
+  totalAvailable,
+  available$,
+}) {
   const dispatch = useAppDispatch();
 
   const handleInputChange = (e) => {
-    if (Number(e.target.value) > available) return;
-    dispatch(updateAmount({ isMax: false, amount: e.target.value || 0 }));
+    const { value } = e.target;
+    const numRegex = /^([0-9]*\.?[0-9]*$)/;
+    if (!numRegex.test(value) || Number(value) > Number(available)) {
+      e.preventDefault();
+      return;
+    }
+    dispatch(updateAmount({ isMax: false, amount: value }));
   };
 
   const handleMaxClick = () => {
-    trackMaxButton({ amount: Number(available), action, tokenId });
-    dispatch(updateAmount({ isMax: true, amount: Number(available) }));
+    dispatch(updateAmount({ isMax: true, amount: available }));
   };
 
   const handleFocus = (e) => {
     e.target.select();
   };
 
-  const handleSliderChange = (e) => {
-    const { value: percent } = e.target;
-    const value = (Number(available) * percent) / 100;
-
+  const handleSliderChange = (percent) => {
+    const p = percent < 1 ? 0 : percent > 99 ? 100 : percent;
+    const value = new Decimal(available).mul(p).div(100).toFixed();
     dispatch(
       updateAmount({
-        isMax: value === Number(available),
-        amount: value,
+        isMax: p === 100,
+        amount: new Decimal(value || 0).toFixed(),
       }),
     );
   };
@@ -42,20 +53,33 @@ export default function Controls({ amount, available, action, tokenId }) {
     .replace(/(\..*)\./g, "$1")
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
-
   return (
-    <>
-      <Input
-        value={inputAmount}
-        type="number"
-        step="0.01"
-        onClickMax={handleMaxClick}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-      />
-      <Box mx="1.5rem" my="1rem">
-        <Slider value={sliderValue} onChange={handleSliderChange} />
-      </Box>
-    </>
+    <div>
+      {/* balance field */}
+      <div className="flex items-center justify-between text-sm text-gray-300 mb-3 px-1">
+        <span className="text-sm text-gray-300">Available</span>
+        <span className="flex items-center text-sm text-white">
+          {formatWithCommas_number(totalAvailable)}
+          <span className="text-xs text-gray-300 ml-2">({available$})</span>
+        </span>
+      </div>
+      {/* input field */}
+      <div className="flex items-center justify-between border border-dark-500 rounded-md bg-dark-600 h-[55px] p-3.5 pr-2 gap-3">
+        <div className="flex items-center flex-grow">
+          <input
+            type="number"
+            placeholder="0.0"
+            step="any"
+            value={inputAmount}
+            onChange={handleInputChange}
+            className="text-white noselect"
+          />
+        </div>
+        <TokenBox asset={asset} action={action} />
+      </div>
+      {/* Slider */}
+      <RangeSlider value={sliderValue} onChange={handleSliderChange} action={action} />
+      <div className="h-[1px] bg-dark-700 -mx-[20px] mt-14" />
+    </div>
   );
 }

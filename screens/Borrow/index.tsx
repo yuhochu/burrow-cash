@@ -19,7 +19,7 @@ const Borrow = () => {
     : defaultColumns;
 
   const handleOnRowClick = ({ tokenId }) => {
-    dispatch(showModal({ action: "Borrow", tokenId, amount: 0 }));
+    dispatch(showModal({ action: "Borrow", tokenId, amount: "0" }));
   };
 
   return (
@@ -32,7 +32,7 @@ const Borrow = () => {
         rows={rows}
         columns={columns}
         onRowClick={handleOnRowClick}
-        sorting={{ name: "borrow", ...sorting.borrow, setSorting }}
+        sorting={{ name: "borrow", ...sorting.market, setSorting }}
       />
     </Box>
   );

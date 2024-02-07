@@ -10,7 +10,15 @@ import { shrinkToken } from "../store/helper";
 import { getNetTvlAPY, getTotalNetTvlAPY } from "../redux/selectors/getNetAPY";
 import { useNonFarmedAssets } from "./hooks";
 
-export function useExtraAPY({ tokenId: assetId, isBorrow }) {
+export function useExtraAPY({
+  tokenId: assetId,
+  isBorrow,
+  onlyMarket,
+}: {
+  tokenId: string;
+  isBorrow: boolean | undefined;
+  onlyMarket?: boolean;
+}) {
   const [totalSupplyUSD, totalBorrowUSD] = useAppSelector(getTotalSupplyAndBorrowUSD(assetId));
   const { xBRRR, extraXBRRRAmount } = useAppSelector(getStaking);
   const portfolio = useAppSelector(getAccountPortfolio);
@@ -24,7 +32,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
 
   const netLiquidityAPY = hasNegativeNetLiquidity
     ? 0
-    : hasNetTvlFarms
+    : hasNetTvlFarms && !onlyMarket
     ? userNetTvlAPY
     : totalNetTvlApy;
 
@@ -54,8 +62,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
       .toNumber();
 
     const totalDeposits = isBorrow ? totalBorrowUSD : totalSupplyUSD;
-
-    if (!farmData)
+    if (!farmData || onlyMarket) {
       return (
         new Decimal(rewardsPerDay)
           .div(new Decimal(10).pow(decimals))
@@ -65,7 +72,7 @@ export function useExtraAPY({ tokenId: assetId, isBorrow }) {
           .mul(100)
           .toNumber() || 0
       );
-
+    }
     const { multiplier, totalBoostedShares, shares } = computePoolsDailyAmount(
       type,
       asset,

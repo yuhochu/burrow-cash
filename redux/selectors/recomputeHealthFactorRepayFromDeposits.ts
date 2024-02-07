@@ -6,7 +6,7 @@ import { expandTokenDecimal, MAX_RATIO } from "../../store";
 import { RootState } from "../store";
 import { hasAssets } from "../utils";
 import { getAdjustedSum } from "./getWithdrawMaxAmount";
-import { decimalMin } from "../../utils";
+import { decimalMax, decimalMin } from "../../utils";
 
 export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: number) =>
   createSelector(
@@ -15,7 +15,6 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
     (assets, account) => {
       if (!hasAssets(assets)) return 0;
       if (!account.portfolio || !tokenId || !account.portfolio.borrowed[tokenId]) return 0;
-
       const { metadata, config } = assets.data[tokenId];
       const decimals = metadata.decimals + config.extra_decimals;
 
@@ -24,23 +23,36 @@ export const recomputeHealthFactorRepayFromDeposits = (tokenId: string, amount: 
       const collateralBalance = new Decimal(account.portfolio.collateral[tokenId]?.balance || "0");
       const suppliedBalance = new Decimal(account.portfolio.supplied[tokenId]?.balance || "0");
 
-      const newWithdrawBalance = decimalMin(
-        collateralBalance,
-        collateralBalance.plus(suppliedBalance).minus(amountDecimal),
+      const newWithdrawBalance = decimalMax(
+        0,
+        decimalMin(collateralBalance, collateralBalance.plus(suppliedBalance).minus(amountDecimal)),
       );
 
       const borrowedBalance = new Decimal(account.portfolio.borrowed[tokenId].balance);
-      const newBorrowedBalance = borrowedBalance.minus(amountDecimal);
+      const newBorrowedBalance = decimalMax(0, borrowedBalance.minus(amountDecimal));
 
       const clonedAccount = clone(account);
 
       clonedAccount.portfolio.borrowed[tokenId].balance = newBorrowedBalance.toFixed();
 
       if (config.can_use_as_collateral) {
-        clonedAccount.portfolio.collateral[tokenId].balance = newWithdrawBalance.toFixed();
+        if (clonedAccount.portfolio.collateral[tokenId]) {
+          clonedAccount.portfolio.collateral[tokenId].balance = newWithdrawBalance.toFixed();
+        } else {
+          const updatedToken = {
+            balance: newWithdrawBalance.toFixed(),
+            shares: newWithdrawBalance.toFixed(),
+            apr: "0",
+          };
+          clonedAccount.portfolio.collateral[tokenId] = updatedToken;
+        }
       }
 
-      const adjustedCollateralSum = getAdjustedSum("collateral", account.portfolio, assets.data);
+      const adjustedCollateralSum = getAdjustedSum(
+        "collateral",
+        clonedAccount.portfolio,
+        assets.data,
+      );
       const adjustedBorrowedSum = getAdjustedSum("borrowed", clonedAccount.portfolio, assets.data);
 
       const healthFactor = adjustedCollateralSum.div(adjustedBorrowedSum).mul(100).toNumber();

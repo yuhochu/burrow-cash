@@ -94,6 +94,7 @@ export interface IAssetDetailed {
   farms: IAssetFarmView[];
   // price mixin
   price?: IPrice;
+  prot_fee: string;
 }
 
 export interface AssetFarm {
@@ -157,8 +158,12 @@ export interface UIAsset {
   totalSupply$: string;
   totalSupplyMoney: number;
   borrowApy: number;
+  totalBorrowed: number;
+  totalBorrowed$: string;
+  totalBorrowedMoney: number;
   availableLiquidity: number;
   availableLiquidity$: string;
+  availableLiquidityMoney: number;
   collateralFactor: string;
   canUseAsCollateral: boolean;
   supplied: number;
@@ -167,9 +172,12 @@ export interface UIAsset {
   borrowed: number;
   availableNEAR: number;
   available: number;
+  decimals: number;
   extraDecimals: number;
   brrrBorrow: number;
   brrrSupply: number;
   depositRewards: IReward[];
   borrowRewards: IReward[];
+  can_borrow: boolean;
+  can_deposit: boolean;
 }

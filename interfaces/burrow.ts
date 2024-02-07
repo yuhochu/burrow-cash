@@ -45,6 +45,7 @@ export interface IBurrow {
     | IConfig
     | NetTvlFarm
     | string
+    | boolean
   >;
   call: (
     contract: Contract,

@@ -25,8 +25,13 @@ import {
   executeMultipleTransactions,
   FunctionCallOptions,
   isRegistered,
+  isRegisteredNew,
   Transaction,
 } from "./wallet";
+
+import getConfig from "../utils/config";
+
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 
 Decimal.set({ precision: DEFAULT_PRECISION });
 
@@ -108,10 +113,39 @@ export const prepareAndExecuteTokenTransactions = async (
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    functionCalls.push({
-      methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-      attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
-    });
+    if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
+      const r = await isRegisteredNew(account.accountId, tokenContract);
+      if (r) {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+              attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+            },
+          ],
+        });
+      } else {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
+              gas: new BN("10000000000000"),
+              args: {
+                account_id: account.accountId,
+              },
+              attachedDeposit: new BN(0),
+            },
+          ],
+        });
+      }
+    } else {
+      functionCalls.push({
+        methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+        attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+      });
+    }
   }
 
   if (functionCall) {

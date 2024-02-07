@@ -5,13 +5,13 @@ import Table from "../../components/Table";
 import { suppliedColumns, borrowedColumns } from "./tabledata";
 import { useAccountId, usePortfolioAssets } from "../../hooks/hooks";
 import { useTableSorting } from "../../hooks/useTableSorting";
+import { IPortfolioAsset } from "../../interfaces";
 
 const Portfolio = () => {
-  const [suppliedRows, borrowedRows] = usePortfolioAssets();
+  const [suppliedRows, borrowedRows] = usePortfolioAssets() as IPortfolioAsset[][];
   const { sorting, setSorting } = useTableSorting();
   const accountId = useAccountId();
   const theme = useTheme();
-
   return (
     <Box pb="2.5rem" display="grid" justifyContent="center">
       {!accountId && <OnboardingBRRR />}

@@ -7,6 +7,7 @@ import type { AccountState } from "./accountState";
 import type { AppState } from "./appSlice";
 import { UIAsset } from "../interfaces";
 import { BRRR_TOKEN, defaultNetwork } from "../utils/config";
+import { standardizeAsset } from "../utils";
 
 export const sumReducer = (sum: number, a: number) => sum + a;
 
@@ -58,21 +59,26 @@ export const transformAsset = (
   const brrrTokenId = app.config.booster_token_id;
   const totalSupplyD = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
+    .plus(asset.prot_fee)
     .toFixed();
-
+  const totalBorrowedD = new Decimal(asset.borrowed.balance).toFixed();
   const totalSupply = Number(
     shrinkToken(totalSupplyD, asset.metadata.decimals + asset.config.extra_decimals),
   );
+  const totalBorrowed = Number(
+    shrinkToken(totalBorrowedD, asset.metadata.decimals + asset.config.extra_decimals),
+  );
 
-  // TODO: refactor: remove temp vars using ramda
   const temp1 = new Decimal(asset.supplied.balance)
     .plus(new Decimal(asset.reserved))
+    .plus(asset.prot_fee)
     .minus(new Decimal(asset.borrowed.balance));
   const temp2 = temp1.minus(temp1.mul(0.001)).toFixed(0);
   const availableLiquidity = Number(
     shrinkToken(temp2, asset.metadata.decimals + asset.config.extra_decimals),
   );
   const availableLiquidity$ = toUsd(temp2, asset).toLocaleString(undefined, USD_FORMAT);
+  const availableLiquidityMoney = toUsd(temp2, asset);
 
   let accountAttrs = {
     supplied: 0,
@@ -84,7 +90,6 @@ export const transformAsset = (
     extraDecimals: 0,
   };
 
-  // TODO: refactor this without conditional
   if (account.accountId) {
     const decimals = asset.metadata.decimals + asset.config.extra_decimals;
 
@@ -108,18 +113,21 @@ export const transformAsset = (
       extraDecimals: asset.config.extra_decimals,
     };
   }
-
-  return {
+  return standardizeAsset({
     tokenId,
-    ...pick(["icon", "symbol", "name"], asset.metadata),
+    ...pick(["icon", "symbol", "name", "decimals"], asset.metadata),
     price: asset.price ? asset.price.usd : 0,
     supplyApy: Number(asset.supply_apr) * 100,
     totalSupply,
     totalSupply$: toUsd(totalSupplyD, asset).toLocaleString(undefined, USD_FORMAT),
     totalSupplyMoney: toUsd(totalSupplyD, asset),
+    totalBorrowed,
+    totalBorrowed$: toUsd(totalBorrowedD, asset).toLocaleString(undefined, USD_FORMAT),
+    totalBorrowedMoney: toUsd(totalBorrowedD, asset),
     borrowApy: Number(asset.borrow_apr) * 100,
     availableLiquidity,
     availableLiquidity$,
+    availableLiquidityMoney,
     collateralFactor: `${Number(asset.config.volatility_ratio / 100)}%`,
     canUseAsCollateral: asset.config.can_use_as_collateral,
     ...accountAttrs,
@@ -137,7 +145,9 @@ export const transformAsset = (
     ),
     depositRewards: getRewards("supplied", asset, assets),
     borrowRewards: getRewards("borrowed", asset, assets),
-  };
+    can_borrow: asset.config.can_borrow,
+    can_deposit: asset.config.can_deposit,
+  });
 };
 
 export const getRewards = (action: "supplied" | "borrowed", asset: Asset, assets: Assets) => {

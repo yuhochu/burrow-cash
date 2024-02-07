@@ -1,7 +1,6 @@
 import { isValidElement } from "react";
 import { Box, Stack, ButtonGroup, Button, Typography, Tooltip, useTheme } from "@mui/material";
-import { MdInfoOutline } from "@react-icons/all-files/md/MdInfoOutline";
-
+import ReactToolTip from "../../ToolTip";
 import { useAccountId } from "../../../hooks/hooks";
 import { useStatsToggle } from "../../../hooks/useStatsToggle";
 import TokenIcon from "../../TokenIcon";
@@ -80,96 +79,70 @@ export const Stat = ({
   onClick,
 }: {
   title: string | React.ReactElement;
-  titleTooltip?: string | React.ReactElement;
+  titleTooltip?: string;
   amount: string;
   tooltip?: string;
   labels?: any;
   onClick?: () => void;
 }) => {
-  const renderLabel = (label, key) => (
-    <Label
-      key={key}
-      ml={label.icon ? "10px" : 0}
-      bgcolor={getColor(label.color).bgcolor}
-      tooltip={label.tooltip}
-    >
-      {label.icon && (
-        <Box position="absolute" top="0" left="-10px" borderRadius={19} border="0.5px solid white">
-          <TokenIcon width={19} height={19} icon={label.icon} />
-        </Box>
-      )}
-      <Box
-        component="span"
-        color={getColor(label.color).color}
-        fontWeight={600}
-        pl={label.icon ? "10px" : 0}
-      >
-        {label.value}
-      </Box>
-      <Box component="span" fontWeight={400}>
-        {label.text}
-      </Box>
-    </Label>
-  );
-
   return (
-    <Stack onClick={() => onClick && onClick()} sx={{ cursor: onClick ? "pointer" : "inherit" }}>
-      <Stack height={40} justifyContent="end">
-        <Tooltip
-          title={titleTooltip}
-          placement="top"
-          arrow
-          componentsProps={{
-            tooltip: { style: { backgroundColor: "rgba(255,255,255,0.1)" } },
-            arrow: { style: { color: "rgba(255,255,255,0.1)" } },
-          }}
-        >
-          <Stack direction="row" alignItems="end" width="max-content">
-            {typeof title === "string" ? (
-              <Typography color="#F8F9FF" fontSize="0.875rem">
-                {title}
-              </Typography>
-            ) : (
-              title
-            )}
-            {titleTooltip && (
-              <MdInfoOutline
-                style={{
-                  marginLeft: "3px",
-                  color: "white",
-                  position: "relative",
-                  top: "-6px",
-                }}
-              />
-            )}
-          </Stack>
-        </Tooltip>
-      </Stack>
+    <div onClick={() => onClick && onClick()} style={{ minHeight: 81 }} className="md:w-[351px]">
+      <div className="flex items-center gap-1">
+        {typeof title === "string" ? <div className="h6 text-gray-300">{title}</div> : title}
+        {titleTooltip && <ReactToolTip content={titleTooltip} />}
+      </div>
       <Tooltip title={tooltip} placement="top" arrow>
-        <Typography
-          sx={{
-            fontSize: "3rem",
-            lineHeight: "4.5rem",
-            fontWeight: "semibold",
-          }}
-        >
-          {amount}
-        </Typography>
+        <div className="h2 my-1">{amount}</div>
       </Tooltip>
       {labels && (
         <Stack direction="row" gap="4px" flexWrap="wrap">
           {isValidElement(labels) ? (
             <Label>{labels}</Label>
           ) : (
-            labels.map((row, key) => (
-              <Stack direction="row" flexWrap="wrap" gap="4px" key={key}>
-                {row.map(renderLabel)}
-              </Stack>
-            ))
+            labels?.map((row, i) => {
+              const firstData = row[0];
+              if (!firstData) return null;
+              return (
+                <div
+                  className="flex gap-1 items-start flex-col md:flex-row md:flex-wrap"
+                  key={`${firstData.text}${i}`}
+                >
+                  <div
+                    className="flex md:items-center gap-2 h6 rounded md:rounded-[21px] bg-dark-100 truncate"
+                    style={{ padding: "3px 6px 5px" }}
+                  >
+                    <div style={firstData.textStyle} className="h6 text-gray-300">
+                      {firstData.text}
+                    </div>
+                    <div className="flex flex-col gap-1 md:flex-row">
+                      {row?.map((d) => {
+                        if (!d.value) {
+                          return null;
+                        }
+                        return (
+                          <div
+                            style={d.valueStyle}
+                            className="flex items-center gap-1"
+                            key={`${d.text}${d.value}`}
+                          >
+                            {d.icon && (
+                              <div>
+                                <TokenIcon width={15} height={15} icon={d.icon} />
+                              </div>
+                            )}
+                            {d.value}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
           )}
         </Stack>
       )}
-    </Stack>
+    </div>
   );
 };
 

@@ -1,11 +1,27 @@
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getAvailableAssets, isAssetsLoading } from "../redux/assetsSelectors";
 import { getAccountId, getHasNonFarmedAssets, isAccountLoading } from "../redux/accountSelectors";
 import { getPortfolioAssets } from "../redux/selectors/getPortfolioAssets";
-import { getConfig, getSlimStats, getDegenMode, getTheme } from "../redux/appSelectors";
-import { setRepayFrom, toggleDegenMode, setTheme } from "../redux/appSlice";
+import {
+  getConfig,
+  getSlimStats,
+  getDegenMode,
+  getTheme,
+  getUnreadLiquidation,
+  getToastMessage,
+} from "../redux/appSelectors";
+import {
+  setRepayFrom,
+  toggleDegenMode,
+  setTheme,
+  setUnreadLiquidation,
+  setToastMessage,
+} from "../redux/appSlice";
 import { getViewAs } from "../utils";
 import { getWeightedAssets, getWeightedNetLiquidity } from "../redux/selectors/getAccountRewards";
+import { getLiquidations } from "../api/get-liquidations";
+import { useDidUpdateEffect } from "./useDidUpdateEffect";
 
 export function useLoading() {
   const isLoadingAssets = useAppSelector(isAssetsLoading);
@@ -44,8 +60,9 @@ export function useNonFarmedAssets() {
   return { hasNonFarmedAssets, weightedNetLiquidity, hasNegativeNetLiquidity, assets };
 }
 
-export function useAvailableAssets(type: "supply" | "borrow") {
-  return useAppSelector(getAvailableAssets(type));
+export function useAvailableAssets(type?: "supply" | "borrow" | "") {
+  const rows = useAppSelector(getAvailableAssets(type));
+  return rows;
 }
 
 export function usePortfolioAssets() {
@@ -78,4 +95,39 @@ export function useDarkMode() {
   };
 
   return { toggle, theme, isDark: theme === "dark" };
+}
+
+export function useUnreadLiquidation() {
+  const unreadLiquidation = useAppSelector(getUnreadLiquidation);
+  const accountId = useAccountId();
+  const dispatch = useAppDispatch();
+
+  const fetchUnreadLiquidation = async () => {
+    try {
+      const { liquidationData } = await getLiquidations(accountId, 1, 1);
+      if (liquidationData?.unread !== undefined) {
+        dispatch(
+          setUnreadLiquidation({
+            count: liquidationData.unread,
+            unreadIds: unreadLiquidation?.unreadIds || [],
+          }),
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return { unreadLiquidation, fetchUnreadLiquidation };
+}
+
+export function useToastMessage() {
+  const toastMessage = useAppSelector(getToastMessage);
+  const dispatch = useAppDispatch();
+
+  const showToast = (message) => {
+    dispatch(setToastMessage(message));
+  };
+
+  return { toastMessage, showToast };
 }

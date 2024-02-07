@@ -7,7 +7,6 @@ import {
   ListItem,
   Button,
   Box,
-  Checkbox,
   FormControlLabel,
   useTheme,
 } from "@mui/material";
@@ -16,6 +15,7 @@ import { useDisclaimer } from "../../hooks/useDisclaimer";
 
 import { trackConnectWallet } from "../../utils/telemetry";
 import { CloseButton } from "../Modal/components";
+import { CheckBoxCustom } from "./svg";
 
 export default function Disclaimer({ isOpen = false, onClose }) {
   const [checked1, setChecked1] = useState(false);
@@ -34,36 +34,56 @@ export default function Disclaimer({ isOpen = false, onClose }) {
     <Modal open={isOpen} onClose={onClose}>
       <Box
         bgcolor={theme.palette.background.paper}
-        p="2rem"
-        m="2rem"
         borderRadius="0.5rem"
+        className="p-6"
         width={{ small: "100%", md: "460px" }}
         position="relative"
-        color={theme.palette.info.main}
+        color="#C0C4E9"
         sx={{
           display: "flex",
           flexDirection: "column",
           mx: "auto",
-          maxHeight: "90vh",
+          maxHeight: "680px",
+          height: "70vh",
           overflow: "hidden",
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
             display: "none",
+          },
+          border: "1px solid #4F5178",
+          [theme.breakpoints.down("sm")]: {
+            position: "absolute",
+            bottom: "0px",
+            margin: "0px",
+          },
+          [theme.breakpoints.up("sm")]: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
           },
           scrollbarWidth: "none",
         }}
       >
         <CloseButton onClose={onClose} />
-        <Typography variant="h5" component="h5">
+        <Typography
+          variant="h5"
+          component="h5"
+          style={{ color: "#fff", fontSize: "18px", fontWeight: "500" }}
+        >
           Disclaimer
         </Typography>
-        <Box sx={{ overflow: "scroll" }}>
+        <Box sx={{ overflow: "scroll", marginTop: "30px" }}>
           <FormControlLabel
             control={
-              <Checkbox sx={{ mt: 1 }} checked={checked1} onClick={() => setChecked1(!checked1)} />
+              <CheckBoxCustom
+                checked={checked1}
+                onClick={() => setChecked1(!checked1)}
+                className="flex flex-shrink-0 mr-3 relative top-0.5"
+              />
             }
-            sx={{ display: "flex", alignItems: "flex-start" }}
+            sx={{ display: "flex", alignItems: "flex-start", marginLeft: "0px" }}
             label={
-              <Typography mt="1rem" fontSize="0.75rem">
+              <Typography fontSize="0.75rem">
                 I have read and understood the{" "}
                 <NextLink href="/declaration" passHref>
                   <Link href="/declaration" target="_blank">
@@ -77,11 +97,15 @@ export default function Disclaimer({ isOpen = false, onClose }) {
           />
           <FormControlLabel
             control={
-              <Checkbox sx={{ mt: 1 }} checked={checked2} onClick={() => setChecked2(!checked2)} />
+              <CheckBoxCustom
+                checked={checked2}
+                onClick={() => setChecked2(!checked2)}
+                className="flex flex-shrink-0 mr-3 relative top-0.5"
+              />
             }
-            sx={{ display: "flex", alignItems: "flex-start" }}
+            sx={{ display: "flex", alignItems: "flex-start", marginLeft: "0px", marginTop: "30px" }}
             label={
-              <Typography mt="1rem" fontSize="0.75rem">
+              <Typography fontSize="0.75rem">
                 I acknowledge and agree that the Site solely provides information about data on the{" "}
                 <Link href="https://near.org" target="_blank">
                   NEAR blockchain
@@ -102,6 +126,7 @@ export default function Disclaimer({ isOpen = false, onClose }) {
             sx={{
               listStyleType: "disc",
               pl: 2,
+              pt: "0px",
               "& .MuiListItem-root": {
                 display: "list-item",
                 p: 0,
@@ -144,13 +169,30 @@ export default function Disclaimer({ isOpen = false, onClose }) {
         <Box display="flex" justifyContent="center" flexDirection="column">
           <Button
             variant="contained"
-            sx={{ mx: "2rem", my: "1rem" }}
+            sx={{
+              mx: "0",
+              my: "1rem",
+              color: "#000",
+              fontSize: "16px",
+              textTransform: "none",
+              ":hover": { backgroundColor: "#D2FF3A" },
+              ":disabled": { color: "#6D708D", backgroundColor: "#565874" },
+            }}
             disabled={!checked1 || !checked2}
             onClick={handleAgree}
           >
             Agree & Confirm
           </Button>
-          <Typography fontSize="0.625rem" textAlign="center" mx="4rem">
+          <Typography
+            fontSize="0.625rem"
+            textAlign="center"
+            mx="4rem"
+            sx={{
+              [theme.breakpoints.down("sm")]: {
+                margin: "10px",
+              },
+            }}
+          >
             By clicking this button you acknowledge and agree to all statements in this disclaimer.
           </Typography>
         </Box>

@@ -5,6 +5,9 @@ import { Transaction as SelectorTransaction } from "@near-wallet-selector/core";
 import { getBurrow } from "../utils";
 import { ViewMethodsLogic } from "../interfaces/contract-methods";
 import { Balance } from "../interfaces";
+import getConfig from "../utils/config";
+
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 
 export interface Transaction {
   receiverId: string;
@@ -65,10 +68,37 @@ export const executeMultipleTransactions = async (transactions) => {
 
 export const isRegistered = async (account_id: string, contract: Contract): Promise<boolean> => {
   const { view } = await getBurrow();
-
-  const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
-    account_id,
-  })) as Balance;
-
-  return balance && balance?.total !== "0";
+  if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(contract.contractId)) {
+    try {
+      const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+        account_id,
+      })) as Balance;
+      return balance && balance?.total !== "0";
+    } catch (error) {
+      const registration = (await view(
+        contract,
+        ViewMethodsLogic[ViewMethodsLogic.check_registration],
+        {
+          account_id,
+        },
+      )) as boolean;
+      return registration;
+    }
+  } else {
+    const balance = (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+      account_id,
+    })) as Balance;
+    return balance && balance?.total !== "0";
+  }
+};
+export const isRegisteredNew = async (account_id: string, contract: Contract): Promise<boolean> => {
+  const { view } = await getBurrow();
+  try {
+    (await view(contract, ViewMethodsLogic[ViewMethodsLogic.storage_balance_of], {
+      account_id,
+    })) as Balance;
+    return true;
+  } catch (error) {
+    return false;
+  }
 };

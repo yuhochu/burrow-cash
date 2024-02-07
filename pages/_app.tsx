@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
@@ -9,6 +9,8 @@ import posthogJs from "posthog-js";
 import { useIdle, useInterval } from "react-use";
 
 import "../styles/global.css";
+import LoadingBar from "react-top-loading-bar";
+import { useRouter } from "next/router";
 import { store, persistor } from "../redux/store";
 import { FallbackError, Layout, Modal } from "../components";
 import { posthog, isPostHogEnabled } from "../utils/telemetry";
@@ -16,6 +18,7 @@ import { useAppDispatch } from "../redux/hooks";
 import { fetchAssets, fetchRefPrices } from "../redux/assetsSlice";
 import { fetchAccount } from "../redux/accountSlice";
 import { fetchConfig } from "../redux/appSlice";
+import { ToastMessage } from "../components/ToastMessage";
 
 const SENTRY_ORG = process.env.NEXT_PUBLIC_SENTRY_ORG as string;
 const SENTRY_PID = process.env.NEXT_PUBLIC_SENTRY_PID as unknown as number;
@@ -58,8 +61,24 @@ const Init = () => {
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const [progress, setProgress] = useState(0);
+  const router = useRouter();
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setProgress(30);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setProgress(100);
+    });
+  }, []);
   return (
     <ErrorBoundary fallback={FallbackError}>
+      <LoadingBar
+        color="#D2FF3A"
+        height={3}
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Head>
@@ -69,6 +88,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <Layout>
             <Init />
             <Modal />
+            <ToastMessage />
             <Component {...pageProps} />
           </Layout>
         </PersistGate>

@@ -14,11 +14,15 @@ export async function repay({
   amount,
   extraDecimals,
   isMax,
+  minRepay,
+  interestChargedIn1min,
 }: {
   tokenId: string;
-  amount: number;
+  amount: string;
   extraDecimals: number;
   isMax: boolean;
+  minRepay: string;
+  interestChargedIn1min: string;
 }) {
   const { account, logicContract } = await getBurrow();
   const tokenContract = await getTokenContract(tokenId);
@@ -32,8 +36,11 @@ export async function repay({
   );
 
   const extraDecimalMultiplier = expandTokenDecimal(1, extraDecimals);
-
-  const tokenBorrowedBalance = borrowedBalance.divToInt(extraDecimalMultiplier);
+  // TODO
+  const tokenBorrowedBalance = Decimal.max(
+    borrowedBalance.divToInt(extraDecimalMultiplier).plus(interestChargedIn1min),
+    minRepay,
+  );
 
   const tokenBalance = new Decimal(await getBalance(tokenId, account.accountId));
   const accountBalance = decimalMax(
@@ -43,7 +50,6 @@ export async function repay({
 
   const maxAvailableBalance = isNEAR ? tokenBalance.add(accountBalance) : tokenBalance;
   const maxAmount = decimalMin(tokenBorrowedBalance, maxAvailableBalance);
-
   const expandedAmountToken = isMax
     ? maxAmount
     : decimalMin(maxAmount, expandTokenDecimal(amount, decimals));
@@ -54,7 +60,7 @@ export async function repay({
     functionCalls.push({
       methodName: ChangeMethodsNearToken[ChangeMethodsNearToken.near_deposit],
       gas: new BN("10000000000000"),
-      attachedDeposit: new BN(toWrapAmount.toFixed(0)),
+      attachedDeposit: new BN(toWrapAmount.toFixed(0, 2)),
     });
   }
 

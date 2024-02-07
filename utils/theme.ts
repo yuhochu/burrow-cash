@@ -8,7 +8,7 @@ const palette = {
   light: {
     mode: "light",
     primary: {
-      main: "#47C880",
+      main: "#D2FF3A",
       light: "#D5EFE6",
     },
     secondary: {
@@ -20,13 +20,13 @@ const palette = {
     },
     background: {
       default: "#F8F9FF",
-      paper: "#fff",
+      paper: "#2E304B",
     },
   },
   dark: {
     mode: "light",
     primary: {
-      main: "#47C880",
+      main: "#D2FF3A",
       light: "#000",
     },
     secondary: {
@@ -34,11 +34,11 @@ const palette = {
       light: "#3F4361",
     },
     info: {
-      main: "#c1c2ce",
+      main: "#C0C4E9",
     },
     background: {
       default: "#1A3632",
-      paper: "#1A1E3A",
+      paper: "#2E304B",
     },
   },
 };
@@ -66,10 +66,9 @@ declare module "@mui/material/styles" {
 
 const custom = {
   light: {
-    headerBackground:
-      "linear-gradient(225deg, rgba(255, 219, 211, 1) 0%, rgba(79, 141, 199, 1) 100%)",
-    pageBackground: "linear-gradient(239.61deg, #FBFAFA 0%, #EDF4F9 101.74%)",
-    footerText: "#7f83a0",
+    headerBackground: "#14162B",
+    pageBackground: "#14162B",
+    footerText: "#C0C4E9",
     footerIcon: "#000",
     text: "#000",
     textStaking: "#232323",
@@ -83,13 +82,13 @@ const custom = {
     stakingCardBg: "#fff",
   },
   dark: {
-    headerBackground: "linear-gradient(225deg, rgba(0, 36, 25, 1) 0%, rgba(0, 4, 36, 1) 100%)",
-    pageBackground: "linear-gradient(239.61deg, #1A3732 0%, #1A1E3A 101.74%)",
-    footerText: "#7f83a0",
+    headerBackground: "#14162B",
+    pageBackground: "#14162B",
+    footerText: "#C0C4E9",
     footerIcon: "#7f83a0",
     text: "#fff",
     textStaking: "#fff",
-    background: "#000424",
+    background: "#14162B",
     backgroundStaking: "#31344E",
     notConnectedBg: "rgba(0,0,0,0.85)",
     scrollbarBg: "rgba(0,0,0,0.5)",
@@ -104,9 +103,9 @@ export const themeOptions = (theme: ITheme) => ({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 600,
-      md: 1080,
-      lg: 1200,
+      sm: 640,
+      md: 768,
+      lg: 1024,
       xl: 1536,
     },
   },

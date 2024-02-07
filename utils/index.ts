@@ -3,6 +3,7 @@ import BN from "bn.js";
 import Decimal from "decimal.js";
 
 import { defaultNetwork, LOGIC_CONTRACT_NAME } from "./config";
+import { nearMetadata, wooMetadata } from "../components/Assets";
 
 import {
   ChangeMethodsLogic,
@@ -14,11 +15,16 @@ import { IBurrow, IConfig } from "../interfaces/burrow";
 import { getContract } from "../store";
 
 import { getWalletSelector, getAccount, functionCall } from "./wallet-selector-compat";
+import { UIAsset } from "../interfaces";
 
 export const getViewAs = () => {
-  const url = new URL(window.location.href.replace("/#", ""));
-  const searchParams = new URLSearchParams(url.search);
-  return searchParams.get("viewAs");
+  if (window.location.href.includes("#instant-url")) {
+    return null;
+  } else {
+    const url = new URL(window.location.href.replace("/#", ""));
+    const searchParams = new URLSearchParams(url.search);
+    return searchParams.get("viewAs");
+  }
 };
 
 interface GetBurrowArgs {
@@ -29,10 +35,12 @@ interface GetBurrowArgs {
 
 let selector;
 let burrow: IBurrow;
-let resetBurrow = true;
+// let resetBurrow = true;
 let fetchDataCached;
 let hideModalCached;
 let signOutCached;
+
+export const nearNativeTokens = ["wrap.near", "wrap.testnet"];
 
 const nearTokenIds = {
   mainnet: "wrap.near",
@@ -57,9 +65,8 @@ export const getBurrow = async ({
     });
     return getBurrowInternal();
   };
-
-  if (!resetBurrow) return getBurrowInternal();
-  resetBurrow = false;
+  // if (!resetBurrow) return getBurrowInternal();
+  // resetBurrow = false;
 
   const changeAccount = async (accountId) => {
     if (fetchData) fetchData(accountId);
@@ -70,7 +77,6 @@ export const getBurrow = async ({
       onAccountChange: changeAccount,
     });
   }
-
   const account = await getAccount(getViewAs());
 
   if (!fetchDataCached && !!fetchData) fetchDataCached = fetchData;
@@ -83,7 +89,7 @@ export const getBurrow = async ({
         console.error("Failed to sign out", err);
       });
       if (hideModal) hideModal();
-      signOut();
+      signOut(); // position
     };
   const signIn = () => selector.signIn();
 
@@ -110,7 +116,6 @@ export const getBurrow = async ({
     }
   };
 
-  /// TODO is this deprecated???
   const call = async (
     contract: Contract,
     methodName: string,
@@ -184,7 +189,7 @@ export async function initContract(): Promise<IBurrow> {
 
 export function accountTrim(accountId: string) {
   return accountId && accountId.length > 14 + 14 + 1
-    ? `${accountId.slice(0, 8)}...${accountId.slice(-8)}`
+    ? `${accountId.slice(0, 6)}...${accountId.slice(-6)}`
     : accountId;
 }
 
@@ -211,4 +216,15 @@ export function decimalMin(a: string | number | Decimal, b: string | number | De
   a = new Decimal(a);
   b = new Decimal(b);
   return a.lt(b) ? a : b;
+}
+
+export function standardizeAsset(asset) {
+  if (asset.symbol === "wNEAR") {
+    asset.symbol = nearMetadata.symbol;
+    asset.icon = nearMetadata.icon;
+  }
+  if (asset.symbol === "WOO") {
+    asset.icon = wooMetadata.icon;
+  }
+  return asset;
 }

@@ -24,6 +24,7 @@ export interface AppState {
     enabled: boolean;
     repayFromDeposits: boolean;
   };
+  toastMessage: string;
   showModal: boolean;
   showInfo: boolean;
   protocolStats: boolean;
@@ -42,7 +43,7 @@ export interface AppState {
     action?: TokenAction;
     tokenId: string;
     useAsCollateral: boolean;
-    amount: number;
+    amount: string;
     isMax: boolean;
   };
   staking: {
@@ -50,20 +51,28 @@ export interface AppState {
     months: number;
   };
   tableSorting: {
-    deposit: ITableSorting;
-    borrow: ITableSorting;
+    market: ITableSorting;
     portfolioDeposited: ITableSorting;
     portfolioBorrowed: ITableSorting;
   };
   config: IConfig;
+  unreadLiquidation: {
+    count: number;
+    unreadIds: [];
+  };
 }
 
 export const initialState: AppState = {
   isBlocked: {},
   theme: "light",
+  unreadLiquidation: {
+    count: 0,
+    unreadIds: [],
+  },
+  toastMessage: "",
   disclaimerAgreed: false,
   degenMode: {
-    enabled: false,
+    enabled: true,
     repayFromDeposits: false,
   },
   showModal: false,
@@ -84,7 +93,7 @@ export const initialState: AppState = {
     action: undefined,
     tokenId: "",
     useAsCollateral: false,
-    amount: 0,
+    amount: "0",
     isMax: false,
   },
   staking: {
@@ -92,12 +101,8 @@ export const initialState: AppState = {
     months: 1,
   },
   tableSorting: {
-    deposit: {
-      property: "totalSupplyMoney",
-      order: "desc" as IOrder,
-    },
-    borrow: {
-      property: "borrowed",
+    market: {
+      property: "totalSupply",
       order: "desc" as IOrder,
     },
     portfolioDeposited: {
@@ -138,12 +143,12 @@ export const appSlice = createSlice({
     },
     showModal(
       state,
-      action: PayloadAction<{ action: TokenAction; amount: number; tokenId: string }>,
+      action: PayloadAction<{ action: TokenAction; amount: string; tokenId: string }>,
     ) {
       state.selected = { ...state.selected, isMax: false, ...action.payload };
       state.showModal = true;
     },
-    updateAmount(state, action: PayloadAction<{ amount: number; isMax: boolean }>) {
+    updateAmount(state, action: PayloadAction<{ amount: string; isMax: boolean }>) {
       state.selected.amount = action.payload.amount;
       state.selected.isMax = action.payload.isMax;
     },
@@ -191,7 +196,7 @@ export const appSlice = createSlice({
       };
       state.selected = {
         ...state.selected,
-        amount: 0,
+        amount: "0",
       };
     },
     setDisclaimerAggreed(state, action) {
@@ -203,6 +208,12 @@ export const appSlice = createSlice({
     },
     setTheme(state, action) {
       state.theme = action.payload;
+    },
+    setUnreadLiquidation(state, action) {
+      state.unreadLiquidation = action.payload;
+    },
+    setToastMessage(state, action) {
+      state.toastMessage = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -232,6 +243,8 @@ export const {
   setDisclaimerAggreed,
   setBlocked,
   setTheme,
+  setUnreadLiquidation,
+  setToastMessage,
 } = appSlice.actions;
 
 export default appSlice.reducer;

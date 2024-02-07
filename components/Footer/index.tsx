@@ -1,34 +1,40 @@
-import { Link, Divider, Box, useTheme, Typography } from "@mui/material";
+import { Link, Box, useTheme, Typography } from "@mui/material";
 import NextLink from "next/link";
-
-import { FaDiscord } from "@react-icons/all-files/fa/FaDiscord";
-import { FaTwitter } from "@react-icons/all-files/fa/FaTwitter";
-import { FaMedium } from "@react-icons/all-files/fa/FaMedium";
-import { FaGithub } from "@react-icons/all-files/fa/FaGithub";
-
-import Logo from "./logo.svg";
-import Gitbook from "../../public/GitBook.svg";
-import { Wrapper, CopyWrapper, LinksWrapper, LogoWrapper, Copyright } from "./style";
+import { TwitterIcon, DiscordIcon, MediumIcon } from "./svg";
+import { Wrapper, CopyWrapper, LinksWrapper } from "./style";
+import { isMobileDevice } from "../../helpers/helpers";
 
 const Footer = () => {
-  const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
     <Wrapper>
-      <CopyWrapper>
-        <LogoWrapper>
-          <Logo />
-        </LogoWrapper>
-        <Copyright variant="h6" color={theme.custom.footerText}>
-          © 2022 All Rights Reserved.
-        </Copyright>
-        <LinksWrapper>
-          <Declaration />
-        </LinksWrapper>
-      </CopyWrapper>
-      <LinksWrapper>
-        <BugBounty />
-        <Links />
-      </LinksWrapper>
+      {isMobile ? (
+        <>
+          <CopyWrapper>
+            <Github />
+            <BugBounty />
+            <LinksWrapper>
+              <Declaration />
+            </LinksWrapper>
+          </CopyWrapper>
+          <LinksWrapper>
+            <Links />
+          </LinksWrapper>
+        </>
+      ) : (
+        <>
+          <CopyWrapper>
+            <LinksWrapper>
+              <Declaration />
+            </LinksWrapper>
+          </CopyWrapper>
+          <LinksWrapper>
+            <Github />
+            <BugBounty />
+            <Links />
+          </LinksWrapper>
+        </>
+      )}
     </Wrapper>
   );
 };
@@ -38,18 +44,18 @@ const Links = () => {
   return (
     <Box
       display="grid"
-      gridTemplateColumns="repeat(5, 1fr)"
+      gridTemplateColumns="repeat(3, 1fr)"
       alignItems="center"
       lineHeight="0"
-      sx={{ gap: ["0.5rem", "1rem"] }}
+      sx={{ gap: "26px" }}
     >
       <Link
-        href="https://github.com/burrowfdn/"
-        title="GitHub"
+        href="https://twitter.com/burrow_finance"
+        title="Twitter"
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaGithub />
+        <TwitterIcon />
       </Link>
       <Link
         href="https://discord.gg/gUWBKy9Vur"
@@ -57,64 +63,69 @@ const Links = () => {
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaDiscord />
+        <DiscordIcon />
       </Link>
       <Link
-        href="https://twitter.com/burrowcash"
-        title="Twitter"
-        target="_blank"
-        color={theme.custom.footerIcon}
-      >
-        <FaTwitter />
-      </Link>
-      <Link
-        href="https://burrowcash.medium.com/"
+        href="https://burrowfinance.medium.com/"
         title="Medium"
         target="_blank"
         color={theme.custom.footerIcon}
       >
-        <FaMedium />
-      </Link>
-      <Link
-        href="https://docs.burrow.cash/"
-        title="Docs"
-        target="_blank"
-        color={theme.custom.footerIcon}
-        width="16px"
-      >
-        <Gitbook fill={theme.custom.footerIcon} />
+        <MediumIcon />
       </Link>
     </Box>
   );
 };
 
 export const Declaration = () => {
-  const theme = useTheme();
+  const isMobile = isMobileDevice();
   return (
-    <>
-      <Divider orientation="vertical" flexItem color={theme.palette.background.paper} />
-      <NextLink href="/declaration" passHref>
-        <Link href="/declaration" underline="none" color={theme.custom.footerText}>
-          Declaration and Disclaimers
-        </Link>
-      </NextLink>
-    </>
+    <NextLink href="/declaration" passHref>
+      <Link
+        href="/declaration"
+        target="_blank"
+        underline="none"
+        color={isMobile ? "#6F7188" : "#C0C4E9"}
+      >
+        Declaration and Disclaimers
+      </Link>
+    </NextLink>
   );
 };
 
-const BugBounty = () => (
-  <NextLink href="/declaration" passHref>
+const BugBounty = () => {
+  const isMobile = isMobileDevice();
+  return (
     <Link
       href="https://immunefi.com/bounty/burrow/"
       title="Bug Bounty"
       target="_blank"
       underline="none"
     >
-      <Typography fontSize="12px" lineHeight="12px">
+      <Typography
+        fontSize="12px"
+        lineHeight="12px"
+        style={{ color: isMobile ? "#6F7188" : "#C0C4E9" }}
+      >
         Bug Bounty
       </Typography>
     </Link>
-  </NextLink>
-);
+  );
+};
+
+const Github = () => {
+  const isMobile = isMobileDevice();
+  return (
+    <Link href="https://github.com/burrowHQ/" title="Github" target="_blank" underline="none">
+      <Typography
+        fontSize="12px"
+        lineHeight="12px"
+        style={{ color: isMobile ? "#6F7188" : "#C0C4E9" }}
+      >
+        Github
+      </Typography>
+    </Link>
+  );
+};
 
 export default Footer;

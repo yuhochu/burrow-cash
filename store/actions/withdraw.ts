@@ -6,18 +6,20 @@ import { expandToken, expandTokenDecimal } from "../helper";
 import { ChangeMethodsLogic, ChangeMethodsOracle, ChangeMethodsToken } from "../../interfaces";
 import { getTokenContract, prepareAndExecuteTransactions } from "../tokens";
 import { ChangeMethodsNearToken } from "../../interfaces/contract-methods";
-import { Transaction, isRegistered } from "../wallet";
+import { Transaction, isRegistered, isRegisteredNew } from "../wallet";
 import { NEAR_DECIMALS, NO_STORAGE_DEPOSIT_CONTRACTS, NEAR_STORAGE_DEPOSIT } from "../constants";
 import getAssets from "../../api/get-assets";
 import { transformAssets } from "../../transformers/asstets";
 import getAccount from "../../api/get-account";
 import { transformAccount } from "../../transformers/account";
 import { computeWithdrawMaxAmount } from "../../redux/selectors/getWithdrawMaxAmount";
+import getConfig from "../../utils/config";
 
+const { SPECIAL_REGISTRATION_TOKEN_IDS } = getConfig() as any;
 interface Props {
   tokenId: string;
   extraDecimals: number;
-  amount: number;
+  amount: string;
   isMax: boolean;
 }
 
@@ -45,15 +47,44 @@ export async function withdraw({ tokenId, extraDecimals, amount, isMax }: Props)
     !(await isRegistered(account.accountId, tokenContract)) &&
     !NO_STORAGE_DEPOSIT_CONTRACTS.includes(tokenContract.contractId)
   ) {
-    transactions.push({
-      receiverId: tokenContract.contractId,
-      functionCalls: [
-        {
-          methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
-          attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
-        },
-      ],
-    });
+    if (SPECIAL_REGISTRATION_TOKEN_IDS.includes(tokenContract.contractId)) {
+      const r = await isRegisteredNew(account.accountId, tokenContract);
+      if (r) {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+              attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+            },
+          ],
+        });
+      } else {
+        transactions.push({
+          receiverId: tokenContract.contractId,
+          functionCalls: [
+            {
+              methodName: ChangeMethodsToken[ChangeMethodsToken.register_account],
+              gas: new BN("10000000000000"),
+              args: {
+                account_id: account.accountId,
+              },
+              attachedDeposit: new BN(0),
+            },
+          ],
+        });
+      }
+    } else {
+      transactions.push({
+        receiverId: tokenContract.contractId,
+        functionCalls: [
+          {
+            methodName: ChangeMethodsToken[ChangeMethodsToken.storage_deposit],
+            attachedDeposit: new BN(expandToken(NEAR_STORAGE_DEPOSIT, NEAR_DECIMALS)),
+          },
+        ],
+      });
+    }
   }
 
   const withdrawAction = {

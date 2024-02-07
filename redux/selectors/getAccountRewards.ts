@@ -9,6 +9,7 @@ import { Farm, FarmData, Portfolio } from "../accountState";
 import { getStaking } from "./getStaking";
 import { INetTvlFarmRewards } from "../../interfaces";
 import { hasAssets, toUsd } from "../utils";
+import { cloneObj } from "../../helpers/helpers";
 
 interface IPortfolioReward {
   icon: string;
@@ -18,6 +19,7 @@ interface IPortfolioReward {
   totalAmount: number;
   dailyAmount: number;
   unclaimedAmount: number;
+  unclaimedAmountUSD: number;
   boosterLogBase: number;
   newDailyAmount: number;
   multiplier: number;
@@ -32,6 +34,10 @@ export interface IAccountRewards {
   net: {
     [tokenId: string]: IPortfolioReward;
   };
+  sumRewards: {
+    [tokenId: string]: IPortfolioReward;
+  };
+  totalUnClaimUSD: number;
 }
 
 export const getGains = (
@@ -190,6 +196,7 @@ export const getAccountRewards = createSelector(
             newDailyAmount,
             multiplier,
             price: rewardAsset.price?.usd || 0,
+            unclaimedAmountUSD: unclaimedAmount * (rewardAsset.price?.usd || 0),
           };
         });
       };
@@ -219,6 +226,7 @@ export const getAccountRewards = createSelector(
         newDailyAmount,
         multiplier,
         price: rewardAsset.price?.usd || 0,
+        unclaimedAmountUSD: unclaimedAmount * (rewardAsset.price?.usd || 0),
       };
     };
 
@@ -234,25 +242,34 @@ export const getAccountRewards = createSelector(
           .map(computeNetLiquidityRewards)
       : [];
 
-    const sumRewards = [...suppliedRewards, ...borrowedRewards].reduce((rewards, asset) => {
-      if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
+    const sumArrays = (array) => {
+      const clonedArray = cloneObj(array);
+      return clonedArray.reduce((rewards, asset) => {
+        if (!rewards[asset.tokenId]) return { ...rewards, [asset.tokenId]: asset };
+        const updatedAsset = rewards[asset.tokenId];
+        updatedAsset.unclaimedAmount += asset.unclaimedAmount;
+        updatedAsset.dailyAmount += asset.dailyAmount;
+        updatedAsset.newDailyAmount += asset.newDailyAmount;
+        return { ...rewards, [asset.tokenId]: updatedAsset };
+      }, {});
+    };
 
-      const updatedAsset = rewards[asset.tokenId];
-
-      updatedAsset.unclaimedAmount += asset.unclaimedAmount;
-      updatedAsset.dailyAmount += asset.dailyAmount;
-      updatedAsset.newDailyAmount += asset.newDailyAmount;
-
-      return { ...rewards, [asset.tokenId]: updatedAsset };
-    }, {});
-
+    const allRewards = [...suppliedRewards, ...borrowedRewards, ...netLiquidityRewards];
+    const sumRewards = sumArrays(allRewards);
+    const poolRewards = sumArrays([...suppliedRewards, ...borrowedRewards]);
+    let totalUnClaimUSD = 0;
+    allRewards.forEach((d) => {
+      totalUnClaimUSD += d.unclaimedAmountUSD;
+    });
     return {
-      brrr: sumRewards[brrrTokenId] || {},
-      extra: omit(sumRewards, brrrTokenId) || {},
+      brrr: poolRewards[brrrTokenId] || {},
+      extra: omit(poolRewards, brrrTokenId) || {},
       net: netLiquidityRewards.reduce(
         (rewards, asset) => ({ ...rewards, [asset.tokenId]: asset }),
         {},
       ),
+      sumRewards,
+      totalUnClaimUSD,
     } as IAccountRewards;
   },
 );

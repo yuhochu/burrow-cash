@@ -16,13 +16,12 @@ export async function supply({
   tokenId: string;
   extraDecimals: number;
   useAsCollateral: boolean;
-  amount: number;
+  amount: string;
   isMax: boolean;
 }): Promise<void> {
   const { account, logicContract } = await getBurrow();
   const { decimals } = (await getMetadata(tokenId))!;
   const tokenContract = await getTokenContract(tokenId);
-
   const tokenBalance = new Decimal(await getBalance(tokenId, account.accountId));
 
   const expandedAmount = isMax

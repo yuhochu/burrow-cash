@@ -6,6 +6,7 @@ import { emptySuppliedAsset, emptyBorrowedAsset, hasAssets, getRewards, toUsd } 
 import { shrinkToken, expandToken } from "../../store";
 import { Asset, Assets } from "../assetState";
 import { Farm } from "../accountState";
+import { standardizeAsset } from "../../utils";
 
 export const getPortfolioRewards = (
   type: "supplied" | "borrowed",
@@ -36,6 +37,7 @@ export const getPortfolioRewards = (
       metadata: assets[tokenId].metadata,
       config: assets[tokenId].config,
       type: "portfolio",
+      price: assets[tokenId].price?.usd ?? 0,
     };
   });
 };
@@ -45,12 +47,14 @@ export const getPortfolioAssets = createSelector(
   (state: RootState) => state.assets,
   (state: RootState) => state.account,
   (app, assets, account) => {
-    if (!hasAssets(assets)) return [[], []];
+    if (!hasAssets(assets)) return [[], [], 0, 0];
     const brrrTokenId = app.config.booster_token_id;
     const portfolioAssets = {
       ...account.portfolio.supplied,
       ...account.portfolio.collateral,
     };
+    let totalSuppliedUSD = 0;
+    let totalBorrowedUSD = 0;
     const supplied = Object.keys(portfolioAssets)
       .map((tokenId) => {
         const asset = assets.data[tokenId];
@@ -62,19 +66,21 @@ export const getPortfolioAssets = createSelector(
         const totalSupplyD = new Decimal(asset.supplied.balance)
           .plus(new Decimal(asset.reserved))
           .toFixed();
-
-        return {
+        const suppliedToken =
+          Number(collateral) +
+          Number(
+            shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+          );
+        const suppliedUSD = (asset.price?.usd || 0) * suppliedToken;
+        totalSuppliedUSD += suppliedUSD;
+        return standardizeAsset({
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price?.usd ?? 0,
           apy: Number(portfolioAssets[tokenId].apr) * 100,
           collateral: Number(collateral),
-          supplied:
-            Number(collateral) +
-            Number(
-              shrinkToken(suppliedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-            ),
+          supplied: suppliedToken,
           canUseAsCollateral: asset.config.can_use_as_collateral,
           canWithdraw: asset.config.can_withdraw,
           rewards: getPortfolioRewards(
@@ -85,7 +91,7 @@ export const getPortfolioAssets = createSelector(
           ),
           depositRewards: getRewards("supplied", asset, assets.data),
           totalSupplyMoney: toUsd(totalSupplyD, asset),
-        };
+        });
       })
       .filter(app.showDust ? Boolean : emptySuppliedAsset);
 
@@ -100,16 +106,19 @@ export const getPortfolioAssets = createSelector(
           .plus(new Decimal(asset.reserved))
           .toFixed();
 
-        return {
+        const borrowedToken = Number(
+          shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
+        );
+        const borrowedUSD = borrowedToken * (asset.price?.usd || 0);
+        totalBorrowedUSD += borrowedUSD;
+        return standardizeAsset({
           tokenId,
           symbol: asset.metadata.symbol,
           icon: asset.metadata.icon,
           price: asset.price?.usd ?? 0,
           supplyApy: Number(asset.supply_apr) * 100,
           borrowApy: Number(asset.borrow_apr) * 100,
-          borrowed: Number(
-            shrinkToken(borrowedBalance, asset.metadata.decimals + asset.config.extra_decimals),
-          ),
+          borrowed: borrowedToken,
           brrrUnclaimedAmount: Number(
             shrinkToken(brrrUnclaimedAmount, assets.data[brrrTokenId].metadata.decimals),
           ),
@@ -121,10 +130,10 @@ export const getPortfolioAssets = createSelector(
           ),
           borrowRewards: getRewards("borrowed", asset, assets.data),
           totalSupplyMoney: toUsd(totalSupplyD, asset),
-        };
+        });
       })
       .filter(app.showDust ? Boolean : emptyBorrowedAsset);
 
-    return [supplied, borrowed];
+    return [supplied, borrowed, totalSuppliedUSD, totalBorrowedUSD];
   },
 );

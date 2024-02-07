@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Modal as MUIModal, Typography, Box, Stack, useTheme } from "@mui/material";
 
+import Decimal from "decimal.js";
 import { USD_FORMAT } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { hideModal } from "../../redux/appSlice";
@@ -14,18 +15,18 @@ import { recomputeHealthFactorWithdraw } from "../../redux/selectors/recomputeHe
 import { recomputeHealthFactorSupply } from "../../redux/selectors/recomputeHealthFactorSupply";
 import { recomputeHealthFactorRepay } from "../../redux/selectors/recomputeHealthFactorRepay";
 import { recomputeHealthFactorRepayFromDeposits } from "../../redux/selectors/recomputeHealthFactorRepayFromDeposits";
+import { formatWithCommas_number } from "../../utils/uiNumber";
 
 import { Wrapper } from "./style";
 import { getModalData } from "./utils";
 import {
   NotConnected,
-  CloseButton,
   TokenInfo,
-  Available,
   HealthFactor,
   Rates,
   Alerts,
-  USNInfo,
+  CollateralSwitch,
+  CollateralTip,
 } from "./components";
 import Controls from "./Controls";
 import Action from "./Action";
@@ -37,48 +38,63 @@ const Modal = () => {
   const accountId = useAppSelector(getAccountId);
   const asset = useAppSelector(getAssetData);
   const { amount } = useAppSelector(getSelectedValues);
+  const assets = useAppSelector((state) => state.assets?.data || {});
   const dispatch = useAppDispatch();
   const { isRepayFromDeposits } = useDegenMode();
   const theme = useTheme();
-
   const { action = "Deposit", tokenId } = asset;
 
   const healthFactor = useAppSelector(
     action === "Withdraw"
-      ? recomputeHealthFactorWithdraw(tokenId, amount)
+      ? recomputeHealthFactorWithdraw(tokenId, +amount)
       : action === "Adjust"
-      ? recomputeHealthFactorAdjust(tokenId, amount)
+      ? recomputeHealthFactorAdjust(tokenId, +amount)
       : action === "Supply"
-      ? recomputeHealthFactorSupply(tokenId, amount)
+      ? recomputeHealthFactorSupply(tokenId, +amount)
       : action === "Repay" && isRepayFromDeposits
-      ? recomputeHealthFactorRepayFromDeposits(tokenId, amount)
+      ? recomputeHealthFactorRepayFromDeposits(tokenId, +amount)
       : action === "Repay"
-      ? recomputeHealthFactorRepay(tokenId, amount)
-      : recomputeHealthFactor(tokenId, amount),
+      ? recomputeHealthFactorRepay(tokenId, +amount)
+      : recomputeHealthFactor(tokenId, +amount),
   );
 
   const maxBorrowAmount = useAppSelector(getBorrowMaxAmount(tokenId));
   const maxWithdrawAmount = useAppSelector(getWithdrawMaxAmount(tokenId));
 
-  const { symbol, apy, price, available, available$, totalTitle, rates, alerts } = getModalData({
+  const {
+    symbol,
+    apy,
+    price,
+    available,
+    available$,
+    totalTitle,
+    rates,
+    alerts,
+    canUseAsCollateral,
+  } = getModalData({
     ...asset,
     maxBorrowAmount,
     maxWithdrawAmount,
     isRepayFromDeposits,
     healthFactor,
     amount,
+    poolAsset: assets[tokenId],
   });
 
-  const total = (price * amount).toLocaleString(undefined, USD_FORMAT);
-
+  const total = (price * +amount).toLocaleString(undefined, USD_FORMAT);
   const handleClose = () => dispatch(hideModal());
-
   useEffect(() => {
     if (isOpen) {
       dispatch(fetchAssets()).then(() => dispatch(fetchRefPrices()));
     }
   }, [isOpen]);
-
+  if (action === "Adjust") {
+    rates.push({
+      label: "Use as Collateral",
+      value: formatWithCommas_number(new Decimal(amount || 0).toFixed()),
+      value$: new Decimal(price * +amount).toFixed(),
+    });
+  }
   return (
     <MUIModal open={isOpen} onClose={handleClose}>
       <Wrapper
@@ -88,37 +104,37 @@ const Modal = () => {
           },
         }}
       >
-        <Box sx={{ overflowY: "auto", p: ["1.5rem", "2rem"] }}>
+        <Box sx={{ p: ["20px", "20px"] }}>
           {!accountId && <NotConnected />}
-          <CloseButton onClose={handleClose} />
-          <TokenInfo apy={apy} asset={asset} />
-          {action === "Supply" && symbol === "USN" && <USNInfo />}
-          <Available totalAvailable={available} available$={available$} />
-          <Controls amount={amount} available={available} action={action} tokenId={tokenId} />
-          <Stack
-            boxShadow="0px 5px 15px rgba(0, 0, 0, 0.1)"
-            borderRadius={1}
-            mt="2rem"
-            p={2}
-            gap={0.5}
-            sx={{ backgroundColor: theme.custom.backgroundStaking }}
-          >
-            <Typography fontWeight="400" mb="1rem" color={theme.palette.secondary.main}>
-              Details
-            </Typography>
+          <TokenInfo apy={apy} asset={asset} onClose={handleClose} />
+          <Controls
+            amount={amount}
+            available={available}
+            action={action}
+            tokenId={tokenId}
+            asset={asset}
+            totalAvailable={available}
+            available$={available$}
+          />
+          <div className="flex flex-col gap-4 mt-6">
             <HealthFactor value={healthFactor} />
-            <Box display="flex" justifyContent="space-between">
-              <Typography fontSize="0.85rem" color="gray">
-                <span>{totalTitle}</span>
-              </Typography>
-              <Typography fontSize="0.85rem" fontWeight="500" color={theme.palette.secondary.main}>
-                {total}
-              </Typography>
-            </Box>
             <Rates rates={rates} />
-          </Stack>
+            {!canUseAsCollateral ? (
+              <CollateralTip />
+            ) : (
+              <CollateralSwitch
+                action={action}
+                canUseAsCollateral={canUseAsCollateral}
+                tokenId={asset.tokenId}
+              />
+            )}
+          </div>
           <Alerts data={alerts} />
-          <Action maxBorrowAmount={maxBorrowAmount} healthFactor={healthFactor} />
+          <Action
+            maxBorrowAmount={maxBorrowAmount}
+            healthFactor={healthFactor}
+            poolAsset={assets[tokenId]}
+          />
         </Box>
       </Wrapper>
     </MUIModal>

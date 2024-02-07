@@ -6,13 +6,14 @@ export const Wrapper = styled("div")(({ theme }) => ({
   display: "grid",
   alignItems: "center",
   color: theme.palette.secondary.main,
-  marginTop: "auto",
+  marginTop: "20px",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
-    gap: "2rem",
+    gap: "16px",
     bottom: 0,
     left: 0,
     right: 0,
+    marginTop: "38px",
   },
   [theme.breakpoints.up("sm")]: {
     gridTemplateColumns: "1fr 1fr",
@@ -53,7 +54,7 @@ export const Copyright = styled(Typography)(({ theme }) => ({
 export const LinksWrapper = styled("div")(({ theme }) => ({
   fontSize: "12px",
   display: "flex",
-  gap: "1rem",
+  gap: "26px",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     fontWeight: 500,

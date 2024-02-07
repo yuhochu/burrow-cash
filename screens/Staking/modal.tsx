@@ -42,7 +42,7 @@ export const StakingModal = ({ open, onClose }) => {
     .replace(/(?!^)-/g, "")
     .replace(/^0+(\d)/gm, "$1");
 
-  const sliderValue = Math.round((amount * 100) / total) || 0;
+  const sliderValue = Math.round((amount * 100) / Number(total)) || 0;
 
   const handleMaxClick = () => {
     trackMaxStaking({ total });
@@ -67,7 +67,7 @@ export const StakingModal = ({ open, onClose }) => {
   };
 
   const handleStake = () => {
-    trackStaking({ amount, months, percent: (amount / total) * 100 });
+    trackStaking({ amount, months, percent: (amount / Number(total)) * 100 });
     stake({ amount, months });
     setLoadingStake(true);
     setAmount(0);

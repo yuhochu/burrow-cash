@@ -5,15 +5,17 @@ import type { RootState } from "./store";
 import { hiddenAssets } from "../utils/config";
 import { toUsd, transformAsset } from "./utils";
 
-export const getAvailableAssets = (source: "supply" | "borrow") =>
+export const getAvailableAssets = (source?: "supply" | "borrow" | "") =>
   createSelector(
     (state: RootState) => state.assets.data,
     (state: RootState) => state.account,
     (state: RootState) => state.app,
     (assets, account, app) => {
       const filterKey = source === "supply" ? "can_deposit" : "can_borrow";
-      return Object.keys(assets)
-        .filter((tokenId) => assets[tokenId].config[filterKey])
+      const assets_filter_by_source = source
+        ? Object.keys(assets).filter((tokenId) => assets[tokenId].config[filterKey])
+        : Object.keys(assets);
+      return assets_filter_by_source
         .filter((tokenId) => !hiddenAssets.includes(assets[tokenId].token_id))
         .map((tokenId) => transformAsset(assets[tokenId], account, assets, app));
     },

@@ -11,15 +11,17 @@ export const APY = () => {
 
   const globalValue = `${netAPY.toLocaleString(undefined, APY_FORMAT)}%`;
   const netLiquidityValue = `${netLiquidityAPY.toLocaleString(undefined, APY_FORMAT)}%`;
-  const amount = `${(netAPY + netLiquidityAPY).toLocaleString(undefined, APY_FORMAT)}%`;
+  const totalApy = netAPY + netLiquidityAPY;
+  const amount = `${totalApy.toLocaleString(undefined, APY_FORMAT)}%`;
+  const showLabels = netAPY > 0 || netLiquidityAPY > 0;
 
   const netLiquidityTooltip = hasNegativeNetLiquidity ? (
     <NotFarmingNetLiquidity assets={assets} liquidity={weightedNetLiquidity} />
   ) : undefined;
 
   const apyLabels = [
+    [{ value: globalValue, text: "Pools", color: netAPY < 0 ? "red" : "green" }],
     [
-      { value: globalValue, text: "Pools", color: netAPY < 0 ? "red" : "green" },
       {
         value: netLiquidityValue,
         text: "Net Liquidity",
@@ -33,11 +35,11 @@ export const APY = () => {
 
   return (
     <Stat
-      title="APY"
+      title="Net APY"
       titleTooltip="Net APY of all supply and borrow positions, including base APYs and incentives"
       amount={amount}
       tooltip={tooltip}
-      labels={apyLabels}
+      labels={showLabels ? apyLabels : []}
     />
   );
 };

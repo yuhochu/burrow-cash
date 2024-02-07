@@ -12,6 +12,10 @@ export const getModalStatus = createSelector(
   (state: RootState) => state.app,
   (app) => app.showModal,
 );
+export const getModalData = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.selected,
+);
 
 export const getDisplayAsTokenValue = createSelector(
   (state: RootState) => state.app,
@@ -96,4 +100,28 @@ export const getAssetData = createSelector(
       ...(asset ? transformAsset(asset, account, assets, app) : {}),
     };
   },
+);
+
+export const getAssetDataByTokenId = (tokenId: string) =>
+  createSelector(
+    (state: RootState) => state.app,
+    (state: RootState) => state.assets.data,
+    (state: RootState) => state.account,
+    (app, assets, account) => {
+      const asset = assets[tokenId];
+      return {
+        tokenId: asset?.token_id,
+        ...(asset ? transformAsset(asset, account, assets, app) : {}),
+      };
+    },
+  );
+
+export const getUnreadLiquidation = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.unreadLiquidation,
+);
+
+export const getToastMessage = createSelector(
+  (state: RootState) => state.app,
+  (app) => app.toastMessage,
 );
