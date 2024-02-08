@@ -4,7 +4,7 @@ import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
-import { getDateString, maskMiddleString } from "../../helpers/helpers";
+import { bigNumberMilify, getDateString } from "../../helpers/helpers";
 import { getLiquidations } from "../../api/get-liquidations";
 import { setUnreadLiquidation } from "../../redux/appSlice";
 
@@ -83,7 +83,8 @@ const columns = [
   {
     header: () => (
       <div style={{ whiteSpace: "normal" }}>
-        Health Factor<div>before Liquidate</div>
+        Health Factor
+        <div>before Liquidate</div>
       </div>
     ),
     cell: ({ originalData }) => {
@@ -104,9 +105,10 @@ const columns = [
         const tokenAmount = Number(
           shrinkToken(d.amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
         );
+
         return (
           <div key={d.token_id} className="whitespace-normal">
-            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
+            {bigNumberMilify(tokenAmount, 4)} {tokenSymbol}
           </div>
         );
       });
@@ -125,9 +127,10 @@ const columns = [
         const tokenAmount = Number(
           shrinkToken(d.amount, (metadata?.decimals || 0) + (extra_decimals || 0)),
         );
+
         return (
-          <div key={d.token_id}>
-            {tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} {tokenSymbol}
+          <div key={d.token_id} className="whitespace-normal">
+            {bigNumberMilify(tokenAmount)} {tokenSymbol}
           </div>
         );
       });
@@ -138,7 +141,8 @@ const columns = [
   {
     header: () => (
       <div style={{ whiteSpace: "normal" }}>
-        Health Factor<div>after Liquidate</div>
+        Health Factor
+        <div>after Liquidate</div>
       </div>
     ),
     cell: ({ originalData }) => {

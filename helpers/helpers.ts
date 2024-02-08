@@ -30,6 +30,19 @@ export const millifyNumber = (v: string | number, ignoreBelow?: number, isDispla
   return millify(number);
 };
 
+export const bigNumberMilify = (labelValue, fractionDigits = 2, bigNumberFractionDigits = 0) => {
+  // Nine Zeroes for Billions
+  return Math.abs(Number(labelValue)) >= 1.0e9
+    ? `${(Math.abs(Number(labelValue)) / 1.0e9).toFixed(bigNumberFractionDigits)}B`
+    : // Six Zeroes for Millions
+    Math.abs(Number(labelValue)) >= 1.0e6
+    ? `${(Math.abs(Number(labelValue)) / 1.0e6).toFixed(bigNumberFractionDigits)}M`
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? `${(Math.abs(Number(labelValue)) / 1.0e3).toFixed(bigNumberFractionDigits)}K`
+    : Math.abs(Number(labelValue)).toFixed(fractionDigits);
+};
+
 export const removeUndefinedInObj = (obj, removeNull) => {
   Object.keys(obj).forEach((key) => {
     if (removeNull) {
