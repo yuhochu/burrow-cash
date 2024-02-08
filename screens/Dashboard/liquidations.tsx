@@ -107,7 +107,11 @@ const columns = [
         );
 
         return (
-          <div key={d.token_id} className="whitespace-normal">
+          <div
+            key={d.token_id}
+            className="whitespace-normal"
+            title={`${tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} ${tokenSymbol}`}
+          >
             {bigNumberMilify(tokenAmount, 4)} {tokenSymbol}
           </div>
         );
@@ -129,8 +133,12 @@ const columns = [
         );
 
         return (
-          <div key={d.token_id} className="whitespace-normal">
-            {bigNumberMilify(tokenAmount)} {tokenSymbol}
+          <div
+            key={d.token_id}
+            className="whitespace-normal"
+            title={`${tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} ${tokenSymbol}`}
+          >
+            {bigNumberMilify(tokenAmount, 4)} {tokenSymbol}
           </div>
         );
       });
