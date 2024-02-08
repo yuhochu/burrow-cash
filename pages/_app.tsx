@@ -52,6 +52,7 @@ const Init = () => {
   };
 
   useEffect(() => {
+    console.info("ttest");
     dispatch(fetchConfig());
   }, []);
   useEffect(fetchData, []);
