@@ -95,7 +95,9 @@ const WalletButton = () => {
 
   const handleSignOut = async () => {
     const { signOut: signOutBurrow } = await getBurrow();
-    signOutBurrow();
+    if (typeof signOutBurrow === "function") {
+      signOutBurrow();
+    }
     trackLogout();
     setAnchorEl(null);
     setDisclaimer(false);
@@ -171,15 +173,19 @@ function Account() {
   const { balance, show_account_detail, set_show_account_detail, accountId, isMobile } = useContext(
     WalletContext,
   ) as any;
+
   function handleOpen() {
     set_show_account_detail(true);
   }
+
   function handleClose() {
     set_show_account_detail(false);
   }
+
   function handleSwitch() {
     set_show_account_detail(!show_account_detail);
   }
+
   return (
     <div className="flex items-center gap-4">
       {/* near balance */}
@@ -255,6 +261,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
   } = useContext(WalletContext) as any;
   const [showTip, setShowTip] = useState<boolean>(false);
   const [copyButtonDisabled, setCopyButtonDisabled] = useState<boolean>(false);
+
   function showToast() {
     if (copyButtonDisabled) return;
     setCopyButtonDisabled(true);
@@ -264,6 +271,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
       setCopyButtonDisabled(false);
     }, 1000);
   }
+
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (

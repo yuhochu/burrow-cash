@@ -17,6 +17,7 @@ import { Account } from "near-api-js/lib/account";
 import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
 import BN from "bn.js";
 import { map, distinctUntilChanged } from "rxjs";
+import { setupKeypom } from "@keypom/selector";
 
 import getConfig, {
   defaultNetwork,
@@ -67,6 +68,21 @@ const walletConnect = setupWalletConnect({
 const myNearWallet = setupMyNearWallet({
   walletUrl: isTestnet ? "https://testnet.mynearwallet.com" : "https://app.mynearwallet.com",
 });
+const KEYPOM_OPTIONS = {
+  beginTrial: {
+    landing: {
+      title: "Welcome!",
+    },
+  },
+  wallets: [
+    {
+      name: "MyNEARWallet",
+      description: "Secure your account with a Seed Phrase",
+      redirectUrl: `https://${defaultNetwork}.mynearwallet.com/linkdrop/ACCOUNT_ID/SECRET_KEY`,
+      iconUrl: "INSERT_ICON_URL_HERE",
+    },
+  ],
+};
 
 export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorArgs) => {
   if (init) return selector;
@@ -91,6 +107,17 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
           name: "NEAR Wallet Selector",
         },
       }),
+      setupKeypom({
+        networkId: defaultNetwork,
+        signInContractId: LOGIC_CONTRACT_NAME,
+        trialAccountSpecs: {
+          url: "/trial-accounts/ACCOUNT_ID#SECRET_KEY",
+          modalOptions: KEYPOM_OPTIONS,
+        },
+        instantSignInSpecs: {
+          url: "/#instant-url/ACCOUNT_ID#SECRET_KEY/MODULE_ID",
+        },
+      }),
       setupLedger(),
     ],
     network: defaultNetwork,
@@ -108,6 +135,9 @@ export const getWalletSelector = async ({ onAccountChange }: GetWalletSelectorAr
       accountId = nextAccounts[0]?.accountId;
       window.accountId = accountId;
       onAccountChange(accountId);
+      if (window.location.href.includes("#instant-url")) {
+        window.history.replaceState({}, "", "/");
+      }
     });
 
   const modal = setupModal(selector, { contractId: LOGIC_CONTRACT_NAME });
