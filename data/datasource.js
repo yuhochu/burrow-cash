@@ -97,6 +97,10 @@ class DataSource {
       config?.liquidationUrl,
     );
   }
+
+  getTxId(receipt_id) {
+    return this.callAPI(`/v1/search/?keyword=${receipt_id}`, "GET", null, null, config?.txIdApiUrl);
+  }
 }
 
 export default DataSource;

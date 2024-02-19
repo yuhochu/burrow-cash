@@ -16,7 +16,7 @@ const Records = ({ isShow }) => {
   const { toastMessage, showToast } = useToastMessage();
   const assets = useAppSelector(getAssets);
   const [isLoading, setIsLoading] = useState(false);
-  const [docs, setDocs] = useState([]);
+  const [docs, setDocs] = useState<any>([]);
   const [pagination, setPagination] = useState<{
     page?: number;
     totalPages?: number;
@@ -37,7 +37,7 @@ const Records = ({ isShow }) => {
     try {
       setIsLoading(true);
       const response = await Datasource.shared.getRecords(accountId, page, 10);
-      const list = response?.record_list?.map((d) => {
+      const list = response?.record_list?.map(async (d) => {
         let tokenId = d.token_id;
         if (nearNativeTokens.includes(tokenId)) {
           tokenId = nearTokenId;
@@ -46,9 +46,13 @@ const Records = ({ isShow }) => {
         const cloned = { ...d.data };
         cloned.metadata = standardizeAsset({ ...cloned.metadata });
         d.data = cloned;
-        return d;
+        const txidResponse = await Datasource.shared.getTxId(d.receipt_id);
+        const txid = txidResponse?.receipts[0]?.originated_from_transaction_hash;
+
+        return { ...d, txid };
       });
-      setDocs(list);
+      const resolvedList = await Promise.all(list);
+      setDocs(resolvedList);
       setPagination((d) => {
         return {
           ...d,
@@ -63,8 +67,8 @@ const Records = ({ isShow }) => {
     }
   };
 
-  const handleTxClick = (tx) => {
-    window.open(`https://nearblocks.io/txns/${tx}`);
+  const handleTxClick = (txid) => {
+    window.open(`https://nearblocks.io/txns/${txid}`);
   };
 
   const columns = getColumns({ showToast, handleTxClick });
@@ -129,20 +133,20 @@ const getColumns = ({ showToast, handleTxClick }) => [
   {
     header: () => <div className="text-right">View in NEAR explorer</div>,
     cell: ({ originalData }) => {
-      const { tx_id } = originalData || {};
-      if (!tx_id) {
+      const { receipt_id, txid } = originalData || {};
+      if (!receipt_id) {
         return null;
       }
       return (
         <div className="flex items-center gap-2 justify-end">
           <div
             className="text-gray-300 text-right cursor-pointer hover:underline transform hover:opacity-80"
-            onClick={() => handleTxClick(tx_id)}
+            onClick={() => handleTxClick(txid)}
           >
-            {maskMiddleString(tx_id, 4, 34)}
+            {maskMiddleString(txid, 4, 34)}
           </div>
 
-          <CopyToClipboard text={tx_id} onCopy={() => showToast("Copied")}>
+          <CopyToClipboard text={txid} onCopy={() => showToast("Copied")}>
             <div className="cursor-pointer">
               <CopyIcon />
             </div>
