@@ -19,7 +19,7 @@ export const listToMap = (list) =>
     .reduce((a, b) => ({ ...a, ...b }), {});
 
 export const toUsd = (balance: string, asset: Asset) =>
-  asset.price?.usd
+  asset?.price?.usd
     ? Number(shrinkToken(balance, asset.metadata.decimals + asset.config.extra_decimals)) *
       asset.price.usd
     : 0;
