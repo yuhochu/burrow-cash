@@ -4,7 +4,7 @@ import { useAccountId, useUnreadLiquidation } from "../../hooks/hooks";
 import { shrinkToken, TOKEN_FORMAT } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { getAssets } from "../../redux/assetsSelectors";
-import { bigNumberMilify, getDateString } from "../../helpers/helpers";
+import { formatTokenValueWithMilify, getDateString } from "../../helpers/helpers";
 import { getLiquidations } from "../../api/get-liquidations";
 import { setUnreadLiquidation } from "../../redux/appSlice";
 
@@ -112,7 +112,7 @@ const columns = [
             className="whitespace-normal"
             title={`${tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} ${tokenSymbol}`}
           >
-            {bigNumberMilify(tokenAmount, 4)} {tokenSymbol}
+            {formatTokenValueWithMilify(tokenAmount, 4)} {tokenSymbol}
           </div>
         );
       });
@@ -138,7 +138,7 @@ const columns = [
             className="whitespace-normal"
             title={`${tokenAmount.toLocaleString(undefined, TOKEN_FORMAT)} ${tokenSymbol}`}
           >
-            {bigNumberMilify(tokenAmount, 4)} {tokenSymbol}
+            {formatTokenValueWithMilify(tokenAmount, 4)} {tokenSymbol}
           </div>
         );
       });

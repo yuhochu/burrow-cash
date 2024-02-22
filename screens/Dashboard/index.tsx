@@ -11,8 +11,8 @@ import DashboardReward from "./dashboardReward";
 import DashboardApy from "./dashboardApy";
 import CustomTable from "../../components/CustomTable/CustomTable";
 import {
-  bigNumberMilify,
   formatTokenValue,
+  formatTokenValueWithMilify,
   formatUSDValue,
   isMobileDevice,
   millifyNumber,
@@ -136,7 +136,7 @@ const yourSuppliedColumns = [
       return (
         <>
           <div title={originalData?.collateral ? formatTokenValue(originalData?.collateral) : "-"}>
-            {bigNumberMilify(originalData.collateral, 4, undefined, "-")}
+            {formatTokenValueWithMilify(originalData.collateral, 4)}
           </div>
           <div className="h6 text-gray-300">
             {originalData?.collateral
@@ -153,7 +153,7 @@ const yourSuppliedColumns = [
       return (
         <>
           <div title={formatTokenValue(originalData.supplied)}>
-            {bigNumberMilify(originalData.supplied, 4)}
+            {formatTokenValueWithMilify(originalData.supplied, 4)}
           </div>
           <div className="h6 text-gray-300">
             {formatUSDValue(originalData.supplied * originalData.price)}
@@ -293,7 +293,7 @@ const yourBorrowedColumns = [
       return (
         <>
           <div title={formatTokenValue(originalData?.borrowed)}>
-            {bigNumberMilify(originalData.borrowed, 4)}
+            {formatTokenValueWithMilify(originalData.borrowed, 4)}
           </div>
           <div className="h6 text-gray-300">
             ${millifyNumber(originalData.borrowed * originalData.price)}
