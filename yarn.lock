@@ -2509,7 +2509,7 @@
   dependencies:
     rxjs "^7.8.0"
 
-"@near-wallet-selector/core@8.7.0", "@near-wallet-selector/core@^8.5.4":
+"@near-wallet-selector/core@8.7.0":
   version "8.7.0"
   resolved "https://registry.npmjs.org/@near-wallet-selector/core/-/core-8.7.0.tgz#65a681c332b46f47bf4ca51b53ee92726b2d9cda"
   integrity sha512-H1Mc0xyWsy5Vjscn8gjK8y0X1wG5EBH9VuVQ+mFOtdyt8y+7Pttf/0dD91oAIwCo7Pu/ryPukcr6IGAz1R05cA==
@@ -2533,6 +2533,16 @@
   version "8.9.0"
   resolved "https://registry.npmjs.org/@near-wallet-selector/core/-/core-8.9.0.tgz#a362934cbbce63d3165308bf92036c62095722e2"
   integrity sha512-z7Fe/AdkB9ER7YxQrLhaAgffflsjdUxx3dNU6Su8scBcn2kTTtGKiRGyfD9CEqfed08n+RFbxH+7XA2FclKS+g==
+  dependencies:
+    borsh "0.7.0"
+    events "3.3.0"
+    js-sha256 "0.9.0"
+    rxjs "7.8.1"
+
+"@near-wallet-selector/core@8.9.1":
+  version "8.9.1"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.9.1.tgz#7d4de41ff18cde6530d0153e8335d5e366c07452"
+  integrity sha512-EY8PmKyNoW/pWsZFZM9V2sluSMn1DPQ8PDj+veiOCbuMP2USJ5j9qxJd1iJy07JbmI/40EuCA6IAZ6SbukzaUQ==
   dependencies:
     borsh "0.7.0"
     events "3.3.0"

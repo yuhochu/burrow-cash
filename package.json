@@ -27,7 +27,7 @@
     "@mui/styles": "^5.10.6",
     "@mui/system": "^5.10.6",
     "@mui/utils": "^5.10.6",
-    "@near-wallet-selector/core": "^8.5.4",
+    "@near-wallet-selector/core": "8.9.1",
     "@near-wallet-selector/here-wallet": "^8.5.4",
     "@near-wallet-selector/ledger": "^8.5.4",
     "@near-wallet-selector/meteor-wallet": "^8.5.4",
