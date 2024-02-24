@@ -8,12 +8,8 @@ import {
   Typography,
   Modal as MUIModal,
 } from "@mui/material";
-import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 import type { WalletSelector } from "@near-wallet-selector/core";
-import CopyToClipboard from "react-copy-to-clipboard";
-
 import { BeatLoader } from "react-spinners";
-import Decimal from "decimal.js";
 import { fetchAssets, fetchRefPrices } from "../../redux/assetsSlice";
 import { logoutAccount, fetchAccount, setAccountId } from "../../redux/accountSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -29,7 +25,6 @@ import { HamburgerMenu } from "./Menu";
 import Disclaimer from "../Disclaimer";
 import { useDisclaimer } from "../../hooks/useDisclaimer";
 import { NearSolidIcon, ArrowDownIcon, CloseIcon, ArrowRightTopIcon } from "./svg";
-import NearIcon from "../../public/near-icon.svg";
 import ClaimAllRewards from "../ClaimAllRewards";
 import { formatWithCommas_usd } from "../../utils/uiNumber";
 import { isMobileDevice } from "../../helpers/helpers";
@@ -55,7 +50,7 @@ const WalletButton = () => {
 
   const selectorRef = useRef<WalletSelector>();
   const [selector, setSelector] = useState<WalletSelector | null>(null);
-  const [walletId, setWalletId] = useState<string>("");
+  const [walletMetadata, setWalletMetadata] = useState<string>("");
   const rewards = useAppSelector(getAccountRewards);
   const isSignedIn = selector?.isSignedIn();
   const hideModal = () => {
@@ -83,16 +78,16 @@ const WalletButton = () => {
     }
 
     if (walletSelector) {
-      const wallet = await walletSelector?.wallet();
-      if (wallet?.id) {
-        setWalletId(wallet.id);
+      const wallet: any = await walletSelector?.wallet();
+      if (wallet?.metadata) {
+        setWalletMetadata(wallet.metadata);
       }
     }
   };
 
   useEffect(() => {
     onMount();
-  }, []);
+  }, [accountId]);
 
   const onWalletButtonClick = async () => {
     if (!hasAgreedDisclaimer) {
@@ -131,7 +126,7 @@ const WalletButton = () => {
         getUnClaimRewards,
         isMobile,
         rewards,
-        walletId,
+        walletMetadata,
       }}
     >
       <Box
@@ -270,7 +265,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     getUnClaimRewards,
     isMobile,
     rewards,
-    walletId,
+    walletMetadata,
   } = useContext(WalletContext) as any;
   const [showTip, setShowTip] = useState<boolean>(false);
   const [copyButtonDisabled, setCopyButtonDisabled] = useState<boolean>(false);
@@ -285,7 +280,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     }, 1000);
   }
 
-  const changeWalletDisable = walletId === "keypom";
+  const changeWalletDisable = walletMetadata?.id === "keypom";
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
@@ -311,8 +306,12 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center text-xs text-gray-300 -ml-1 xsm:text-sm">
-          <NearIcon style={{ width: "1.5rem", height: "1.5rem", fill: "white" }} />
-          Near Wallet
+          {walletMetadata?.iconUrl && (
+            <span className="mr-1">
+              <img src={walletMetadata.iconUrl} className="w-3 h-3 mr-1" alt="" />
+            </span>
+          )}
+          {walletMetadata?.name}
         </div>
       </div>
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
