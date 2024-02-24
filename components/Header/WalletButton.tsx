@@ -35,6 +35,7 @@ import { formatWithCommas_usd } from "../../utils/uiNumber";
 import { isMobileDevice } from "../../helpers/helpers";
 import getConfig from "../../utils/config";
 import CopyToClipboardComponent from "./CopyToClipboardComponent";
+import CustomButton from "../CustomButton/CustomButton";
 
 const config = getConfig();
 
@@ -54,8 +55,9 @@ const WalletButton = () => {
 
   const selectorRef = useRef<WalletSelector>();
   const [selector, setSelector] = useState<WalletSelector | null>(null);
+  const [walletId, setWalletId] = useState<string>("");
   const rewards = useAppSelector(getAccountRewards);
-
+  const isSignedIn = selector?.isSignedIn();
   const hideModal = () => {
     dispatch(_hideModal());
   };
@@ -71,12 +73,21 @@ const WalletButton = () => {
   };
 
   const onMount = async () => {
-    if (selector) return;
-    const { selector: s } = await getBurrow({ fetchData, hideModal, signOut });
+    let walletSelector = selector;
+    if (!selector) {
+      const { selector: s } = await getBurrow({ fetchData, hideModal, signOut });
+      walletSelector = s;
+      selectorRef.current = s;
+      setSelector(s);
+      window.selector = s;
+    }
 
-    selectorRef.current = s;
-    setSelector(s);
-    window.selector = s;
+    if (walletSelector) {
+      const wallet = await walletSelector?.wallet();
+      if (wallet?.id) {
+        setWalletId(wallet.id);
+      }
+    }
   };
 
   useEffect(() => {
@@ -120,6 +131,7 @@ const WalletButton = () => {
         getUnClaimRewards,
         isMobile,
         rewards,
+        walletId,
       }}
     >
       <Box
@@ -258,6 +270,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     getUnClaimRewards,
     isMobile,
     rewards,
+    walletId,
   } = useContext(WalletContext) as any;
   const [showTip, setShowTip] = useState<boolean>(false);
   const [copyButtonDisabled, setCopyButtonDisabled] = useState<boolean>(false);
@@ -272,6 +285,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     }, 1000);
   }
 
+  const changeWalletDisable = walletId === "keypom";
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
@@ -302,31 +316,47 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
-        <div
-          style={{ width: "104px" }}
-          onClick={() => {
-            if (onClose) {
-              onClose();
-            }
-            handleSwitchWallet();
+        <CustomButton
+          style={{
+            width: 104,
+            height: 30,
+            minHeight: 0,
           }}
-          className="flex flex-grow items-center justify-center border border-primary border-opacity-60 cursor-pointer rounded-md text-sm text-primary font-bold bg-primary hover:opacity-80 bg-opacity-5 py-1"
+          disabled={changeWalletDisable}
+          color="primaryBorder"
+          className="flex flex-grow items-center justify-center text-sm font-bold py-1"
+          onClick={() => {
+            if (!changeWalletDisable) {
+              if (onClose) {
+                onClose();
+              }
+              handleSwitchWallet();
+            }
+          }}
         >
           Change
-        </div>
-        <div
-          role="button"
-          style={{ width: "104px" }}
-          onClick={() => {
-            if (onClose) {
-              onClose();
-            }
-            handleSignOut();
+        </CustomButton>
+
+        <CustomButton
+          style={{
+            width: 104,
+            height: 30,
+            minHeight: 0,
           }}
-          className="flex flex-grow items-center justify-center border border-red-50 border-opacity-60 cursor-pointer rounded-md text-sm text-red-50 font-bold bg-red-50 bg-opacity-5 hover:opacity-80 py-1"
+          disabled={changeWalletDisable}
+          color="errorBorder"
+          className="flex flex-grow items-center justify-center text-sm font-bold py-1"
+          onClick={() => {
+            if (!changeWalletDisable) {
+              if (onClose) {
+                onClose();
+              }
+              handleSwitchWallet();
+            }
+          }}
         >
           Disconnect
-        </div>
+        </CustomButton>
       </div>
       <div className="flex lg:items-center justify-between xsm:items-end">
         <div className="relative flex flex-col xsm:top-1">
