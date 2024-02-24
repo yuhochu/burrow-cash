@@ -50,7 +50,7 @@ const WalletButton = () => {
 
   const selectorRef = useRef<WalletSelector>();
   const [selector, setSelector] = useState<WalletSelector | null>(null);
-  const [walletMetadata, setWalletMetadata] = useState<string>("");
+  const [currentWallet, setCurrentWallet] = useState<string>("");
   const rewards = useAppSelector(getAccountRewards);
   const isSignedIn = selector?.isSignedIn();
   const hideModal = () => {
@@ -79,8 +79,8 @@ const WalletButton = () => {
 
     if (walletSelector) {
       const wallet: any = await walletSelector?.wallet();
-      if (wallet?.metadata) {
-        setWalletMetadata(wallet.metadata);
+      if (wallet) {
+        setCurrentWallet(wallet);
       }
     }
   };
@@ -126,7 +126,7 @@ const WalletButton = () => {
         getUnClaimRewards,
         isMobile,
         rewards,
-        walletMetadata,
+        currentWallet,
       }}
     >
       <Box
@@ -265,7 +265,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     getUnClaimRewards,
     isMobile,
     rewards,
-    walletMetadata,
+    currentWallet,
   } = useContext(WalletContext) as any;
   const [showTip, setShowTip] = useState<boolean>(false);
   const [copyButtonDisabled, setCopyButtonDisabled] = useState<boolean>(false);
@@ -280,7 +280,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
     }, 1000);
   }
 
-  const changeWalletDisable = walletMetadata?.id === "keypom";
+  const changeWalletDisable = currentWallet?.id === "keypom";
   return (
     <div className="border border-dark-300 bg-dark-100 lg:rounded-md p-4 xsm:rounded-b-xl xsm:p-6">
       {isMobile && (
@@ -306,12 +306,12 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center text-xs text-gray-300 -ml-1 xsm:text-sm">
-          {walletMetadata?.iconUrl && (
+          {currentWallet?.metadata?.iconUrl && (
             <span className="mr-1">
-              <img src={walletMetadata.iconUrl} className="w-3 h-3 mr-1" alt="" />
+              <img src={currentWallet.metadata.iconUrl} className="w-3 h-3 mr-1" alt="" />
             </span>
           )}
-          {walletMetadata?.name}
+          {currentWallet?.metadata?.name}
         </div>
       </div>
       <div className="flex items-center justify-between w-full gap-2 my-3.5">
