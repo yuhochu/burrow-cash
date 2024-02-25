@@ -56,7 +56,7 @@ let selector: WalletSelector | null = null;
 const walletConnect = setupWalletConnect({
   projectId: WALLET_CONNECT_ID,
   metadata: {
-    name: "Burrow Cash",
+    name: "Burrow Finance",
     description: "Burrow with NEAR Wallet Selector",
     url: "https://github.com/near/wallet-selector",
     icons: ["https://avatars.githubusercontent.com/u/37784886"],
