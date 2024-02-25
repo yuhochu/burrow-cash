@@ -14,7 +14,7 @@ const BetaInfo = () => {
         mainnet:{" "}
         <Link
           href="https://app.burrow.cash"
-          title="Burrow Cash"
+          title="Burrow Finance"
           target="_blank"
           fontWeight="bold"
           color={theme.palette.primary.main}
