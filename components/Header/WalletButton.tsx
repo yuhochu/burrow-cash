@@ -50,7 +50,7 @@ const WalletButton = () => {
 
   const selectorRef = useRef<WalletSelector>();
   const [selector, setSelector] = useState<WalletSelector | null>(null);
-  const [currentWallet, setCurrentWallet] = useState<string>("");
+  const [currentWallet, setCurrentWallet] = useState<any>(null);
   const rewards = useAppSelector(getAccountRewards);
   const isSignedIn = selector?.isSignedIn();
   const hideModal = () => {
@@ -305,7 +305,7 @@ function AccountDetail({ onClose }: { onClose?: () => void }) {
         )}
       </div>
       <div className="flex items-center justify-between">
-        <div className="flex items-center text-xs text-gray-300 -ml-1 xsm:text-sm">
+        <div className="flex items-center text-xs text-gray-300 xsm:text-sm">
           {currentWallet?.metadata?.iconUrl && (
             <span className="mr-1">
               <img src={currentWallet.metadata.iconUrl} className="w-3 h-3 mr-1" alt="" />
